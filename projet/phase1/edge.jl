@@ -31,6 +31,6 @@ weight(edge::AbstractEdge) = edge.weight
 
 """Affiche une arrête"""
 function show(edge::AbstractEdge)
-    s = string("Nodes: ", nodeA(edge), ", " nodeB(edge), ", Weight: ", weight(edge))
+    s = string("Nodes: ", nodeA(edge), ", ", nodeB(edge), ", Weight: ", weight(edge))
     println(s)
 end

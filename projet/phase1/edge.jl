@@ -21,16 +21,16 @@ end
 # posséderont des champs `nodeA`, `nodeB` et `weight`.
 
 """Renvoie le noeud A d'une arrête"""
-nodeA(edge::AbstractEdge) = name.(edge.nodeA)
+nodeA(edge::AbstractEdge) = edge.nodeA
 
 """Renvoie le noeud B d'une arrête"""
-nodeB(edge::AbstractEdge) = name.(edge.nodeB)
+nodeB(edge::AbstractEdge) = edge.nodeB
 
 """Renvoie le poid d'une arrête"""
 weight(edge::AbstractEdge) = edge.weight
 
 """Affiche une arrête"""
 function show(edge::AbstractEdge)
-    s = string("Nodes: ", nodeA(edge), ", ", nodeB(edge), ", Weight: ", weight(edge))
+    s = string("Nodes: ", nodeA(edge).name, ", ", nodeB(edge).name, "; Weight: ", weight(edge))
     println(s)
 end

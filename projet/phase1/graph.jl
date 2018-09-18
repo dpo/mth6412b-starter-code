@@ -43,10 +43,10 @@ nodes(graph::AbstractGraph) = graph.nodes
 """Renvoie le nombre de noeuds du graphe."""
 nb_nodes(graph::AbstractGraph) = length(graph.nodes)
 
-"""Renvoie la liste des arretes du graphe."""
+"""Renvoie la liste des arrêtes du graphe."""
 graph_edges(graph::AbstractGraph) = graph.edges
 
-"""Renvoie le nombre de arretes du graphe."""
+"""Renvoie le nombre de arrêtes du graphe."""
 nb_edges(graph::AbstractGraph) = length(graph.edges)
 
 """Affiche un graphe"""

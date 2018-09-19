@@ -20,17 +20,14 @@ end
 # on présume que toutes les arrêtes dérivant d'AbstractEdge
 # posséderont des champs `nodeA`, `nodeB` et `weight`.
 
-"""Renvoie le noeud A d'une arrête"""
-nodeA(edge::AbstractEdge) = edge.nodeA
-
-"""Renvoie le noeud B d'une arrête"""
-nodeB(edge::AbstractEdge) = edge.nodeB
+"""Renvoie les noeuds d'une arrête"""
+nodes(edge::AbstractEdge) = [edge.nodeA,edge.nodeB]
 
 """Renvoie le poid d'une arrête"""
 weight(edge::AbstractEdge) = edge.weight
 
 """Affiche une arrête"""
 function show(edge::AbstractEdge)
-    s = string("Nodes: ", nodeA(edge).name, ", ", nodeB(edge).name, "; Weight: ", weight(edge))
+    s = string("Nodes: ", name.(nodes(edge)) "; Weight: ", weight(edge))
     println(s)
 end

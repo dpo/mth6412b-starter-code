@@ -93,14 +93,14 @@ end
 """Analyse un fichier .tsp et renvoie l'ensemble des aretes sous la forme d'un tableau."""
 function read_edges(header::Dict{String}{String}, filename::String)
 
-    edges = []
+    graph_edges = []
     edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
     known_edge_weight_formats = ["FULL_MATRIX", "UPPER_ROW", "LOWER_ROW",
     "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
     "UPPER_DIAG_COL", "LOWER_DIAG_COL"]
 
     if !(edge_weight_format in known_edge_weight_formats)
-        return edges
+        return graph_edges
     end
 
     file = open(filename, "r")
@@ -127,22 +127,22 @@ function read_edges(header::Dict{String}{String}, filename::String)
                 while n_data > 0
                     n_on_this_line = min(n_to_read, n_data)
 
-                    for j = start:start + n_on_this_line
+                    for j = start:start + n_on_this_line-1
                         n_edges = n_edges + 1
                         if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
-                            edge = (k, i+k+1)
+                            edge = (k, i+k+1, data[j+1])
                         elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-                            edge = (k, i+k)
+                            edge = (k, i+k, data[j+1])
                         elseif edge_weight_format in ["UPPER_COL", "LOWER_ROW"]
-                            edge = (i+k+1, k)
+                            edge = (i+k+1, k, data[j+1])
                         elseif edge_weight_format in ["UPPER_DIAG_COL", "LOWER_DIAG_ROW"]
-                            edge = (i, k)
+                            edge = (i, k, data[j+1])
                         elseif edge_weight_format == "FULL_MATRIX"
-                            edge = (k, i)
+                            edge = (k, i, data[j+1])
                         else
                             warn("Unknown format - function read_edges")
                         end
-                        push!(edges, edge)
+                        push!(graph_edges, edge)
                         i += 1
                     end
 
@@ -165,10 +165,10 @@ function read_edges(header::Dict{String}{String}, filename::String)
         end
     end
     close(file)
-    return edges
+    return graph_edges
 end
 
-"""Renvoie les noeuds et les aretes du graphe"""
+"""Renvoie les noeuds et les arrêtes du graphe"""
 function read_stsp(filename::String)
     Base.print("Reading of header : ")
     header = read_header(filename)
@@ -182,25 +182,25 @@ function read_stsp(filename::String)
 
     Base.print("Reading of edges : ")
     edges_brut = read_edges(header, filename)
-    edges = []
+    graph_edges = []
     for k = 1 : dim
         edge_list = Int[]
-        push!(edges, edge_list)
+        push!(graph_edges, edge_list)
     end
 
     for edge in edges_brut
         if edge_weight_format in ["UPPER_ROW", "LOWER_COL", "UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-            edge[1] != 0 && edge[1] != dim+1 && push!(edges[edge[1]], edge[2])
+            edge[1] != 0 && edge[1] != dim+1 && push!(graph_edges[edge[1]], edge[2])
         else
-            edge[2] != 0 && edge[2] != dim+1 && push!(edges[edge[2]], edge[1])
+            edge[2] != 0 && edge[2] != dim+1 && push!(graph_edges[edge[2]], edge[1])
         end
     end
 
     for k = 1 : dim
-        edges[k] = sort(edges[k])
+        graph_edges[k] = sort(graph_edges[k])
     end
     println("✓")
-    return graph_nodes, edges
+    return graph_nodes, graph_edges
 end
 
 """Affiche un graphe étant données un ensemble de noeuds et d'arêtes.

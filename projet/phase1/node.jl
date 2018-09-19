@@ -21,13 +21,13 @@ end
 # posséderont des champs `name` et `data`.
 
 """Renvoie le nom du noeud."""
-name(node::AbstractNode) = node.name
+name(node::AbstractNode) = string(node.name," ")
 
-"""Renvoie les donnees contenues dans le noeud."""
+"""Renvoie les données contenues dans le noeud."""
 data(node::AbstractNode) = node.data
 
 """Affiche un noeud"""
 function show(node::AbstractNode)
-    s = string("Node ", name(node), ", data: ", data(node))
+    s = string("Node: ", name(node), ", Data: ", data(node))
     println(s)
 end

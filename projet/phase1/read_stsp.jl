@@ -168,7 +168,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
     return graph_edges
 end
 
-"""Renvoie les noeuds et les aretes du graphe"""
+"""Renvoie les noeuds et les arrêtes du graphe"""
 function read_stsp(filename::String)
     Base.print("Reading of header : ")
     header = read_header(filename)

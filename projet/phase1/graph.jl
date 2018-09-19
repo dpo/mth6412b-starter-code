@@ -43,24 +43,23 @@ nodes(graph::AbstractGraph) = graph.nodes
 """Renvoie le nombre de noeuds du graphe."""
 nb_nodes(graph::AbstractGraph) = length(graph.nodes)
 
-"""Renvoie la liste des arretes du graphe."""
-graph_edges(graph::AbstractGraph) = graph.edges
+"""Renvoie la liste des arrêtes du graphe."""
+edges(graph::AbstractGraph) = graph.edges
 
-"""Renvoie le nombre de arretes du graphe."""
+"""Renvoie le nombre de arrêtes du graphe."""
 nb_edges(graph::AbstractGraph) = length(graph.edges)
 
 """Affiche un graphe"""
 function show(graph::Graph)
-	name = name(graph)
-	nb_nodes = nb_nodes(graph)
-	nb_edges = nd_edges()
-	s = string("Graph ", name, " has ", nb_nodes, " nodes")
+	graph_name = name(graph)
+	graph_nb_nodes = nb_nodes(graph)
+	graph_nb_edges = nb_edges(graph)
+	println("Graph ", graph_name, " has ", graph_nb_nodes, " nodes")
 	for node in nodes(graph)
-		s = string(s, "\n", show(node))
+		show(node)
 	end
-	s = string(s, "\n", "and ", nb_edges, " edges")
-	for edge in graph_edges(graph)
-		s = string(s, "\n", show(edge))
+	println("and ", graph_nb_edges, " edges")
+	for edge in edges(graph)
+		show(edge)
 	end
-	println(s)
 end

@@ -1,3 +1,7 @@
+"""Nous n'avons pas typé la classe AbstractEdge ou Edge.
+Lorsqu'on attribut un type à la classe Edge, cela provoque un conflit avec
+le type de la classe Node.
+"""
 import Base.show
 
 """Type abstrait dont d'autres types de noeuds dériveront."""
@@ -5,6 +9,8 @@ abstract type AbstractEdge end
 # abstract type AbstractEdge{T} end
 
 """Type représentant les arêtes d'un graphe.
+L'information contenue dans une arête est les deux sommets qui sont lié pas
+l'arête ainsi que son poids.
 
 Exemple:
 
@@ -13,22 +19,19 @@ Exemple:
 """
 mutable struct Edge <: AbstractEdge
 # mutable struct Edge{T} <: AbstractEdge{T}
-    # name :: String
     node1 :: Node
     node2 :: Node
     weight :: Int
 end
 
-# """Renvoie le nom de l'arête."""
-# name(edge :: AbstractEdge) = edge.name
 
-"""Renvoie les données relatives à l'arête"""
+"""Renvoie les sommets que l'arête connecte"""
 nodes(edge :: AbstractEdge) = edge.node1, edge.node2
 
 """Renvoie le poid d'une arête"""
 weight(edge :: AbstractEdge) = edge.weight
 
-"""Affiche une arête"""
+"""Affiche une arête, c'est-à-dire les sommets relié ainsi que son poids."""
 function show(edge :: AbstractEdge)
     s = string("Edge connecting Nodes ", name(edge.node1),
                "--", name(edge.node2),

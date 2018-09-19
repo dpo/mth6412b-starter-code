@@ -90,7 +90,11 @@ function n_nodes_to_read(format::String, n::Int, dim::Int)
     end
 end
 
-"""Analyse un fichier .tsp et renvoie l'ensemble des aretes sous la forme d'un tableau."""
+"""Analyse un fichier .tsp et renvoie l'ensemble des aretes sous la forme d'un tableau.
+La fonction a été modifiée pour renvoyer les aretes ainsi que leur poids sous
+forme de tableau. Une autre modification a été de faire que la boucle qui lit
+les données dans le fichier .tsp puisse lire les informations de 1 à n et non
+de 0 à n-1 (ce qui aurait été le cas en python)"""
 function read_edges(header::Dict{String}{String}, filename::String)
 
     edges = []
@@ -167,7 +171,14 @@ function read_edges(header::Dict{String}{String}, filename::String)
     return edges
 end
 
-"""Renvoie les noeuds et les aretes du graphe"""
+"""Renvoie les noeuds et les aretes du graphe
+Cette fonction a été modifiée pour tenir compte du poids des arêtes. D'où les
+([edge[2], edge[3]]) et ([edge[1], edge[3]]) aux lignes 203 et 205. Aussi le type
+de edge_list a été changé de Int à Any  à la ligne 197 étant donné qu'il s'agit
+maintenant d'une paire d'entier et ne fonctionnait pas si on mettait
+edge_list = Tuple[].
+Finalement les lignes 213 à 219 servent à retirer les listes vides qui posait
+problème lors de l'affichage graphique."""
 function read_stsp(filename::String)
     Base.print("Reading of header : ")
     header = read_header(filename)

@@ -1,10 +1,9 @@
-"""Nous n'avons pas typé la classe AbstractEdge ou Edge.
-Lorsqu'on attribut un type à la classe Edge, cela provoque un conflit avec
-le type de la classe Node.
-"""
 import Base.show
 
-"""Type abstrait dont d'autres types de noeuds dériveront."""
+"""Type abstrait dont d'autres types de noeuds dériveront.
+Nous n'avons pas typé la classe AbstractEdge ou Edge.
+Lorsqu'on attribut un type à la classe Edge, cela provoque un conflit avec
+le type de la classe Node."""
 abstract type AbstractEdge end
 # abstract type AbstractEdge{T} end
 

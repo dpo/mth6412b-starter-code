@@ -59,7 +59,7 @@ function show(graph::Graph)
 		show(node)
 	end
 	println("and ", graph_nb_edges, " edges")
-	for edge in graph_edges(graph)
+	for edge in edges(graph)
 		show(edge)
 	end
 end

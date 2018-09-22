@@ -126,25 +126,24 @@ function read_edges(header::Dict{String}{String}, filename::String)
                 start = 0
                 while n_data > 0
                     n_on_this_line = min(n_to_read, n_data)
-
-                    for j = start:start + n_on_this_line
+                    for j = start:start + n_on_this_line - 1
                         n_edges = n_edges + 1
                         if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
-                            edge = (k, i+k+1)
+                            edge = (k+1, i+k+1+1, parse(Int, data[j+1]))
                         elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-                            edge = (k, i+k)
+                            edge = (k+1, i+k+1, parse(Int, data[j+1]))
                         elseif edge_weight_format in ["UPPER_COL", "LOWER_ROW"]
-                            edge = (i+k+1, k)
+                            edge = (i+k+1+1, k+1, parse(Int, data[j+1]))
                         elseif edge_weight_format in ["UPPER_DIAG_COL", "LOWER_DIAG_ROW"]
-                            edge = (i, k)
+                            edge = (i+1, k+1, parse(Int, data[j+1]))
                         elseif edge_weight_format == "FULL_MATRIX"
-                            edge = (k, i)
+                            edge = (k+1, i+1, parse(Int, data[j+1]))
                         else
                             warn("Unknown format - function read_edges")
                         end
                         push!(edges, edge)
                         i += 1
-                    end
+                    end # for
 
                     n_to_read -= n_on_this_line
                     n_data -= n_on_this_line
@@ -160,10 +159,10 @@ function read_edges(header::Dict{String}{String}, filename::String)
                         n_data = 0
                         flag = true
                     end
-                end
-            end
-        end
-    end
+                end # while
+            end # if edge_weight_section
+        end # if !flag
+    end # for line in eachline
     close(file)
     return edges
 end
@@ -184,21 +183,29 @@ function read_stsp(filename::String)
     edges_brut = read_edges(header, filename)
     edges = []
     for k = 1 : dim
-        edge_list = Int[]
+        edge_list = Any[]
         push!(edges, edge_list)
     end
 
     for edge in edges_brut
         if edge_weight_format in ["UPPER_ROW", "LOWER_COL", "UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-            edge[1] != 0 && edge[1] != dim+1 && push!(edges[edge[1]], edge[2])
+            edge[1] != 0 && edge[1] != dim+1 && push!(edges[edge[1]], ([edge[2], edge[3]]))
         else
-            edge[2] != 0 && edge[2] != dim+1 && push!(edges[edge[2]], edge[1])
+            edge[2] != 0 && edge[2] != dim+1 && push!(edges[edge[2]], ([edge[1], edge[3]]))
         end
     end
 
     for k = 1 : dim
         edges[k] = sort(edges[k])
     end
+
+    edges_2 = []
+    for edge in edges
+       if !isempty(edge)
+           push!(edges_2, edge)
+       end
+    end
+    edges = edges_2
     println("✓")
     return graph_nodes, edges
 end
@@ -216,7 +223,7 @@ function plot_graph(nodes, edges)
 
     # edge positions
     for k = 1 : length(edges)
-        for j in edges[k]
+        for j = 1:length(edges[k])
             plot!([nodes[k][1], nodes[j][1]], [nodes[k][2], nodes[j][2]],
                   linewidth=1.5, alpha=0.75, color=:lightgray)
         end

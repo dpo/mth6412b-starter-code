@@ -93,9 +93,17 @@ function unite!(parent_table::AbstractParentTable, node1::AbstractNode, node2::A
 end
 
 """Construit un objet ParentTable aux dimensions d'un graphe donné.
-Chaque noeud est son propre parent.
+Kruskal : initialement, chaque noeud est son propre parent.
 """
-function init_parent_table(graph::Graph{T}) where T
+function init_parent_table_kruskal(graph::Graph{T}) where T
     graph_nodes_copy = copy(nodes(graph))
     parent_table = ParentTable{T}(nodes(graph), graph_nodes_copy, zeros(length(nodes(graph))))
+end
+
+"""Construit un objet ParentTable aux dimensions d'un graphe donné.
+Prim : initialement, le parent de chaque noeud est 'nothing'.
+"""
+function init_parent_table_prim(graph::Graph{T}) where T
+    graph_nodes_copy = copy(nodes(graph))
+    parent_table = ParentTable{T}(nodes(graph), graph_nodes_copy, Vector{Node}(undef, length(nodes(graph))))
 end

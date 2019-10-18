@@ -7,7 +7,7 @@ include(joinpath(@__DIR__, "..", "phase2", "parent_table.jl"))
 utilisant l'algorithme de Kruskal. La méthode renvoie un objet de type Graph.
 """
 function main2(graph::AbstractGraph{T}) where T
-    parent_table = init_parent_table(graph)
+    parent_table = init_parent_table_kruskal(graph)
     # on trie les arêtes par poids croissant.
     edges_copy = copy(edges(graph))
     sort!(edges_copy, by=weight)

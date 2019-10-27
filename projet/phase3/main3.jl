@@ -28,15 +28,14 @@ function kruskal(graph::AbstractGraph{T}) where T
             unite!(parent_table, node1, node2)
         end
     end
-    # On affiche puis on renvoie l'arbre de recouvrement minimum.
-    show(min_tree)
-
     ## Le code suivant permet de tester que la compression des chemins se fait correctement :
     # println("\n", name.(parents(parent_table)), "\n")
     # for node in enfants(parent_table)
     #     println(name(root(parent_table, node)))
     # end
 
+    # On affiche puis on renvoie l'arbre de recouvrement minimum.
+    show(min_tree)
     min_tree
 end
 
@@ -46,14 +45,14 @@ entrée en utilisant l'algorithme de Prim. La méthode renvoie un objet de type 
 """
 function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
     parent_table = init_parent_table_prim(graph)
-    # On attribue un poids nul au noeud de départ et on trie les noeuds par poids croissant.
+    # On attribue un poids nul au noeud de départ et on stocke les noeuds dans une file de priorité par poids.
     set_min_weight!(starting_node, 0.0)
     nodes_queue = PriorityQueue{Node{T}}(copy(nodes(graph)))
     # On initialise l'arbre de recouvrement minimum en lui ajoutant le sommet de départ.
     min_tree = Graph{T}("min_tree", [], [])
     add_node!(min_tree, starting_node)
-    popfirst!(nodes_queue)
-    # On initialise les poids des noeuds voisins du noeud de départ, puis on trie la file des noeuds.
+    poplast!(nodes_queue)
+    # On initialise les poids des noeuds voisins du noeud de départ.
     for edge in edges(graph)
         if s_node(edge) === starting_node
             set_min_weight!(d_node(edge), weight(edge))
@@ -65,8 +64,8 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
         end
     end
     while length(nodes(min_tree)) < length(nodes(graph))
-        # A chaque étape, on ajoute le noeud de poids minimum à l'arbre de recouvrement, puis on l'enlève de la file.
-        next_node = popfirst!(nodes_queue)
+        # A chaque étape, on ajoute le noeud de poids minimum à l'arbre de recouvrement et on l'enlève de la file.
+        next_node = poplast!(nodes_queue)
         add_node!(min_tree, next_node)
         add_edge!(min_tree, Edge("", parent(parent_table, next_node), next_node, min_weight(next_node)))
         # On met ensuite à jour les poids des noeuds adjacents à l'arbre de recouvrement et on désigne leurs parents.
@@ -81,6 +80,7 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
             end
         end
     end
+    # On affiche puis on renvoie l'arbre de recouvrement minimum.
     show(min_tree)
     min_tree
 end

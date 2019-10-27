@@ -36,7 +36,20 @@ end
 
 PriorityQueue{T}() where T = PriorityQueue(T[])
 
-"""Retire et renvoie l'élément ayant la plus haute priorité."""
+"""Retire et renvoie l'élément ayant le poids le plus faible."""
+function poplast!(q::PriorityQueue)
+    lowest = q.items[1]
+    for item in q.items[2:end]
+        if item < lowest
+            lowest = item
+        end
+    end
+    idx = findall(x -> x == lowest, q.items)[1]
+    deleteat!(q.items, idx)
+    lowest
+end
+
+"""Retire et renvoie l'élément ayant le poids le plus élevé."""
 function popfirst!(q::PriorityQueue)
     highest = q.items[1]
     for item in q.items[2:end]
@@ -48,7 +61,3 @@ function popfirst!(q::PriorityQueue)
     deleteat!(q.items, idx)
     highest
 end
-
-import Base.maximum
-
-maximum(q::AbstractQueue) = maximum(q.items)

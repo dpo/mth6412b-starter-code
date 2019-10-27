@@ -22,7 +22,7 @@ mutable struct Node{T} <: AbstractNode{T}
 end
 
 # on présume que tous les noeuds dérivant d'AbstractNode
-# posséderont des champs `name` et `data`.
+# posséderont des champs `name`, `data` et `min_weight`.
 
 """Renvoie le nom du noeud."""
 name(node::AbstractNode) = node.name
@@ -38,12 +38,6 @@ function set_min_weight!(node::AbstractNode, weight::Int64)
   node.min_weight = max(0, weight)
   node
 end
-#
-# """Renvoie un booléen : true si le poids du noeud 1 est inférieur au poids du noeud 2, false sinon."""
-# isless(node1::AbstractNode, node2::AbstractNode) = min_weight(node1) < min_weight(node2)
-#
-# """Renvoie un booléen : true si le poids du noeud 1 est égal au poids du noeud 2, false sinon."""
-# ==(node1::AbstractNode, node2::AbstractNode) = min_weight(node1) == min_weight(node2)
 
 """Affiche un noeud."""
 function show(node::AbstractNode)

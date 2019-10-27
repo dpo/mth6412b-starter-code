@@ -69,11 +69,12 @@ end
 le plus ancien parent de ce noeud. Au passage, compresse le chemin vers la racine.
 """
 function root(parent_table::AbstractParentTable, node::AbstractNode)
-    parent = parent(parent_table, node)
-    if node != parent
-        set_parent!(parent_table, node, root(parent_table, parent))
+    parent_ = parent(parent_table, node)
+    if node != parent_
+        parent_ = root(parent_table, parent_)
+        set_parent!(parent_table, node, parent_)
     end
-    parent
+    parent_
 end
 
 """Réunit deux composantes connexes en joignant leurs deux racines si elles sont distinctes."""

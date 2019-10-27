@@ -70,7 +70,7 @@ le plus ancien parent de ce noeud. Au passage, compresse le chemin vers la racin
 """
 function root(parent_table::AbstractParentTable, node::AbstractNode)
     parent_ = parent(parent_table, node)
-    if node != parent_
+    if node !== parent_
         parent_ = root(parent_table, parent_)
         set_parent!(parent_table, node, parent_)
     end
@@ -104,5 +104,5 @@ Prim : initialement, le parent de chaque noeud est 'nothing'.
 """
 function init_parent_table_prim(graph::Graph{T}) where T
     graph_nodes_copy = copy(nodes(graph))
-    parent_table = ParentTable{T}(nodes(graph), graph_nodes_copy, Vector{Node}(undef, length(nodes(graph))))
+    parent_table = ParentTable{T}(nodes(graph), graph_nodes_copy, Vector{Node}([]))
 end

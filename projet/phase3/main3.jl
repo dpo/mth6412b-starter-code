@@ -28,12 +28,20 @@ function kruskal(graph::AbstractGraph{T}) where T
             unite!(parent_table, node1, node2)
         end
     end
-    ## Le code suivant permet de tester que la compression des chemins se fait correctement :
-    # println("\n", name.(parents(parent_table)), "\n")
+    # # Le code suivant permet de tester que l'union via le rang et la compression se font correctement :
     # for node in enfants(parent_table)
-    #     println(name(root(parent_table, node)))
+    #     # On a prouvé que le rang d'un noeud doit rester inférieur à log2(s), où s est le nombre de sommets du graphe.
+    #     if rank(parent_table, node) >= log2(length(enfants(parent_table)))
+    #         error("Le rang du noeud ", name(node), " est supérieur à log2(s) : l'union via le rang est mal implémentée.")
+    #     end
+    #     # Si la compression se fait bien, les noeuds ont tous le même parent, qui est aussi leur racine.
+    #     if root(parent_table, node) !== root(parent_table, enfants(parent_table)[1])
+    #         error("Les noeuds n'ont pas tous le même parent : la compression des chemins est mal implémentée.")
+    #     end
+    #     if root(parent_table, node) !== parent(parent_table, node)
+    #         error("Le parent du noeud ", name(node), " n'est pas sa racine : la compression des chemins est mal implémentée.")
+    #     end
     # end
-
     # On affiche puis on renvoie l'arbre de recouvrement minimum.
     show(min_tree)
     min_tree
@@ -68,18 +76,22 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
         next_node = poplast!(nodes_queue)
         add_node!(min_tree, next_node)
         add_edge!(min_tree, Edge("", parent(parent_table, next_node), next_node, min_weight(next_node)))
+        set_min_weight!(next_node, 0.0)
         # On met ensuite à jour les poids des noeuds adjacents à l'arbre de recouvrement et on désigne leurs parents.
         for edge in edges(graph)
-            if s_node(edge) === next_node
+            if s_node(edge) in nodes(min_tree) && !(d_node(edge) in nodes(min_tree))
                 set_min_weight!(d_node(edge), weight(edge))
-                set_parent!(parent_table, d_node(edge), next_node)
-            end
-            if d_node(edge) === next_node
+                set_parent!(parent_table, d_node(edge), s_node(edge))
+            elseif d_node(edge) in nodes(min_tree) && !(s_node(edge) in nodes(min_tree))
                 set_min_weight!(s_node(edge), weight(edge))
-                set_parent!(parent_table, s_node(edge), next_node)
+                set_parent!(parent_table, s_node(edge), d_node(edge))
             end
         end
     end
+    # # Le code suivant permet de vérifer que la file de priorité est vide à la fin de l'algorithme.
+    # if length(nodes_queue) > 0
+    #     error(length(nodes_queue), " noeuds n'ont pas été ajoutés à l'arbre de recouvrement minimum.")
+    # end
     # On affiche puis on renvoie l'arbre de recouvrement minimum.
     show(min_tree)
     min_tree

@@ -2,76 +2,83 @@ using Test
 
 include(joinpath(@__DIR__, "..", "phase1", "graph.jl"))
 include(joinpath(@__DIR__, "..", "phase1", "main1.jl"))
-include(joinpath(@__DIR__, "main2.jl"))
+include(joinpath(@__DIR__, "main3.jl"))
 
 # Construction des graphes
 
 # Graphe à 3 noeuds
-node1 = Node{Int64}("1", 1)
-node2 = Node{Int64}("2", 2)
-node3 = Node{Int64}("3", 3)
-edge1 = Edge{Int64}("1", node1, node2, 1)
-edge2 = Edge{Int64}("2", node1, node3, 2)
-edge3 = Edge{Int64}("3", node2, node3, 3)
-graph_3n = Graph{Int64}("graph_3n",[],[])
+node1 = Node{Float64}("1", 1.0, Inf)
+node2 = Node{Float64}("2", 2.0, Inf)
+node3 = Node{Float64}("3", 3.0, Inf)
+edge1 = Edge{Float64}("1", node1, node2, 1)
+edge2 = Edge{Float64}("2", node1, node3, 2)
+edge3 = Edge{Float64}("3", node2, node3, 3)
+graph_3n = Graph{Float64}("graph_3n",[],[])
 add_edge!(graph_3n, edge1)
 add_edge!(graph_3n, edge2)
 add_edge!(graph_3n, edge3)
 add_node!(graph_3n, node1)
 add_node!(graph_3n, node2)
 add_node!(graph_3n, node3)
-parent_table_3n = init_parent_table(graph_3n)
+parent_table_kruskal_3n = init_parent_table_kruskal(graph_3n)
+parent_table_prim_3n = init_parent_table_prim(graph_3n)
 
 
 # Graphe à 4 noeuds
-graph_4n = Graph{Int64}("graph_4n", [Node{Int64}("1", 1), Node{Int64}("2", 2), Node{Int64}("3", 3), Node{Int64}("4", 4)],
-[Edge{Int64}("1", Node{Int64}("1", 1), Node{Int64}("2", 2), 6),
-Edge{Int64}("2", Node{Int64}("1", 1), Node{Int64}("3", 3), 5),
-Edge{Int64}("3", Node{Int64}("1", 1), Node{Int64}("4", 4), 4),
-Edge{Int64}("4", Node{Int64}("2", 2), Node{Int64}("3", 3), 3),
-Edge{Int64}("5", Node{Int64}("2", 2), Node{Int64}("4", 4), 2),
-Edge{Int64}("6", Node{Int64}("3", 3), Node{Int64}("4", 4), 1)])
-parent_table_4n = init_parent_table(graph_4n)
+graph_4n = Graph{Float64}("graph_4n", [Node{Float64}("1", 1.0, Inf), Node{Float64}("2", 2.0, Inf), Node{Float64}("3", 3.0, Inf), Node{Float64}("4", 4.0, Inf)],
+[Edge{Float64}("1", Node{Float64}("1", 1.0, Inf), Node{Float64}("2", 2.0, Inf), 6),
+Edge{Float64}("2", Node{Float64}("1", 1.0, Inf), Node{Float64}("3", 3.0, Inf), 5),
+Edge{Float64}("3", Node{Float64}("1", 1.0, Inf), Node{Float64}("4", 4.0, Inf), 4),
+Edge{Float64}("4", Node{Float64}("2", 2.0, Inf), Node{Float64}("3", 3.0, Inf), 3),
+Edge{Float64}("5", Node{Float64}("2", 2.0, Inf), Node{Float64}("4", 4.0, Inf), 2),
+Edge{Float64}("6", Node{Float64}("3", 3.0, Inf), Node{Float64}("4", 4.0, Inf), 1)])
+parent_table_kruskal_4n = init_parent_table_kruskal(graph_4n)
+parent_table_prim_4n = init_parent_table_prim(graph_4n)
 
 
 # Graphe à 6 noeuds
-graph_6n = Graph{Int64}("graph_6n", [Node{Int64}("1", 1), Node{Int64}("2", 2), Node{Int64}("3", 3), Node{Int64}("4", 4), Node{Int64}("5", 5), Node{Int64}("6", 6)],
-[Edge{Int64}("", Node{Int64}("1", 1), Node{Int64}("2", 2), 10),
-Edge{Int64}("", Node{Int64}("1", 1), Node{Int64}("3", 3), 9),
-Edge{Int64}("", Node{Int64}("1", 1), Node{Int64}("4", 4), 8),
-Edge{Int64}("", Node{Int64}("2", 2), Node{Int64}("3", 3), 7),
-Edge{Int64}("", Node{Int64}("3", 3), Node{Int64}("4", 4), 6),
-Edge{Int64}("", Node{Int64}("4", 4), Node{Int64}("5", 5), 5),
-Edge{Int64}("", Node{Int64}("2", 2), Node{Int64}("5", 5), 4),
-Edge{Int64}("", Node{Int64}("3", 3), Node{Int64}("6", 6), 3)])
-parent_table_6n = init_parent_table(graph_6n)
+graph_6n = Graph{Float64}("graph_6n", [Node{Float64}("1", 1.0, Inf), Node{Float64}("2", 2.0, Inf), Node{Float64}("3", 3.0, Inf), Node{Float64}("4", 4.0, Inf), Node{Float64}("5", 5.0, Inf), Node{Float64}("6", 6.0, Inf)],
+[Edge{Float64}("", Node{Float64}("1", 1.0, Inf), Node{Float64}("2", 2.0, Inf), 10),
+Edge{Float64}("", Node{Float64}("1", 1.0, Inf), Node{Float64}("3", 3.0, Inf), 9),
+Edge{Float64}("", Node{Float64}("1", 1.0, Inf), Node{Float64}("4", 4.0, Inf), 8),
+Edge{Float64}("", Node{Float64}("2", 2.0, Inf), Node{Float64}("3", 3.0, Inf), 7),
+Edge{Float64}("", Node{Float64}("3", 3.0, Inf), Node{Float64}("4", 4.0, Inf), 6),
+Edge{Float64}("", Node{Float64}("4", 4.0, Inf), Node{Float64}("5", 5.0, Inf), 5),
+Edge{Float64}("", Node{Float64}("2", 2.0, Inf), Node{Float64}("5", 5.0, Inf), 4),
+Edge{Float64}("", Node{Float64}("3", 3.0, Inf), Node{Float64}("6", 6.0, Inf), 3)])
+parent_table_kruskal_6n = init_parent_table_kruskal(graph_6n)
+parent_table_prim_6n = init_parent_table_prim(graph_6n)
 
 
 # Graphe à 10 noeuds
-graph_10n = Graph{Int64}("graph10n", [], [])
+graph_10n = Graph{Float64}("graph10n", [], [])
 for i = 1 : 10
-    add_node!(graph_10n, Node{Int64}(string(i), i))
+    add_node!(graph_10n, Node{Float64}(string(i), i, Inf))
 end
 for e = 1 : 9
-    add_edge!(graph_10n, Edge{Int64}("", nodes(graph_10n)[e], nodes(graph_10n)[e + 1], 100 - e))
+    add_edge!(graph_10n, Edge{Float64}("", nodes(graph_10n)[e], nodes(graph_10n)[e + 1], 100 - e))
 end
-parent_table_10n = init_parent_table(graph_10n)
+parent_table_kruskal_10n = init_parent_table_kruskal(graph_10n)
+parent_table_prim_10n = init_parent_table_prim(graph_10n)
 
 
 # Graphe à n noeuds : bayg29.tsp
 graph_path1 = joinpath(@__DIR__, "..", "..", "instances/stsp/bayg29.tsp")
 graph_Nn1 = main1(graph_path1)
-parent_table_Nn1 = init_parent_table(graph_Nn1)
+parent_table_kruskal_Nn1 = init_parent_table_kruskal(graph_Nn1)
+parent_table_prim_Nn1 = init_parent_table_prim(graph_Nn1)
 
 # Graphe à n noeuds : bays29.tsp
 graph_path2 = joinpath(@__DIR__, "..", "..", "instances/stsp/bays29.tsp")
 graph_Nn2 = main1(graph_path2)
-parent_table_Nn2 = init_parent_table(graph_Nn2)
+parent_table_kruskal_Nn2 = init_parent_table_kruskal(graph_Nn2)
+parent_table_prim_Nn2 = init_parent_table_prim(graph_Nn2)
 
 # Graphe à n noeuds : dantzig42.tsp
 graph_path3 = joinpath(@__DIR__, "..", "..", "instances/stsp/dantzig42.tsp")
 graph_Nn3 = main1(graph_path3)
-parent_table_Nn3 = init_parent_table(graph_Nn3)
+parent_table_kruskal_Nn3 = init_parent_table_kruskal(graph_Nn3)
+parent_table_prim_Nn3 = init_parent_table_prim(graph_Nn3)
 
 
 # Fonctions
@@ -100,40 +107,61 @@ end
 
 # Tests
 
-# Au départ, chaque noeud est son propre parent
-@test enfants(parent_table_3n) == parents(parent_table_3n)
-@test enfants(parent_table_4n) == parents(parent_table_4n)
-@test enfants(parent_table_6n) == parents(parent_table_6n)
-@test enfants(parent_table_10n) == parents(parent_table_10n)
-@test enfants(parent_table_Nn1) == parents(parent_table_Nn1)
-@test enfants(parent_table_Nn2) == parents(parent_table_Nn2)
-@test enfants(parent_table_Nn3) == parents(parent_table_Nn3)
-
 # Test de la méthode parent()
-@test is_parent_ok(parent_table_3n)
-@test is_parent_ok(parent_table_4n)
-@test is_parent_ok(parent_table_6n)
-@test is_parent_ok(parent_table_10n)
-@test is_parent_ok(parent_table_Nn1)
-@test is_parent_ok(parent_table_Nn2)
-@test is_parent_ok(parent_table_Nn3)
+@test is_parent_ok(parent_table_kruskal_3n)
+@test is_parent_ok(parent_table_kruskal_4n)
+@test is_parent_ok(parent_table_kruskal_6n)
+@test is_parent_ok(parent_table_kruskal_10n)
+@test is_parent_ok(parent_table_kruskal_Nn1)
+@test is_parent_ok(parent_table_kruskal_Nn2)
+@test is_parent_ok(parent_table_kruskal_Nn3)
+@test is_parent_ok(parent_table_prim_3n)
+@test is_parent_ok(parent_table_prim_4n)
+@test is_parent_ok(parent_table_prim_6n)
+@test is_parent_ok(parent_table_prim_10n)
+@test is_parent_ok(parent_table_prim_Nn1)
+@test is_parent_ok(parent_table_prim_Nn2)
+@test is_parent_ok(parent_table_prim_Nn3)
 
 
 # Appliquons l'algorithme de Kruskal aux graphes
-min_tree_3n = main2(graph_3n)
-min_tree_4n = main2(graph_4n)
-min_tree_6n = main2(graph_6n)
-min_tree_10n = main2(graph_10n)
-min_tree_Nn1 = main2(graph_Nn1)
-min_tree_Nn2 = main2(graph_Nn2)
-min_tree_Nn3 = main2(graph_Nn3)
+min_tree_kruskal_3n = kruskal(graph_3n)
+min_tree_kruskal_4n = kruskal(graph_4n)
+min_tree_kruskal_6n = kruskal(graph_6n)
+min_tree_kruskal_10n = kruskal(graph_10n)
+min_tree_kruskal_Nn1 = kruskal(graph_Nn1)
+min_tree_kruskal_Nn2 = kruskal(graph_Nn2)
+min_tree_kruskal_Nn3 = kruskal(graph_Nn3)
+
+# Appliquons l'algorithme de Prim aux graphes
+node0_3n = nodes(graph_3n)[2]
+min_tree_prim_3n = prim(graph_3n, node0_3n)
+node0_4n = nodes(graph_4n)[2]
+min_tree_prim_4n = prim(graph_4n, node0_4n)
+node0_6n = nodes(graph_6n)[2]
+min_tree_prim_6n = prim(graph_6n, node0_6n)
+node0_10n = nodes(graph_10n)[2]
+min_tree_prim_10n = prim(graph_10n, node0_10n)
+node0_Nn1 = nodes(graph_Nn1)[2]
+min_tree_prim_Nn1 = prim(graph_Nn1, node0_Nn1)
+node0_Nn2 = nodes(graph_Nn2)[2]
+min_tree_prim_Nn2 = prim(graph_Nn2, node0_Nn2)
+node0_Nn3 = nodes(graph_Nn3)[2]
+min_tree_prim_Nn3 = prim(graph_Nn3, node0_Nn3)
 
 
 # L'arbre de recouvrement minimal devrait avoir exactmeent une arête de moins que de sommets
-@test length(edges(min_tree_3n)) == length(nodes(min_tree_3n)) - 1
-@test length(edges(min_tree_4n)) == length(nodes(min_tree_4n)) - 1
-@test length(edges(min_tree_6n)) == length(nodes(min_tree_6n)) - 1
-@test length(edges(min_tree_10n)) == length(nodes(min_tree_10n)) - 1
-@test length(edges(min_tree_Nn1)) == length(nodes(min_tree_Nn1)) - 1
-@test length(edges(min_tree_Nn2)) == length(nodes(min_tree_Nn2)) - 1
-@test length(edges(min_tree_Nn3)) == length(nodes(min_tree_Nn3)) - 1
+@test length(edges(min_tree_kruskal_3n)) == length(nodes(min_tree_kruskal_3n)) - 1
+@test length(edges(min_tree_kruskal_4n)) == length(nodes(min_tree_kruskal_4n)) - 1
+@test length(edges(min_tree_kruskal_6n)) == length(nodes(min_tree_kruskal_6n)) - 1
+@test length(edges(min_tree_kruskal_10n)) == length(nodes(min_tree_kruskal_10n)) - 1
+@test length(edges(min_tree_kruskal_Nn1)) == length(nodes(min_tree_kruskal_Nn1)) - 1
+@test length(edges(min_tree_kruskal_Nn2)) == length(nodes(min_tree_kruskal_Nn2)) - 1
+@test length(edges(min_tree_kruskal_Nn3)) == length(nodes(min_tree_kruskal_Nn3)) - 1
+@test length(edges(min_tree_prim_3n)) == length(nodes(min_tree_prim_3n)) - 1
+@test length(edges(min_tree_prim_4n)) == length(nodes(min_tree_prim_4n)) - 1
+@test length(edges(min_tree_prim_6n)) == length(nodes(min_tree_prim_6n)) - 1
+@test length(edges(min_tree_prim_10n)) == length(nodes(min_tree_prim_10n)) - 1
+@test length(edges(min_tree_prim_Nn1)) == length(nodes(min_tree_prim_Nn1)) - 1
+@test length(edges(min_tree_prim_Nn2)) == length(nodes(min_tree_prim_Nn2)) - 1
+@test length(edges(min_tree_prim_Nn3)) == length(nodes(min_tree_prim_Nn3)) - 1

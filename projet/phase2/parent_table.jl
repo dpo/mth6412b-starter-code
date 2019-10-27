@@ -1,4 +1,5 @@
 import Base.show
+import Base.copy
 
 include(joinpath(@__DIR__, "..", "phase1", "graph.jl"))
 
@@ -28,7 +29,7 @@ function parent(parent_table::AbstractParentTable, node::AbstractNode)
             return parent
         end
     end
-    error("Aucun parent n'a été trouvé pour ce noeud.")
+    error("Aucun parent n'a été trouvé pour ce noeud : ", node)
 end
 
 """Attribue un noeud parent au noeud donné."""
@@ -39,7 +40,7 @@ function set_parent!(parent_table::AbstractParentTable, node::AbstractNode, pare
             return parent_table
         end
     end
-    error("Ce noeud n'existe pas.")
+    error("Ce noeud n'existe pas : ", node)
 end
 
 """Renvoie le rang associé à un noeud donné selon la table parent_table."""
@@ -50,7 +51,7 @@ function rank(parent_table::AbstractParentTable, node::AbstractNode)
             return rank
         end
     end
-    error("Aucun rang n'a été trouvé pour ce noeud.")
+    error("Aucun rang n'a été trouvé pour ce noeud : ", node)
 end
 
 """Attribue un rang au noeud donné."""
@@ -61,21 +62,18 @@ function increase_rank!(parent_table::AbstractParentTable, node::AbstractNode)
             return parent_table
         end
     end
-    error("Ce noeud n'existe pas.")
+    error("Ce noeud n'existe pas : ", node)
 end
 
 """Renvoie la racine d'un noeud donné selon la table parent_table, c'est-à-dire
-le plus ancien parent de ce noeud.
+le plus ancien parent de ce noeud. Au passage, compresse le chemin vers la racine.
 """
 function root(parent_table::AbstractParentTable, node::AbstractNode)
-    root = node
-    final_root = Node{T}("", [])
-    while root != parent(parent_table, root)
-        root_ = parent(parent_table, root)
-        set_parent!(parent_table, root, final_root)
-        root = root_
+    parent = parent(parent_table, node)
+    if node != parent
+        set_parent!(parent_table, node, root(parent_table, parent))
     end
-    final_root = root
+    parent
 end
 
 """Réunit deux composantes connexes en joignant leurs deux racines si elles sont distinctes."""
@@ -86,7 +84,7 @@ function unite!(parent_table::AbstractParentTable, node1::AbstractNode, node2::A
         set_parent!(parent_table, root2, root1)
     elseif rank(parent_table, root1) > rank(parent_table, root2)
         set_parent!(parent_table, root1, root2)
-    else rank(parent_table, root1) == rank(parent_table, root2)
+    else
         set_parent!(parent_table, root2, root1)
         increase_rank!(parent_table, root1)
     end

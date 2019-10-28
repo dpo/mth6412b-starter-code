@@ -4,6 +4,7 @@ include(joinpath(@__DIR__, "..", "phase3", "queue.jl"))
 
 """Renvoie un arbre de recouvrement minimal du graphe symétrique en entrée en
 utilisant l'algorithme de Kruskal. La méthode renvoie un objet de type Graph.
+ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
 function kruskal(graph::AbstractGraph{T}) where T
     parent_table = init_parent_table_kruskal(graph)
@@ -42,14 +43,15 @@ function kruskal(graph::AbstractGraph{T}) where T
     #         error("Le parent du noeud ", name(node), " n'est pas sa racine : la compression des chemins est mal implémentée.")
     #     end
     # end
-    # On affiche puis on renvoie l'arbre de recouvrement minimum.
-    show(min_tree)
+    # # On affiche puis on renvoie l'arbre de recouvrement minimum.
+    # show(min_tree)
     min_tree
 end
 
 
 """Renvoie un arbre de recouvrement minimal du graphe symétrique et du noeud en
 entrée en utilisant l'algorithme de Prim. La méthode renvoie un objet de type Graph.
+ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
 function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
     parent_table = init_parent_table_prim(graph)
@@ -92,7 +94,7 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
     # if length(nodes_queue) > 0
     #     error(length(nodes_queue), " noeuds n'ont pas été ajoutés à l'arbre de recouvrement minimum.")
     # end
-    # On affiche puis on renvoie l'arbre de recouvrement minimum.
-    show(min_tree)
+    # # On affiche puis on renvoie l'arbre de recouvrement minimum.
+    # show(min_tree)
     min_tree
 end

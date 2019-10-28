@@ -13,6 +13,12 @@ Exemple:
         noeud = Node("Kirk", "guitar")
         noeud = Node("Lars", 2)
 
+        ATTENTION !
+        Les algorithmes utilisant cette implémentation d'un noeud différencient
+        parfois deux noeuds par leur attribut "name". Il est donc essentiel que
+        tous les noeuds d'un graphe aient des attributs "name" différents pour
+        que ces algorithmes fonctionnent correctement.
+
 """
 mutable struct Node{T} <: AbstractNode{T}
   name::String

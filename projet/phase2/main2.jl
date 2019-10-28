@@ -5,6 +5,7 @@ include(joinpath(@__DIR__, "..", "phase2", "parent_table.jl"))
 
 """Renvoie un arbre de recouvrement minimal du graphe symétrique en entrée en
 utilisant l'algorithme de Kruskal. La méthode renvoie un objet de type Graph.
+ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
 function main2(graph::AbstractGraph{T}) where T
     parent_table = init_parent_table_kruskal(graph)

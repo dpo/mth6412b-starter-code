@@ -1,12 +1,11 @@
 using Statistics
 using Printf
 
-include("phase1/main1.jl")
-include("phase2/main2.jl")
-include("phase3/main3.jl")
+include(joinpath(@__DIR__, "..", "phase1", "main1.jl"))
+include("main3.jl")
 
 # List of stsp instances
-const STSP_DIR = joinpath(@__DIR__, "../instances/stsp/")
+const STSP_DIR = joinpath(@__DIR__, "..", "..", "instances", "stsp")
 const STSP = readdir(STSP_DIR)
 
 const GRAPHS = [main1(joinpath(STSP_DIR, finst)) for finst in STSP]

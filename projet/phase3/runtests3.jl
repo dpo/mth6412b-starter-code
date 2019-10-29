@@ -50,7 +50,7 @@ parent_table_kruskal_6n = init_parent_table_kruskal(graph_6n)
 parent_table_prim_6n = init_parent_table_prim(graph_6n)
 
 
-# Graphe à 9 sommets : exemple du cours
+# Graphe à 9 noeuds : exemple du cours
 graph_9n = Graph{Float64}("graph_9n", [], [])
 for i = 1 : 9
     node = Node{Float64}(string(i), i, Inf)
@@ -191,7 +191,7 @@ node0_Nn4 = nodes(graph_Nn4)[2]
 min_tree_prim_Nn4 = prim(graph_Nn4, node0_Nn4)
 
 
-# L'arbre de recouvrement minimal devrait avoir exactmeent une arête de moins que de sommets
+# L'arbre de recouvrement minimal devrait avoir exactement une arête de moins que de sommets
 @test length(edges(min_tree_kruskal_3n)) == length(nodes(min_tree_kruskal_3n)) - 1
 @test length(edges(min_tree_kruskal_4n)) == length(nodes(min_tree_kruskal_4n)) - 1
 @test length(edges(min_tree_kruskal_6n)) == length(nodes(min_tree_kruskal_6n)) - 1

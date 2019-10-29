@@ -75,7 +75,7 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
         next_node = poplast!(nodes_queue)
         add_node!(min_tree, next_node)
         add_edge!(min_tree, Edge("", parent(parent_table, next_node), next_node, min_weight(next_node)))
-        update_min_weight!(next_node, 0.0)
+        set_min_weight!(next_node, 0.0)
     end
     # # Le code suivant permet de vérifer que la file de priorité est vide à la fin de l'algorithme.
     # if length(nodes_queue) > 0

@@ -40,7 +40,7 @@ min_weight(node::AbstractNode) = node.min_weight
 
 """Affecte une nouvelle valeur au poids d'un noeud."""
 function set_min_weight!(node::AbstractNode, weight::Float64)
-  node.min_weight = max(0, weight)
+  node.min_weight = max(0.0, weight)
   node
 end
 

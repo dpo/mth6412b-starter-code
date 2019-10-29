@@ -43,6 +43,18 @@ function set_parent!(parent_table::AbstractParentTable, node::AbstractNode, pare
     error("Ce noeud n'existe pas : ", node)
 end
 
+"""Si le nouveau poids "new_weight" est inférieur au poids actuel du noeud "node",
+alors cette méthode lui attribue ce nouveau poids et lui affecte le noeud "parent"
+comme parent dans la table "parent_table".
+Sinon, rien ne se passe.
+"""
+function update_parent_and_weight!(parent_table::AbstractParentTable, node::AbstractNode, parent::AbstractNode, new_weight::Float64)
+    if new_weight < min_weight(node)
+        set_min_weight!(node, new_weight)
+        set_parent!(parent_table, node, parent)
+    end
+end
+
 """Renvoie le rang associé à un noeud donné selon la table parent_table."""
 function rank(parent_table::AbstractParentTable, node::AbstractNode)
     for (i, enfant) in enumerate(enfants(parent_table))

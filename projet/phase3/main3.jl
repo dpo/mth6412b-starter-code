@@ -62,33 +62,20 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
     min_tree = Graph{T}("min_tree", [], [])
     add_node!(min_tree, starting_node)
     poplast!(nodes_queue)
-    # On initialise les poids des noeuds voisins du noeud de départ.
-    for edge in edges(graph)
-        if s_node(edge) === starting_node
-            set_min_weight!(d_node(edge), weight(edge))
-            set_parent!(parent_table, d_node(edge), starting_node)
-        end
-        if d_node(edge) === starting_node
-            set_min_weight!(s_node(edge), weight(edge))
-            set_parent!(parent_table, s_node(edge), starting_node)
-        end
-    end
     while length(nodes(min_tree)) < length(nodes(graph))
-        # A chaque étape, on ajoute le noeud de poids minimum à l'arbre de recouvrement et on l'enlève de la file.
+        # À chaque étape, on met d'abord à jour les poids des noeuds adjacents à l'arbre de recouvrement et on désigne leurs parents.
+        for edge in edges(graph)
+            if s_node(edge) in nodes(min_tree) && !(d_node(edge) in nodes(min_tree))
+                update_parent_and_weight!(parent_table, d_node(edge), s_node(edge), weight(edge))
+            elseif d_node(edge) in nodes(min_tree) && !(s_node(edge) in nodes(min_tree))
+                update_parent_and_weight!(parent_table, s_node(edge), d_node(edge), weight(edge))
+            end
+        end
+        # Puis on ajoute le noeud de poids minimum à l'arbre de recouvrement et on l'enlève de la file.
         next_node = poplast!(nodes_queue)
         add_node!(min_tree, next_node)
         add_edge!(min_tree, Edge("", parent(parent_table, next_node), next_node, min_weight(next_node)))
-        set_min_weight!(next_node, 0.0)
-        # On met ensuite à jour les poids des noeuds adjacents à l'arbre de recouvrement et on désigne leurs parents.
-        for edge in edges(graph)
-            if s_node(edge) in nodes(min_tree) && !(d_node(edge) in nodes(min_tree))
-                set_min_weight!(d_node(edge), weight(edge))
-                set_parent!(parent_table, d_node(edge), s_node(edge))
-            elseif d_node(edge) in nodes(min_tree) && !(s_node(edge) in nodes(min_tree))
-                set_min_weight!(s_node(edge), weight(edge))
-                set_parent!(parent_table, s_node(edge), d_node(edge))
-            end
-        end
+        update_min_weight!(next_node, 0.0)
     end
     # # Le code suivant permet de vérifer que la file de priorité est vide à la fin de l'algorithme.
     # if length(nodes_queue) > 0

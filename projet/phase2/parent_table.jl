@@ -80,10 +80,10 @@ end
 """Renvoie la racine d'un noeud donné selon la table parent_table, c'est-à-dire
 le plus ancien parent de ce noeud. Au passage, compresse le chemin vers la racine.
 """
-function root(parent_table::AbstractParentTable, node::AbstractNode)
+function root!(parent_table::AbstractParentTable, node::AbstractNode)
     parent_ = parent(parent_table, node)
-    if node !== parent_
-        parent_ = root(parent_table, parent_)
+    if name(node) !== name(parent_)
+        parent_ = root!(parent_table, parent_)
         set_parent!(parent_table, node, parent_)
     end
     parent_
@@ -91,8 +91,8 @@ end
 
 """Réunit deux composantes connexes en joignant leurs deux racines si elles sont distinctes."""
 function unite!(parent_table::AbstractParentTable, node1::AbstractNode, node2::AbstractNode)
-    root1 = root(parent_table, node1)
-    root2 = root(parent_table, node2)
+    root1 = root!(parent_table, node1)
+    root2 = root!(parent_table, node2)
     if rank(parent_table, root1) < rank(parent_table, root2)
         set_parent!(parent_table, root2, root1)
     elseif rank(parent_table, root1) > rank(parent_table, root2)

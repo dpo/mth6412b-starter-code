@@ -129,7 +129,7 @@ end
 function is_root_unique(parent_table::AbstractParentTable)
     nodes = enfants(parent_table)
     for i = 1 : length(nodes)
-        if root(parent_table, nodes[i]) != root(parent_table, nodes[1])
+        if root!(parent_table, nodes[i]) != root!(parent_table, nodes[1])
             return false
         end
     end

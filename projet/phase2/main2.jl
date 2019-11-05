@@ -26,7 +26,7 @@ function main2(graph::AbstractGraph{T}) where T
         # l'arête à l'arbre de recouvrement minimum puis on réunit les
         # composantes connexes en désignant l'une des deux racines comme
         # le nouveau parent de l'autre racine.
-        if root(parent_table, node1) != root(parent_table, node2)
+        if root!(parent_table, node1) != root!(parent_table, node2)
             add_edge!(min_tree, edge)
             unite!(parent_table, node1, node2)
         end

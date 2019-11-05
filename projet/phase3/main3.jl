@@ -23,40 +23,29 @@ function kruskal(graph::AbstractGraph{T}) where T
         node2 = d_node(edge)
         # Si les deux noeuds ont des racines différentes, on ajoute l'arête à l'arbre de recouvrement minimum puis on réunit les
         # composantes connexes en désignant l'une des deux racines comme le nouveau parent de l'autre racine.
-        if root(parent_table, node1) !== root(parent_table, node2)
+        if root!(parent_table, node1) !== root!(parent_table, node2)
             # On utilise un !== au lieu d'un != car les noeuds sont ordonnés selon leur poids minimum "min_weight" pour l'algorithme de Prim.
             add_edge!(min_tree, edge)
             unite!(parent_table, node1, node2)
         end
     end
-    # # Le code suivant permet de tester que l'union via le rang et la compression se font correctement :
-    # for node in enfants(parent_table)
-    #     # On a prouvé que le rang d'un noeud doit rester inférieur à log2(s), où s est le nombre de sommets du graphe.
-    #     if rank(parent_table, node) >= log2(length(enfants(parent_table)))
-    #         error("Le rang du noeud ", name(node), " est supérieur à log2(s) : l'union via le rang est mal implémentée.")
-    #     end
-    #     # Si la compression se fait bien, les noeuds ont tous le même parent, qui est aussi leur racine.
-    #     if root(parent_table, node) !== root(parent_table, enfants(parent_table)[1])
-    #         error("Les noeuds n'ont pas tous le même parent : la compression des chemins est mal implémentée.")
-    #     end
-    #     if root(parent_table, node) !== parent(parent_table, node)
-    #         error("Le parent du noeud ", name(node), " n'est pas sa racine : la compression des chemins est mal implémentée.")
-    #     end
-    # end
-    # # On affiche puis on renvoie l'arbre de recouvrement minimum.
-    # show(min_tree)
+    # On affiche puis on renvoie l'arbre de recouvrement minimum.
+    show(min_tree)
     min_tree
 end
 
 
 """Renvoie un arbre de recouvrement minimal du graphe symétrique et du noeud en
-entrée en utilisant l'algorithme de Prim. La méthode renvoie un objet de type Graph.
+entrée en utilisant l'algorithme de Prim. Par défaut, le premier noeud du graphe
+est choisi comme point de départ. La méthode renvoie un objet de type Graph.
 ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
-function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
+function prim(graph::AbstractGraph{T}, starting_node::AbstractNode = nodes(graph)[1]) where T
+    # On initialise les poids des noeuds à plus l'infini.
+    set_min_weight!.(nodes(graph), Inf)
     parent_table = init_parent_table_prim(graph)
     # On attribue un poids nul au noeud de départ et on stocke les noeuds dans une file de priorité par poids.
-    set_min_weight!(starting_node, 0.0)
+    set_min_weight!(starting_node, -Inf)
     nodes_queue = PriorityQueue{Node{T}}(copy(nodes(graph)))
     # On initialise l'arbre de recouvrement minimum en lui ajoutant le sommet de départ.
     min_tree = Graph{T}("min_tree", [], [])
@@ -64,10 +53,11 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
     poplast!(nodes_queue)
     while length(nodes(min_tree)) < length(nodes(graph))
         # À chaque étape, on met d'abord à jour les poids des noeuds adjacents à l'arbre de recouvrement et on désigne leurs parents.
-        for edge in edges(graph)
-            if s_node(edge) in nodes(min_tree) && !(d_node(edge) in nodes(min_tree))
+        # Pour cela, on sélectionne uniquement les arêtes dont un seul des sommets est dans l'arbre de recouvrement :
+        for edge in filter(e -> !(s_node(e) in nodes(min_tree) && d_node(e) in nodes(min_tree)) && (s_node(e) in nodes(min_tree) || d_node(e) in nodes(min_tree)), edges(graph))
+            if s_node(edge) in nodes(min_tree)
                 update_parent_and_weight!(parent_table, d_node(edge), s_node(edge), weight(edge))
-            elseif d_node(edge) in nodes(min_tree) && !(s_node(edge) in nodes(min_tree))
+            elseif d_node(edge) in nodes(min_tree)
                 update_parent_and_weight!(parent_table, s_node(edge), d_node(edge), weight(edge))
             end
         end
@@ -75,13 +65,9 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode) where T
         next_node = poplast!(nodes_queue)
         add_node!(min_tree, next_node)
         add_edge!(min_tree, Edge("", parent(parent_table, next_node), next_node, min_weight(next_node)))
-        set_min_weight!(next_node, 0.0)
+        set_min_weight!(next_node, -Inf)
     end
-    # # Le code suivant permet de vérifer que la file de priorité est vide à la fin de l'algorithme.
-    # if length(nodes_queue) > 0
-    #     error(length(nodes_queue), " noeuds n'ont pas été ajoutés à l'arbre de recouvrement minimum.")
-    # end
-    # # On affiche puis on renvoie l'arbre de recouvrement minimum.
-    # show(min_tree)
+    # On affiche puis on renvoie l'arbre de recouvrement minimum.
+    show(min_tree)
     min_tree
 end

@@ -32,6 +32,7 @@ function main1(filename::String)
     new_edge = Edge{Array{Float64, 1}}("", s_node, d_node, parse(Int64, edge[3]))
     add_edge!(graph, new_edge)
   end
-  # show(graph)
+  # On affiche puis on renvoie le graphe.
+  show(graph)
   graph
 end

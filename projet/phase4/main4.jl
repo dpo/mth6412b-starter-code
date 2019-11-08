@@ -2,44 +2,13 @@ include(joinpath(@__DIR__, "..", "phase1", "graph.jl"))
 include(joinpath(@__DIR__, "..", "phase2", "parent_table.jl"))
 include(joinpath(@__DIR__, "..", "phase3", "priority_queue.jl"))
 
-"""Renvoie un arbre de recouvrement minimal du graphe symétrique en entrée en
-utilisant l'algorithme de Kruskal. La méthode renvoie un objet de type Graph.
+"""Renvoie une tournée optimisée passant par tous les points du graphe symétrique
+en entrée en utilisant l'algorithme de Rosenkrantz, Stearns et Lewis. Par défaut,
+le premier noeud du graphe est choisi comme point de départ.La méthode renvoie un 
+objet de type Graph contenant cette tournée.
 ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
-function kruskal(graph::AbstractGraph{T}) where T
-    parent_table = init_parent_table_kruskal(graph)
-    # on trie les arêtes par poids croissant.
-    edges_copy = copy(edges(graph))
-    sort!(edges_copy, by=weight)
-    # On initialise l'arbre de recouvrement minimum en lui ajoutant tous les sommets du graphe.
-    min_tree = Graph{T}("min_tree", [], [])
-    for node in nodes(graph)
-        add_node!(min_tree, node)
-    end
-    # On parcourt les arêtes du graphe.
-    for edge in edges_copy
-        # On récupère les extrémités de l'arête.
-        i1 = child_index(parent_table, s_node(edge))
-        i2 = child_index(parent_table, d_node(edge))
-        # Si les deux noeuds ont des racines différentes, on ajoute l'arête à l'arbre de recouvrement minimum puis on réunit les
-        # composantes connexes en désignant l'une des deux racines comme le nouveau parent de l'autre racine.
-        if root!(parent_table, i1) !== root!(parent_table, i2)
-            # On utilise un !== au lieu d'un != car les noeuds sont ordonnés selon leur poids minimum "min_weight" pour l'algorithme de Prim.
-            add_edge!(min_tree, edge)
-            unite!(parent_table, i1, i2)
-        end
-    end
-    # On renvoie l'arbre de recouvrement minimum.
-    min_tree
-end
-
-
-"""Renvoie un arbre de recouvrement minimal du graphe symétrique et du noeud en
-entrée en utilisant l'algorithme de Prim. Par défaut, le premier noeud du graphe
-est choisi comme point de départ. La méthode renvoie un objet de type Graph.
-ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
-"""
-function prim(graph::AbstractGraph{T}, starting_node::AbstractNode = nodes(graph)[1]) where T
+function RSL_prim(graph::AbstractGraph{T}, starting_node::AbstractNode = nodes(graph)[1]) where T
     # On initialise les poids des noeuds à plus l'infini.
     set_min_weight!.(nodes(graph), Inf)
     parent_table = init_parent_table_prim(graph)
@@ -48,7 +17,9 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode = nodes(graph
     nodes_queue = PriorityQueue{Node{T}}(copy(nodes(graph)))
     # On initialise l'arbre de recouvrement minimum en lui ajoutant le sommet de départ.
     min_tree = Graph{T}("min_tree", [], [])
+    RSL_tree = Graph{T}("RSL_tree", [], [])
     add_node!(min_tree, starting_node)
+    add_node!(RSL_tree, starting_node)
     poplast!(nodes_queue)
     while length(nodes(min_tree)) < length(nodes(graph))
         # À chaque étape, on met d'abord à jour les poids des noeuds adjacents à l'arbre de recouvrement et on désigne leurs parents.
@@ -63,9 +34,11 @@ function prim(graph::AbstractGraph{T}, starting_node::AbstractNode = nodes(graph
         # Puis on ajoute le noeud de poids minimum à l'arbre de recouvrement et on l'enlève de la file.
         next_node = poplast!(nodes_queue)
         add_node!(min_tree, next_node)
+        add_node!(RSL_tree, next_node)
         add_edge!(min_tree, Edge("", parent(parent_table, next_node), next_node, min_weight(next_node)))
+        add_edge!(RSL_tree, Edge("", nodes(RSL_tree)[end], nodes(RSL_tree)[end - 1], findweight(graph, nodes(RSL_tree)[end], nodes(RSL_tree)[end - 1])))
         set_min_weight!(next_node, -Inf)
     end
-    # On renvoie l'arbre de recouvrement minimum.
-    min_tree
+    # On renvoie la tournée optimisée :
+    RSL_tree
 end

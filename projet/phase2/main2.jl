@@ -20,18 +20,16 @@ function main2(graph::AbstractGraph{T}) where T
     # On parcourt les arêtes du graphe.
     for edge in edges_copy
         # On récupère les extrémités de l'arête.
-        node1 = s_node(edge)
-        node2 = d_node(edge)
-        # Si les deux noeuds ont des racines différentes, on ajoute
-        # l'arête à l'arbre de recouvrement minimum puis on réunit les
-        # composantes connexes en désignant l'une des deux racines comme
-        # le nouveau parent de l'autre racine.
-        if root!(parent_table, node1) != root!(parent_table, node2)
+        i1 = child_index(parent_table, s_node(edge))
+        i2 = child_index(parent_table, d_node(edge))
+        # Si les deux noeuds ont des racines différentes, on ajoute l'arête à l'arbre de recouvrement minimum puis on réunit les
+        # composantes connexes en désignant l'une des deux racines comme le nouveau parent de l'autre racine.
+        if root!(parent_table, i1) !== root!(parent_table, i2)
+            # On utilise un !== au lieu d'un != car les noeuds sont ordonnés selon leur poids minimum "min_weight" pour l'algorithme de Prim.
             add_edge!(min_tree, edge)
-            unite!(parent_table, node1, node2)
+            unite!(parent_table, i1, i2)
         end
     end
-    # On affiche puis on renvoie l'arbre de recouvrement minimum.
-    show(min_tree)
+    # On renvoie l'arbre de recouvrement minimum.
     min_tree
 end

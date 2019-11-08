@@ -63,3 +63,22 @@ function show(graph::Graph)
     show(edge)
   end
 end
+
+"""Trouver le poids de l'arc reliant ces deux noeuds"""
+function findweight(graph::AbstractGraph, node1::AbstractNode,node2::AbstractNode)
+  for edge in edges(graph)
+    if name(s_node(edge)) == name(node1) && name(d_node(edge)) == name(node2) || name(s_node(edge)) == name(node2) && name(d_node(edge)) == name(node1)
+      return weight(edge)
+    end
+  end
+  error("Aucune arête entre les noeuds ", name(node1), " et ", name(node2), " n'a été trouvée dans le graphe ", name(graph))
+end
+
+"""Trouver le poids du graph"""
+function graphweight(graph::AbstractGraph)
+  weightgraph = 0
+  for edge in edges(graph)
+    weightgraph += weight(edge)
+  end
+  return weightgraph
+end

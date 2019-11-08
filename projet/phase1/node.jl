@@ -26,6 +26,9 @@ mutable struct Node{T} <: AbstractNode{T}
   min_weight::Float64
 end
 
+"""Par défaut, un noeud instancié sans poids possède un poids infini."""
+Node{T}(name::String, data::T) where T = Node{T}(name, data, Inf)
+
 # on présume que tous les noeuds dérivant d'AbstractNode
 # posséderont des champs `name`, `data` et `min_weight`.
 

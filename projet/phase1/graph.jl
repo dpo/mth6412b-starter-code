@@ -29,9 +29,15 @@ function add_node!(graph::Graph{T}, node::Node{T}) where T
   graph
 end
 
-"""Ajoute un arc au graphe."""
+"""Ajoute une arête au graphe."""
 function add_edge!(graph::Graph{T}, edge::Edge{T}) where T
   push!(graph.edges, edge)
+  graph
+end
+
+"""Retire une arête au graphe."""
+function pop_edge!(graph::Graph{T}, i::Int64) where T
+  deleteat!(graph.edges, i)
   graph
 end
 
@@ -66,19 +72,23 @@ end
 
 """Trouver le poids de l'arc reliant ces deux noeuds"""
 function findweight(graph::AbstractGraph, node1::AbstractNode,node2::AbstractNode)
-  for edge in edges(graph)
-    if name(s_node(edge)) == name(node1) && name(d_node(edge)) == name(node2) || name(s_node(edge)) == name(node2) && name(d_node(edge)) == name(node1)
-      return weight(edge)
-    end
+  try
+    return weight(filter(edge -> name(s_node(edge)) == name(node1) && name(d_node(edge)) == name(node2) || name(s_node(edge)) == name(node2) && name(d_node(edge)) == name(node1), edges(graph))[1])
+  catch e
+    error("Aucune arête entre les noeuds ", name(node1), " et ", name(node2), " n'a été trouvée dans le graphe ", name(graph))
   end
-  error("Aucune arête entre les noeuds ", name(node1), " et ", name(node2), " n'a été trouvée dans le graphe ", name(graph))
 end
 
-"""Trouver le poids du graph"""
+"""Trouver le poids du graphe"""
 function graphweight(graph::AbstractGraph)
   weightgraph = 0
   for edge in edges(graph)
     weightgraph += weight(edge)
   end
   return weightgraph
+end
+
+"""Afficher si un noeud se trouve dans un graphe"""
+function find_node(graph::AbstractGraph, node::AbstractNode)
+  return name(node) in name.(nodes(graph))
 end

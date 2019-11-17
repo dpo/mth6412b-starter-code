@@ -37,3 +37,18 @@ function popfirst!(q::PriorityQueue)
     deleteat!(q.items, idx)
     highest
 end
+
+"""Retire et renvoie l'objet du dessus de la queue."""
+pop!(q::PriorityQueue) = pop!(q.items)
+
+"""Consulte l'objet du dessus de la queue."""
+top(q::PriorityQueue) = q.items[end]
+
+"""Indique si la queue est vide."""
+is_empty(q::PriorityQueue) = length(q.items) == 0
+
+"""Ajoute item sur le dessus de la queue s."""
+function push!(q::PriorityQueue, item::T) where T
+    push!(q.items, item)
+    q
+end

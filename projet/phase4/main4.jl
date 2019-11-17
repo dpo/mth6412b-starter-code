@@ -47,9 +47,9 @@ Stearns et Lewis. Par défaut, le premier noeud du graphe est choisi comme point
 départ. La méthode renvoie un objet de type Graph contenant cette tournée.
 ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
-function RSL(min_tree::AbstractGraph{T}, graph::AbstractGraph, parent_table::AbstractParentTable{T} = RSL_struct(min_tree), starting_node::AbstractNode{T} = nodes(graph)[1]) where T
+function RSL(min_tree::AbstractGraph{T}, graph::AbstractGraph, parent_table::AbstractParentTable{T} = RSL_struct(min_tree), starting_node::AbstractNode{T} = nodes(min_tree)[1]) where T
     RSL_tree = Graph{T}("RSL_tree", [], [])
-    node = Node{T}(name(nodes(min_tree)[1]), data(nodes(min_tree)[1]))
+    node = Node{T}(name(starting_node), data(starting_node))
     add_node!(RSL_tree, node)
     node_temp = []
     j = 0

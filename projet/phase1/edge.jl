@@ -36,6 +36,11 @@ d_node(edge::AbstractEdge) = edge.d_node
 """Renvoie le poids de l'arc."""
 weight(edge::AbstractEdge) = edge.weight
 
+function set_weight!(edge::AbstractEdge, new_weight::Float64)
+  edge.weight = new_weight
+  edge
+end
+
 """Affiche un arc."""
 function show(edge::AbstractEdge)
   println("Edge ", name(edge), " between nodes ", name(s_node(edge)), " and ", name(d_node(edge)), ", weight: ", weight(edge))

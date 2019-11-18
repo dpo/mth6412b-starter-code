@@ -71,7 +71,7 @@ function show(graph::Graph)
 end
 
 """Trouver le poids de l'arc reliant ces deux noeuds"""
-function findweight(graph::AbstractGraph, node1::AbstractNode,node2::AbstractNode)
+function findweight(graph::AbstractGraph, node1::AbstractNode, node2::AbstractNode)
   try
     return weight(filter(edge -> name(s_node(edge)) == name(node1) && name(d_node(edge)) == name(node2) || name(s_node(edge)) == name(node2) && name(d_node(edge)) == name(node1), edges(graph))[1])
   catch e

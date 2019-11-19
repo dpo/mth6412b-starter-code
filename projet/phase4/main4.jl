@@ -289,6 +289,48 @@ function resultats()
     return resultat
 end
 
+"""Fonction pratique permettant de crér un tableau avec les poids des différentes
+solutions trouvées à l'aide de l'algorithme HK. Ce tableau compare les résultats
+trouvés avec les paramètres Kruskal à ceux trouvés avec les paramètres
+Prim.
+"""
+function resultats_HK()
+    resultat = zeros(14,3)
+    resultat[1,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,2]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    i = 1
+    for i in 1:14
+        resultat[i,3] = resultat[i,1] - resultat[i,2]
+    end
+    return resultat
+end
+
 """Fonction pratique permettant d'appliquer l'algorithme RSL sur un graphe
 de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
 instance donné en argument. Le noeud utilisé comme racine est le dernier noeud
@@ -331,6 +373,7 @@ va retourner l'image du cycle résultant de l'algorithme.
 """
 function HK_total_prim_last(chemin::String, image::Bool = false)
      graph = main1(chemin)
+     graph_min = prim(graph)
      HK_tree = HK(graph, "prim", nodes(graph_min)[end])
      if image
          display(plot_graph(HK_tree))
@@ -347,6 +390,7 @@ va retourner l'image du cycle résultant de l'algorithme.
 """
 function HK_total_kruskal_last(chemin::String, image::Bool = false)
      graph = main1(chemin)
+     graph_min = prim(graph)
      HK_tree = HK(graph, "kruskal", nodes(graph_min)[end])
      if image
          display(plot_graph(HK_tree))
@@ -473,12 +517,13 @@ va retourner l'image du cycle résultant de l'algorithme.
 """
 function HK_total_prim_lightest(chemin::String, image::Bool = false)
      graph = main1(chemin)
+     graph_min = prim(graph)
      HK_tree = HK(graph, "prim", find_lightest_node(graph_min))
      if image
          display(plot_graph(HK_tree))
      end
      println(graphweight(HK_tree))
-     RSL_tree
+     HK_tree
 end
 
 """Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
@@ -489,6 +534,7 @@ la fonction va retourner l'image du cycle résultant de l'algorithme.
 """
 function HK_total_prim_heaviest(chemin::String, image::Bool = false)
      graph = main1(chemin)
+     graph_min = prim(graph)
      HK_tree = HK(graph, "prim", find_heaviest_node(graph_min))
      if image
          display(plot_graph(HK_tree))
@@ -505,6 +551,7 @@ la fonction va retourner l'image du cycle résultant de l'algorithme.
 """
 function HK_total_kruskal_lightest(chemin::String, image::Bool = false)
      graph = main1(chemin)
+     graph_min = prim(graph)
      HK_tree = HK(graph, "kruskal", find_lightest_node(graph_min))
      if image
          display(plot_graph(HK_tree))
@@ -521,6 +568,7 @@ la fonction va retourner l'image du cycle résultant de l'algorithme.
 """
 function HK_total_kruskal_heaviest(chemin::String, image::Bool = false)
      graph = main1(chemin)
+     graph_min = prim(graph)
      HK_tree = HK(graph, "kruskal", find_heaviest_node(graph_min))
      if image
          display(plot_graph(HK_tree))
@@ -698,5 +746,373 @@ function resultats_kruskal_first_vs_last_vs_lightest_vs_heaviest()
     resultat[12,4]=graphweight(RSL_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
     resultat[13,4]=graphweight(RSL_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
     resultat[14,4]=graphweight(RSL_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    return resultat
+end
+
+"""Fonction pratique permettant de créer un tableau avec les poids des différentes
+solutions trouvées à l'aide de l'algorithme HK. Ce tableau compare les résultats
+trouvés avec prim et 4 différentes valeurs de racines(lightest, heaviest, premier, dernier).
+"""
+function resultats_HK_prim_first_vs_last_vs_lightest_vs_heaviest()
+    resultat = zeros(14,4)
+    resultat[1,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,1]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,2]=graphweight(HK_total_prim_last("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,3]=graphweight(HK_total_prim_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,4]=graphweight(HK_total_prim_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    return resultat
+end
+
+"""Fonction pratique permettant de créer un tableau avec les poids des différentes
+solutions trouvées à l'aide de l'algorithme HK. Ce tableau compare les résultats
+trouvés avec kruskal et 4 différentes valeurs de racines(lightest, heaviest, premier, dernier).
+"""
+function resultats_HK_kruskal_first_vs_last_vs_lightest_vs_heaviest()
+    resultat = zeros(14,4)
+    resultat[1,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,1]=graphweight(HK_total_kruskal("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,2]=graphweight(HK_total_kruskal_last("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,3]=graphweight(HK_total_kruskal_lightest("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,4]=graphweight(HK_total_kruskal_heaviest("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    return resultat
+end
+
+"""Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
+de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
+instance donné en argument. Le noeud utilisé comme racine est le premier noeud
+du graphique de recouvrement minimal. Si true est donné en argument, la fonction
+va retourner l'image du cycle résultant de l'algorithme. Le pas utilisé pour
+l'algorithme HK à une valeur de 1.
+"""
+function HK_total_prim_step1(chemin::String, image::Bool = false)
+    graph = main1(chemin)
+    graph_min = prim(graph)
+    HK_tree = HK(graph, "prim",nodes(graph_min)[1],1.0)
+    if image
+        display(plot_graph(HK_tree))
+    end
+    println(graphweight(HK_tree))
+    HK_tree
+end
+
+"""Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
+de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
+instance donné en argument. Le noeud utilisé comme racine est le premier noeud
+du graphique de recouvrement minimal. Si true est donné en argument, la fonction
+va retourner l'image du cycle résultant de l'algorithme. Le pas utilisé pour
+l'algorithme HK à une valeur de 5.
+"""
+function HK_total_prim_step5(chemin::String, image::Bool = false)
+    graph = main1(chemin)
+    graph_min = prim(graph)
+    HK_tree = HK(graph, "prim",nodes(graph_min)[1],5.0)
+    if image
+        display(plot_graph(HK_tree))
+    end
+    println(graphweight(HK_tree))
+    HK_tree
+end
+
+"""Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
+de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
+instance donné en argument. Le noeud utilisé comme racine est le premier noeud
+du graphique de recouvrement minimal. Si true est donné en argument, la fonction
+va retourner l'image du cycle résultant de l'algorithme. Le pas utilisé pour
+l'algorithme HK à une valeur de 10.
+"""
+function HK_total_prim_step10(chemin::String, image::Bool = false)
+    graph = main1(chemin)
+    graph_min = prim(graph)
+    HK_tree = HK(graph, "prim",nodes(graph_min)[1],10.0)
+    if image
+        display(plot_graph(HK_tree))
+    end
+    println(graphweight(HK_tree))
+    HK_tree
+end
+
+"""Fonction pratique permettant de créer un tableau avec les poids des différentes
+solutions trouvées à l'aide de l'algorithme HK. Ce tableau compare les résultats
+trouvés avec prim et 4 différentes valeurs de racines(lightest, heaviest, premier, dernier).
+"""
+function resultats_HK_prim_step1_vs_step2_vs_step5_vs_step10()
+    resultat = zeros(14,4)
+    resultat[1,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,1]=graphweight(HK_total_prim_step1("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,2]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,3]=graphweight(HK_total_prim_step5("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,4]=graphweight(HK_total_prim_step10("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    return resultat
+end
+
+"""Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
+de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
+instance donné en argument. Le noeud utilisé comme racine est le premier noeud
+du graphique de recouvrement minimal. Si true est donné en argument, la fonction
+va retourner l'image du cycle résultant de l'algorithme. Le critère d'arrêt utilisé
+est 5 itérations.
+"""
+function HK_total_prim_iter5(chemin::String, image::Bool = false)
+    graph = main1(chemin)
+    graph_min = prim(graph)
+    HK_tree = HK(graph, "prim",nodes(graph_min)[1],2.0,5)
+    if image
+        display(plot_graph(HK_tree))
+    end
+    println(graphweight(HK_tree))
+    HK_tree
+end
+
+"""Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
+de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
+instance donné en argument. Le noeud utilisé comme racine est le premier noeud
+du graphique de recouvrement minimal. Si true est donné en argument, la fonction
+va retourner l'image du cycle résultant de l'algorithme. Le critère d'arrêt utilisé
+est 10 itérations.
+"""
+function HK_total_prim_iter10(chemin::String, image::Bool = false)
+    graph = main1(chemin)
+    graph_min = prim(graph)
+    HK_tree = HK(graph, "prim",nodes(graph_min)[1],2.0,10)
+    if image
+        display(plot_graph(HK_tree))
+    end
+    println(graphweight(HK_tree))
+    HK_tree
+end
+
+"""Fonction pratique permettant d'appliquer l'algorithme HK sur un graphe
+de recouvrement minimal créé à l'aide de l'algorithme de Prim appliqué sur une
+instance donné en argument. Le noeud utilisé comme racine est le premier noeud
+du graphique de recouvrement minimal. Si true est donné en argument, la fonction
+va retourner l'image du cycle résultant de l'algorithme. Le critère d'arrêt utilisé
+est 50 itérations.
+"""
+function HK_total_prim_iter50(chemin::String, image::Bool = false)
+    graph = main1(chemin)
+    graph_min = prim(graph)
+    HK_tree = HK(graph, "prim",nodes(graph_min)[1],2.0,50)
+    if image
+        display(plot_graph(HK_tree))
+    end
+    println(graphweight(HK_tree))
+    HK_tree
+end
+
+"""Fonction pratique permettant de créer un tableau avec les poids des différentes
+solutions trouvées à l'aide de l'algorithme HK. Ce tableau compare les résultats
+trouvés avec prim et 4 différentes valeurs de racines(lightest, heaviest, premier, dernier).
+"""
+function resultats_HK_prim_iter5_vs_iter10_vs_iter20_vs_iter50()
+    resultat = zeros(14,4)
+    resultat[1,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,2]=graphweight(HK_total_prim_iter10("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,3]=graphweight(HK_total_prim("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,1]=graphweight(HK_total_prim_iter5("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
+    resultat[1,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/bayg29.tsp"))
+    resultat[2,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/bays29.tsp"))
+    resultat[3,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/brazil58.tsp"))
+    resultat[4,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/brg180.tsp"))
+    resultat[5,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/dantzig42.tsp"))
+    resultat[6,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/fri26.tsp"))
+    resultat[7,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/gr17.tsp"))
+    resultat[8,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/gr21.tsp"))
+    resultat[9,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/gr24.tsp"))
+    resultat[10,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/gr48.tsp"))
+    resultat[11,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/gr120.tsp"))
+    resultat[12,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/hk48.tsp"))
+    resultat[13,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/pa561.tsp"))
+    resultat[14,4]=graphweight(HK_total_prim_iter50("/home/jonathan/mth6412b-starter-code/instances/stsp/swiss42.tsp"))
     return resultat
 end

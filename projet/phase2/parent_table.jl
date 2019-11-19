@@ -109,9 +109,7 @@ function init_parent_table_prim(graph::Graph{T}) where T
 end
 
 """Construit un objet ParentTable aux dimensions d'un graphe donné.
-Prim : initialement, le parent de chaque noeud est 'nothing'.
-Utilisé pour appliquer RSL à un arbre de recouvrement obtenu grâce
-à l'algorithme de Kruskal.
+RSL : initialement, le parent de chaque noeud est un noeud appelé 'init'.
 """
 function init_parent_table_RSL(graph::Graph{T}) where T
     graph_nodes_copy = copy(nodes(graph))

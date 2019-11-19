@@ -92,3 +92,29 @@ end
 function find_node(graph::AbstractGraph, node::AbstractNode)
   return name(node) in name.(nodes(graph))
 end
+
+"""Afficher le noeud le plus lourd du graph"""
+function find_heaviest_node(graph::AbstractGraph)
+  edge_max = []
+  weight_max = -Inf
+  for edge in edges(graph)
+    if weight(edge) > weight_max
+      edge_max = edge
+      weight_max = weight(edge_max)
+    end
+  end
+  return s_node(edge_max)
+end
+
+"""Afficher le noeud le plus leger du graph"""
+function find_lightest_node(graph::AbstractGraph)
+  edge_min = []
+  weight_min = Inf
+  for edge in edges(graph)
+    if weight(edge) < weight_min
+      edge_min = edge
+      weight_min = weight(edge_min)
+    end
+  end
+  return s_node(edge_min)
+end

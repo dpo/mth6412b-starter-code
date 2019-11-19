@@ -315,8 +315,7 @@ va retourner l'image du cycle résultant de l'algorithme.
 function RSL_total_kruskal_last(chemin::String, image::Bool = false)
      graph = main1(chemin)
      graph_min = kruskal(graph)
-     parent_table = RSL_struct(graph_min,nodes(graph_min)[end])
-     RSL_tree = RSL(graph_min,parent_table,graph,nodes(graph_min)[end])
+     RSL_tree = RSL(graph_min, graph, nodes(graph_min)[end])
      if image
          display(plot_graph(RSL_tree))
      end

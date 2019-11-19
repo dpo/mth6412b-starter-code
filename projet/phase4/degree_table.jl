@@ -25,7 +25,7 @@ function init_degree_table(graph::AbstractGraph{T}) where T
 end
 
 """Attribue à chaque noeud son degré dans le graphe en entrée."""
-function degree_table!(graph::AbstractGraph)
+function degree_table(graph::AbstractGraph)
     degree_table = init_degree_table(graph)
     for edge in edges(graph)
         degrees(degree_table)[findfirst(n -> n == name(s_node(edge)), name.(nodes(degree_table)))] += 1

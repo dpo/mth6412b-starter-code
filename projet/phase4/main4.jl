@@ -134,51 +134,49 @@ de type Graph contenant la meilleure tournée obtenue après "max_iter" itérati
 ATTENTION : dans le graphe en entrée, les noeuds doivent tous avoir un attribut "name" différent.
 """
 function HK(graph::AbstractGraph{T}, algo::String = "prim", starting_node::AbstractNode = nodes(graph)[1], step::Float64 = 2.0, max_iter::Int64 = 20, max_gap::Float64 = 0.0) where T
+    # Initialisation : on résoud le problème avec RSL pour commencer avec une bonne référence.
     one_tree = algo == "kruskal" ? kruskal(graph) : prim(graph, starting_node)
     ref_tour = RSL(one_tree, graph)
-    # ref_tour = graph
-    HK_tour = Graph{T}("HK_tour", [], [])
-    min_tour = ref_tour
-    degree_table = init_degree_table(graph)
-    n_pi = Vector{Float64}(10 * step * ones(length(nodes(graph))))
-    w = -Inf
-    max_w = w
-    max_n_pi = n_pi
-    iter = 0
-    gap = Inf
-    while iter < max_iter && gap > max_gap
+    HK_tour = Graph{T}("HK_tour", [], [])                       # Tournée courante
+    min_tour = ref_tour                                         # Meilleure tournée
+    degree_table = init_degree_table(graph)                     # Degré de chaque noeud
+    n_pi = Vector{Float64}(step * ones(length(nodes(graph))))   # Coefficient pi de chaque noeud
+    w = -Inf                                                    # Borne inférieure courante
+    max_w = w                                                   # Meilleure borne inférieure
+    max_n_pi = n_pi                                             # Meilleur jeu de coefficients
+    iter = 0                                                    # Itérateur
+    gap = Inf                                                   # Ecart entre la borne inférieure et le coût
+    while iter < max_iter && gap > max_gap                      # du meilleur cycle obtenu par la méthode RSL
+        # On applique les coûts modifiés au graphe, puis on détermine l'arbre de
+        # coût modifié minimum grâce à Prim ou Kruskal. On lui applique ensuite
+        # RSL afin d'obtenir une tournée.
         modify_costs!(graph, n_pi)
         one_tree = algo == "kruskal" ? kruskal(graph) : prim(graph, starting_node)
-        # weights1 = [weight(edge) for edge in filter(e -> name(s_node(e)) in name.(s_node.(edges(one_tree))) && name(d_node(e)) in name.(s_node.(edges(one_tree))), edges(graph))]
-        # weights2 = weight.(edges(one_tree))
-        # for i = 1 : length(edges(one_tree))
-        #     println("diff : ", weights2[i] - weights1[i])
-        # end
         HK_tour = RSL(one_tree, graph)
+        # On ajoute à l'arbre de recouvrement l'arête qu'il lui manque pour être un 1-arbre
+        # de coût modifié minimum, puis on calcule le degré de chaque noeud dans ce 1-arbre.
         new_edge = sort(filter(e -> (name(s_node(e)) == name(nodes(graph)[1]) || name(d_node(e)) == name(nodes(graph)[1])) && !(e in edges(one_tree)), edges(graph)), by=weight)[1]
         add_edge!(one_tree, Edge{T}(name(new_edge), s_node(new_edge), d_node(new_edge), weight(new_edge)))
-        degree_table = degree_table!(one_tree)
-        # println("\n", degrees(degree_table))
+        degree_table = degree_table(one_tree)
+        # On rend au graphe, au 1-arbre et à la tournée leurs poids d'origine.
         restore_costs!(graph, n_pi)
         restore_costs!(one_tree, n_pi)
         restore_costs!(HK_tour, n_pi)
+        # On calcule une borne inférieure du coût d'une tournée. Si elle est meilleure que la
+        # précédente meilleure valeur obtenue, on la remplace et on met à jour les paramètres.
         w = lower_bound(one_tree, degree_table, n_pi)
-        # println(n_pi)
-        # println("C* : ", graphweight(ref_tour), " || w : ", w, " || weight(1-tree) : ", graphweight(one_tree), " || sum(...) : ", sum((degrees(degree_table)[i] - 2) * n_pi[i] for i = 1 : length(n_pi)))
-        # println("weights1 : ", weight.(edges(one_tree)))
         if w > max_w
             max_w = w
             max_n_pi = n_pi
             min_tour = HK_tour
             gap = graphweight(ref_tour) - max_w
         end
+        # On met à jour les coefficients pi des noeuds.
         for i = 1 : length(n_pi)
             n_pi[i] += step * (degrees(degree_table)[i] - 2)
         end
         iter += 1
     end
-    # println("iter : ", iter)
-    # println("max_w : ", max_w)
     return min_tour
 end
 

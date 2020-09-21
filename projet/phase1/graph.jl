@@ -17,12 +17,19 @@ Attention, tous les noeuds doivent avoir des données de même type.
 mutable struct Graph{T} <: AbstractGraph{T}
   name::String
   nodes::Vector{Node{T}}
+  edges::Vector{Edge{T}}
 end
 
 """Ajoute un noeud au graphe."""
 function add_node!(graph::Graph{T}, node::Node{T}) where T
   push!(graph.nodes, node)
   graph
+end
+
+"""Ajoute une arêtes au graphe."""
+function add_edge!(graph::Graph{T}, edge::Edge{T}) where T
+  # TODO: make sure that the edge obj is well constructed
+  push!(graph.edges, edge)
 end
 
 # on présume que tous les graphes dérivant d'AbstractGraph
@@ -34,6 +41,9 @@ name(graph::AbstractGraph) = graph.name
 """Renvoie la liste des noeuds du graphe."""
 nodes(graph::AbstractGraph) = graph.nodes
 
+"""Renvoie la liste des arêtes du graphe."""
+edges(graph::AbstractGraph) = graph.edges
+
 """Renvoie le nombre de noeuds du graphe."""
 nb_nodes(graph::AbstractGraph) = length(graph.nodes)
 
@@ -42,5 +52,8 @@ function show(graph::Graph)
   println("Graph ", name(graph), " has ", nb_nodes(graph), " nodes.")
   for node in nodes(graph)
     show(node)
+  end
+  for edge in edges(graph)
+    show(edge)
   end
 end

@@ -1,12 +1,12 @@
 import Base.show
 
-abstract type AbstractEdge{T} end
+abstract type AbstractEdge{T,P} end
 
 
 # In the future, this edge will have to implement directionality
-mutable struct Edge{T} <: AbstractEdge{T}
+mutable struct Edge{T,P} <: AbstractEdge{T,P}
     nodes::Tuple{Node{T}, Node{T}}
-    value::T
+    value::P
 end
 
 nodes(edge::AbstractEdge) = edge.nodes

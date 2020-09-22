@@ -1,12 +1,23 @@
 import Base.show
+using Plots
 include(joinpath(@__DIR__, "node.jl"))
 include(joinpath(@__DIR__, "edge.jl"))
 include(joinpath(@__DIR__, "graph.jl"))
+include(joinpath(@__DIR__, "read_stsp.jl"))
 
-node1 = Node("jean", 1)
-node2 = Node("kevin", 2)
-graph = Graph("test", [node1, node2], [Edge((node1, node2), 10)])
+filename = joinpath(@__DIR__, "..\\..\\instances\\stsp\\bayg29.tsp")
+header = read_header(filename)
 
-show(graph)
+node_dict = read_nodes(header, filename)
 
-# TODO: make it possible to have edges of a different type than the graph
+edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
+k = 10
+dim = parse(Int, header["DIMENSION"])
+n_to_read = n_nodes_to_read(edge_weight_format, k, dim)
+
+edge_dict = read_edges(header, filename)
+
+
+# add_node!(graph, Node("Corentin", 3))
+# add_edge!(graph, Edge((node2, node1), 10.1))
+# # TODO: make it possible to have edges of a different type than the graph

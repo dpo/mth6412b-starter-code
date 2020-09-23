@@ -17,7 +17,7 @@ Attention, tous les noeuds doivent avoir des données de même type.
 mutable struct Graph{T, P} <: AbstractGraph{T,P}
   name::String
   nodes::Vector{Node{T}}
-  edges::Vector{Edge{T,P}}
+  edges::Vector{Edge{P}}
 end
 
 """Ajoute un noeud au graphe."""
@@ -27,7 +27,7 @@ function add_node!(graph::Graph{T,P}, node::Node{T}) where {T,P}
 end
 
 """Ajoute une arêtes au graphe."""
-function add_edge!(graph::Graph{T,P}, edge::Edge{T,P}) where {T,P}
+function add_edge!(graph::Graph{T,P}, edge::Edge{P}) where {T,P}
   # First we do 2 controls: the vertex of the edge are nodes of the graph and the edge is not already in the graph
   check=false #control variable that will be false untill we found both the verex of the edge among the nodes of the graph
   k=0 #variable that count how many vertex of the edge we found among the nodes of the graph
@@ -89,4 +89,11 @@ function show(graph::Graph)
   for edge in edges(graph)
     show(edge)
   end
+end
+
+function build_graph(filename::String)
+  nodes, edges = read_stsp(filename)
+  header = read_header(filename)
+
+  return Graph(header["NAME"], [Node("$(node[1])", node[2]) for node in nodes], [Edge(("$(edge[1][1])", "$(edge[1][2])"), edge[2]) for edge in edges])
 end

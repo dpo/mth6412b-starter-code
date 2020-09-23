@@ -143,7 +143,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
             else
               warn("Unknown format - function read_edges")
             end
-            edge_dict["$(edge)"] = parse(Float64, data[j+1])
+            edge_dict[edge] = parse(Float64, data[j+1])
             #edge_dict[edge] = parse(Float64, data[j+1])
             i += 1
           end
@@ -192,9 +192,9 @@ function read_stsp(filename::String)
 
   for edge in edges_brut
     if edge_weight_format in ["UPPER_ROW", "LOWER_COL", "UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-      push!(graph_edges[edge[1]], edge[2])
+      push!(graph_edges[edge[1][1]], edge[1][2])
     else
-      push!(graph_edges[edge[2]], edge[1])
+      push!(graph_edges[edge[1][1]], edge[1][2])
     end
   end
 
@@ -202,7 +202,7 @@ function read_stsp(filename::String)
     graph_edges[k] = sort(graph_edges[k])
   end
   println("✓")
-  return graph_nodes, graph_edges
+  return graph_nodes, edges_brut
 end
 
 """Affiche un graphe étant données un ensemble de noeuds et d'arêtes.
@@ -216,12 +216,21 @@ Exemple :
 function plot_graph(nodes, edges)
   fig = plot(legend=false)
 
-  # edge positions
-  for k = 1 : length(edges)
-    for j in edges[k]
-      plot!([nodes[k][1], nodes[j][1]], [nodes[k][2], nodes[j][2]],
+  # # edge positions
+  # for k = 1 : length(edges)
+  #   for j in edges[k]
+  #     plot!([nodes[k][1], nodes[j][1]], [nodes[k][2], nodes[j][2]],
+  #         linewidth=1.5, alpha=0.75, color=:lightgray)
+  #   end
+  # end
+
+  for edge in edges
+    key = edge[1] # tuple
+    value = edge[2] # Float64
+    first_node = nodes[key[1]]
+    second_node = nodes[key[2]]
+    plot!([first_node[1], second_node[1]], [first_node[2], second_node[2]], 
           linewidth=1.5, alpha=0.75, color=:lightgray)
-    end
   end
 
   # node positions

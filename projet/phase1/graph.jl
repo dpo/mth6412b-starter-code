@@ -28,8 +28,41 @@ end
 
 """Ajoute une arêtes au graphe."""
 function add_edge!(graph::Graph{T,P}, edge::Edge{T,P}) where {T,P}
-  # TODO: make sure that the edge obj is well constructed and that the edge is unique in the graph
+  # First we do 2 controls: the vertex of the edge are nodes of the graph and the edge is not already in the graph
+  check=false #control variable that will be false untill we found both the verex of the edge among the nodes of the graph
+  k=0 #variable that count how many vertex of the edge we found among the nodes of the graph
+  cont=1 #iteration counter
+  dim=length(graph.nodes)
+  while cont<=dim && !check
+    if graph.nodes[cont]==edge.nodes[1]
+      k=k+1
+    end
+    if graph.nodes[cont]==edge.nodes[2]
+      k=k+1
+    end
+    if k>=2 #if we have found both the vertex we can exit the loop
+      check=true
+    end
+    cont=cont+1
+  end
+  if !check #If we are out of the loop withou having found both vertex there is a problem
+    println("The vertex of the edge are not in the graph")
+  end
+  check2=false #control variable that will be false unless we found the current edge among the edges that are already in the graph
+  dim2=length(graph.edges)
+  cont=1
+  while cont<=dim2 && !check2
+    currEdg=graph.edges[cont]
+    #since we are using tuples we have to do 2 controls to check if the vertex of 2 edges are the same
+    if (currEdg.nodes[1]==edge.nodes[1] && currEdg.nodes[2]==edge.nodes[2]) || (currEdg.nodes[2]==edge.nodes[1] && currEdg.nodes[1]==edge.nodes[2])
+      println("This edge is already in the graph")
+      check2=true
+    end
+    cont=cont+1
+  end
+  if check && !check2 #If the vertex are not node of the graph or the edge is already in the grap we should not add the new edge
   push!(graph.edges, edge)
+  end
 end
 
 # on présume que tous les graphes dérivant d'AbstractGraph

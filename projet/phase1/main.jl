@@ -1,10 +1,8 @@
 import Base.show
 using Plots
-using Parameters
 include(joinpath(@__DIR__, "node.jl"))
 include(joinpath(@__DIR__, "edge.jl"))
 include(joinpath(@__DIR__, "graph.jl"))
-include(joinpath(@__DIR__, "read_stsp.jl"))
 
 filename = joinpath(@__DIR__, "..\\..\\instances\\stsp\\bayg29.tsp")
 graph = build_graph(filename)

@@ -235,11 +235,13 @@ function plot_graph(nodes, edges)
 
   # node positions
   xys = values(nodes)
+
   x = [xy[1] for xy in xys]
   y = [xy[2] for xy in xys]
   scatter!(x, y)
 
   fig
+
 end
 
 """Fonction de commodité qui lit un fichier stsp et trace le graphe."""

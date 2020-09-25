@@ -17,6 +17,19 @@ mutable struct Node{T} <: AbstractNode{T}
   data::T
 end
 
+"""Constructs a node by giving a pair as an argument"""
+function Node(dict::Dict{Int64, Vector{Float64}})  
+  if length(dict) != 1
+    throw(NodeError("invalid dictionary given to build Node"))
+  end
+  name = ""
+  data = Float64[]
+  for elem in dict
+    name = "$(elem[1])"
+    data = elem[2]
+  end
+  return Node(name, data) 
+end
 # on présume que tous les noeuds dérivant d'AbstractNode
 # posséderont des champs `name` et `data`.
 
@@ -25,6 +38,8 @@ name(node::AbstractNode) = node.name
 
 """Renvoie les données contenues dans le noeud."""
 data(node::AbstractNode) = node.data
+
+
 
 """Affiche un noeud."""
 function show(node::AbstractNode)

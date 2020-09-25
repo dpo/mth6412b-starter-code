@@ -1,5 +1,6 @@
 import Base.show
 using Plots
+include(joinpath(@__DIR__, "exceptions.jl"))
 include(joinpath(@__DIR__, "node.jl"))
 include(joinpath(@__DIR__, "edge.jl"))
 include(joinpath(@__DIR__, "graph.jl"))

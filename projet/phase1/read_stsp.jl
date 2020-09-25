@@ -252,23 +252,3 @@ function plot_graph(filename::String)
   plot_graph(graph_nodes, graph_edges)
 end
 
-function plot_graph(graph::Graph{T,P}) where {T,P}
-  fig = plot(legend=false)
-  
-  for edge in graph.edges
-    first_node = graph.nodes[findfirst(x -> x.name == edge.nodes[1], graph.nodes)]
-    second_node = graph.nodes[findfirst(x -> x.name == edge.nodes[2], graph.nodes)]
-    plot!([first_node.data[1], second_node.data[1]], [first_node.data[2], second_node.data[2]], 
-          linewidth=1.5, alpha=0.75, color=:lightgray)
-  end
-  
-  # node positions
-  xys = [data(node) for node in graph.nodes]
-
-  x = [xy[1] for xy in xys]
-  y = [xy[2] for xy in xys]
-  scatter!(x, y)
-
-  fig
-
-end

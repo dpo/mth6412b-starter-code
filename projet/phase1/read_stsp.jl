@@ -35,14 +35,17 @@ function read_nodes(header::Dict{String}{String}, filename::String)
   nodes = Dict{Int}{Vector{Float64}}()
   node_coord_type = header["NODE_COORD_TYPE"]
   display_data_type = header["DISPLAY_DATA_TYPE"]
+  dim = parse(Int, header["DIMENSION"])
 
 
   if !(node_coord_type in ["TWOD_COORDS", "THREED_COORDS"]) && !(display_data_type in ["COORDS_DISPLAY", "TWOD_DISPLAY"])
+    for i in 1:dim
+      nodes[i] = []
+    end
     return nodes
   end
 
   file = open(filename, "r")
-  dim = parse(Int, header["DIMENSION"])
   k = 0
   display_data_section = false
   node_coord_section = false
@@ -144,7 +147,6 @@ function read_edges(header::Dict{String}{String}, filename::String)
               warn("Unknown format - function read_edges")
             end
             edge_dict[edge] = parse(Float64, data[j+1])
-            #edge_dict[edge] = parse(Float64, data[j+1])
             i += 1
           end
 
@@ -248,4 +250,25 @@ end
 function plot_graph(filename::String)
   graph_nodes, graph_edges = read_stsp(filename)
   plot_graph(graph_nodes, graph_edges)
+end
+
+function plot_graph(graph::Graph{T,P}) where {T,P}
+  fig = plot(legend=false)
+  
+  for edge in graph.edges
+    first_node = graph.nodes[findfirst(x -> x.name == edge.nodes[1], graph.nodes)]
+    second_node = graph.nodes[findfirst(x -> x.name == edge.nodes[2], graph.nodes)]
+    plot!([first_node.data[1], second_node.data[1]], [first_node.data[2], second_node.data[2]], 
+          linewidth=1.5, alpha=0.75, color=:lightgray)
+  end
+  
+  # node positions
+  xys = [data(node) for node in graph.nodes]
+
+  x = [xy[1] for xy in xys]
+  y = [xy[2] for xy in xys]
+  scatter!(x, y)
+
+  fig
+
 end

@@ -76,9 +76,30 @@ function show(graph::Graph)
   end
 end
 
+"""This function builds a graph by reading the file"""
 function build_graph(filename::String)
-  nodes, edges = read_stsp(filename)
+  data_nodes, data_edges = read_stsp(filename)
   header = read_header(filename)
-
-  return Graph(header["NAME"], [Node("$(node[1])", node[2]) for node in nodes], [Edge(("$(edge[1][1])", "$(edge[1][2])"), edge[2]) for edge in edges])
+  # Building graph iteratively
+  graph = Graph(header["NAME"], Node{Vector{Float64}}[], Edge{Float64}[])
+  # 1. Build Node Ojbects
+  # Disclaimer: it generates random coords for the Nodes if there are no coords given in the file
+  # two nodes might have the same coordinates even if it's unlikely
+  for data_node in data_nodes
+    if isempty(data_node[2])
+      range_limit = 100 * length(data_nodes)
+      random_x_coord = Float64(rand(1:range_limit))
+      random_y_coord = Float64(rand(1:range_limit))
+      for coord in (random_x_coord, random_y_coord)
+        push!(data_node[2], coord)
+      end
+    end
+    add_node!(graph, Node("$(data_node[1])", data_node[2]))
+  end
+  # 2. Build Edge Ojbects
+  for data_edge in data_edges
+    add_edge!(graph, Edge(("$(data_edge[1][1])", "$(data_edge[1][2])"), data_edge[2]))
+  end
+ 
+  return graph
 end

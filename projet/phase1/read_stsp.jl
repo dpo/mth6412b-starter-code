@@ -1,6 +1,6 @@
 using Plots
 
-"""Analyse un fichier .tsp et renvoie un dictionnaire avec les données de l'entête."""
+"""Analyze a .tsp file & returns a dictionary file data"""
 function read_header(filename::String)
 
   file = open(filename, "r")
@@ -27,9 +27,9 @@ function read_header(filename::String)
   return header
 end
 
-"""Analyse un fichier .tsp et renvoie un dictionnaire des noeuds sous la forme {id => [x,y]}.
-Si les coordonnées ne sont pas données, un dictionnaire vide est renvoyé.
-Le nombre de noeuds est dans header["DIMENSION"]."""
+"""Analyze a .tsp file & returns a dictionary of nodes such as: {id => [x,y]}.
+if coordinates are not given, an empty dictionary is returned.
+number of nodes is in header["DIMENSION"]."""
 function read_nodes(header::Dict{String}{String}, filename::String)
 
   nodes = Dict{Int}{Vector{Float64}}()
@@ -75,8 +75,8 @@ function read_nodes(header::Dict{String}{String}, filename::String)
   return nodes
 end
 
-"""Fonction auxiliaire de read_edges, qui détermine le nombre de noeud à lire
-en fonction de la structure du graphe."""
+"""returns number of nodes to read lire
+depending on the graph structure."""
 function n_nodes_to_read(format::String, n::Int, dim::Int)
   if format == "FULL_MATRIX"
     return dim
@@ -93,7 +93,7 @@ function n_nodes_to_read(format::String, n::Int, dim::Int)
   end
 end
 
-"""Analyse un fichier .tsp et renvoie l'ensemble des arêtes sous la forme d'un tableau."""
+"""Analyze a .tsp file & returns the edges as a dictionary such that {(node1.name,node2.name) => weight}"""
 function read_edges(header::Dict{String}{String}, filename::String)
 
   edge_dict = Dict()
@@ -172,7 +172,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
   return edge_dict
 end
 
-"""Renvoie les noeuds et les arêtes du graphe."""
+"""returns nodes & edges of the graph."""
 function read_stsp(filename::String)
   Base.print("Reading of header : ")
   header = read_header(filename)
@@ -207,7 +207,7 @@ function read_stsp(filename::String)
   return graph_nodes, edges_brut
 end
 
-"""Affiche un graphe étant données un ensemble de noeuds et d'arêtes.
+"""Plots a graph given a set of nodes and edges.
 
 Exemple :
 
@@ -217,14 +217,6 @@ Exemple :
 """
 function plot_graph(nodes, edges)
   fig = plot(legend=false)
-
-  # # edge positions
-  # for k = 1 : length(edges)
-  #   for j in edges[k]
-  #     plot!([nodes[k][1], nodes[j][1]], [nodes[k][2], nodes[j][2]],
-  #         linewidth=1.5, alpha=0.75, color=:lightgray)
-  #   end
-  # end
 
   for edge in edges
     key = edge[1] # tuple
@@ -246,7 +238,7 @@ function plot_graph(nodes, edges)
 
 end
 
-"""Fonction de commodité qui lit un fichier stsp et trace le graphe."""
+"""Function that reads a stsp file and plots the graph."""
 function plot_graph(filename::String)
   graph_nodes, graph_edges = read_stsp(filename)
   plot_graph(graph_nodes, graph_edges)

@@ -4,16 +4,16 @@ include(joinpath(@__DIR__, "read_stsp.jl"))
 """ Abstract type where all the graphs will be derived from."""
 abstract type AbstractGraph{T,P} end
 
-"""Type representant un graphe comme un ensemble de noeuds.
+"""Type representing a graph as a set of node.
 
-Exemple :
+Example :
 
     node1 = Node("Joe", 3.14)
     node2 = Node("Steve", exp(1))
     node3 = Node("Jill", 4.12)
     G = Graph("Ick", [node1, node2, node3])
 
-Attention, tous les noeuds doivent avoir des données de même type.
+All nodes must have the same datatype!
 """
 mutable struct Graph{T, P} <: AbstractGraph{T,P}
   name::String
@@ -28,7 +28,12 @@ Ex: graph = Graph{Vector{Int64}, Float64}()
 Graph{T,P}() where {T,P} = Graph("", Node{T}[], Edge{P}[])
 
 
-"""Add a node to graph."""
+"""Add a node to graph.
+
+  optional parameter dim: represents the dimension of the graph,
+  meaning the total number of nodes in the graph. its use is to create 
+  arbitrary coordinates if the nodes don't have coordinates.
+"""
 function add_node!(graph::Graph{T,P}, node::Node{T}; dim = 1) where {T,P}
 
   if !isnothing(findfirst(x -> x.name == node.name, nodes(graph)))
@@ -43,19 +48,26 @@ function add_node!(graph::Graph{T,P}, node::Node{T}; dim = 1) where {T,P}
   graph
 end
 
-"""Add edge to graph"""
+"""Add edge to graph
+
+  It will check if the edge is unique in the graph
+  It will check if the nodes that are linked by the edge exist
+"""
 function add_edge!(graph::Graph{T,P}, edge::Edge{P};) where {T,P}
 
   #If one of the vertex is not in the graph we do not add the edge
-  if findfirst(x->x==edge.nodes[1],[nd.name for nd in graph.nodes])==nothing || findfirst(x->x==edge.nodes[2],[nd.name for nd in graph.nodes])==nothing 
-    throw(UnknowNodeError("trying to add edge when the node doesn't exist"))
+  if isnothing(findfirst(x->x==edge.nodes[1],[nd.name for nd in graph.nodes])) || isnothing(findfirst(x->x==edge.nodes[2],[nd.name for nd in graph.nodes])) 
+    throw(NodeError("trying to add edge when the node doesn't exist"))
   end
-#If the edge is already present we do not add it again
-  v1=[ed.nodes[1] for ed in graph.edges] #vetor of first vertex
-  v2=[ed.nodes[2] for ed in graph.edges]#vector of second vertex
+  #If the edge is already present we do not add it again
+  #vetor of first vertex
+  v1=[ed.nodes[1] for ed in graph.edges]
+  #vector of second vertex
+  v2=[ed.nodes[2] for ed in graph.edges]
+
   #We check the second vertex of all edge that have first vertex equal to the first vertex of the new edge and
   #we check the second vertex of all edge that have first vertex equal to the second vertex of the new edge
-  if findfirst(x->x==edge.nodes[2],v2[findall(x->x==edge.nodes[1],v1)])!=nothing || findfirst(x->x==edge.nodes[1],v2[findall(x->x==edge.nodes[2],v1)])!=nothing
+  if !isnothing(findfirst(x->x==edge.nodes[2],v2[findall(x->x==edge.nodes[1],v1)])) || !isnothing(findfirst(x->x==edge.nodes[1],v2[findall(x->x==edge.nodes[2],v1)]))
     throw(EdgeError("This edge is already in the graph"))
   end
 
@@ -65,19 +77,19 @@ end
 # on présume que tous les graphes dérivant d'AbstractGraph
 # posséderont des champs `name` et `nodes`.
 
-"""Renvoie le nom du graphe."""
+"""returns the name of the graph"""
 name(graph::AbstractGraph) = graph.name
 
-"""Renvoie la liste des noeuds du graphe."""
+"""returns the list of nodes"""
 nodes(graph::AbstractGraph) = graph.nodes
 
-"""Renvoie la liste des arêtes du graphe."""
+"""returns the list of edges"""
 edges(graph::AbstractGraph) = graph.edges
 
-"""Renvoie le nombre de noeuds du graphe."""
+"""returns the number of nodes in the graph"""
 nb_nodes(graph::AbstractGraph) = length(graph.nodes)
 
-"""Affiche un graphe"""
+"""prints a graph"""
 function show(graph::Graph)
   println("Graph ", name(graph), " has ", nb_nodes(graph), " nodes.")
   for node in nodes(graph)
@@ -110,6 +122,8 @@ function build_graph(filename::String)
  
   return graph
 end
+
+""" Plots the graph by giving a graph object as an argument"""
 
 function plot_graph(graph::Graph{T,P}) where {T,P}
   fig = plot(legend=false)

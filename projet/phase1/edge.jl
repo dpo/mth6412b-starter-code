@@ -13,7 +13,7 @@ nodes(edge::AbstractEdge) = edge.nodes
 value(edge::AbstractEdge) = edge.value
 
 
-"""Affiche une arête."""
+"""prints edge information"""
 function show(edge::AbstractEdge)
   println("Edge nodes: ", nodes(edge), ", value: ", value(edge))
 end

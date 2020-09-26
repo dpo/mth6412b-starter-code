@@ -130,10 +130,8 @@ function build_graph(filename::String)
     return graph
     # This catch-all catches all errors for now which is not great. Will have to change this in phase2
   catch err
-    println("Error encountered while building graph: ", err, "exiting now.")
-  finally
-    # Exit no matter what the error is. This will be changed in phase 2 
-    exit()
+    println("Error encountered while building graph: ", err)
+    return Graph{Vector{Float64},Float64}()
   end
 end
 

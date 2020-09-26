@@ -10,6 +10,9 @@ using Pkg
 # ╔═╡ 4139d1b0-ff7b-11ea-2315-ff5faf32e879
 using PlutoUI
 
+# ╔═╡ 68718350-ff8e-11ea-3da4-57a5b1b41c72
+include("exceptions.jl")
+
 # ╔═╡ 472da810-fdd4-11ea-2627-af24b931e523
 begin
 	include("Node.jl")
@@ -32,17 +35,25 @@ md"""
 
 # ╔═╡ f37e7e90-ff88-11ea-1f2c-0ff0dac33bd4
 md"""
-### Authors: Monssaf Toukal and Matteo Cacciola
+### Authors: Monssaf Toukal (1850319) and Matteo Cacciola (2044855)
+"""
+
+# ╔═╡ 8ad5b910-ff8f-11ea-3835-734df59563c6
+md"""
+- The code is available by clicking [here](https://github.com/MonssafToukal/mth6412b-starter-code)
 """
 
 # ╔═╡ 6af932d0-fdd1-11ea-2222-4bbb807b0db4
-cd("C:\\Users\\Mattheu\\Documents\\mth6412b-starter-code\\projet\\phase1")
+cd(joinpath(@__DIR__, "projet\\phase1"))
+
+# ╔═╡ 5a358530-ff8d-11ea-073c-41440515443a
+pwd()
 
 # ╔═╡ 11961ed0-fdcf-11ea-2e24-6fe10bafe291
 pwd()
 
 # ╔═╡ 5b511e60-fdcc-11ea-2574-fd7e50a08873
-Pkg.activate("./mth6412b")
+Pkg.activate("mth6412b")
 
 # ╔═╡ d1eaae90-fdce-11ea-38ab-070f79ea4f78
 Pkg.add("Plots")
@@ -110,7 +121,7 @@ end
 
 # ╔═╡ 9e923460-ff80-11ea-07e8-71e793fc5500
 md"""
-Show now is extended to correctly display edges and the user can add edges to the graph using the function add_edge!
+`show()` now is extended to correctly display edges and the user can add edges to the graph using the function add_edge!
 """
 
 # ╔═╡ fe6d7590-ff7e-11ea-2d2b-d7c1e708b4cc
@@ -131,7 +142,8 @@ filename = "..\\..\\instances\\stsp\\gr17.tsp"
 
 # ╔═╡ cc09c2f0-ff80-11ea-23f0-31188a8451d8
 md"""
-The function read_edges now does correctly reas all the weights of the edges and it sotres them in a dictionary wehre the keys are the pairs of the node names the the edge connects and the values are the weight of the edges
+The function `read_edges(...)` now does correctly read all the weights of the edges and it stores them in a dictionary where the keys are the pairs of the node names that the edge connects and the values are the weight of the edges: 
+- `Dict(Tuple{Int64,Int64} => Float64)`
 """
 
 # ╔═╡ f60a6fb0-ff7f-11ea-0000-339b66ad54dc
@@ -142,7 +154,7 @@ end
 
 # ╔═╡ 2ce12fa2-fdd8-11ea-3103-6ba0843291d4
 md"""
-- Here, we call the function `buil_graph` that takes a tsp file as an argument.
+- Here, we call the function `buil_graph()` that takes a tsp file as an argument.
 - The result of this function is an object `Graph` that contains all the edges and nodes given in the file
 """
 
@@ -160,7 +172,9 @@ end
 
 # ╔═╡ 57bd07f0-ff89-11ea-0e15-b1ab5d514d1e
 md"""
-Lastly we can plot the graph
+## Plotting the graph
+- Here we plot the graph using the function `plot_graph(graph::Graph{T,P})`
+- It will plot the graph by taking a graph object as an argument
 """
 
 # ╔═╡ 64e88490-fdd6-11ea-1cc6-9dd486c95201
@@ -178,12 +192,15 @@ plot_graph(graph)
 # ╔═╡ Cell order:
 # ╟─0be9edd0-fdcb-11ea-2e0b-99438dea97c4
 # ╟─f37e7e90-ff88-11ea-1f2c-0ff0dac33bd4
+# ╟─8ad5b910-ff8f-11ea-3835-734df59563c6
 # ╠═e222eeae-fdcb-11ea-18d4-85725dcdfef7
 # ╠═6af932d0-fdd1-11ea-2222-4bbb807b0db4
+# ╠═5a358530-ff8d-11ea-073c-41440515443a
 # ╟─11961ed0-fdcf-11ea-2e24-6fe10bafe291
 # ╠═5b511e60-fdcc-11ea-2574-fd7e50a08873
 # ╠═d1eaae90-fdce-11ea-38ab-070f79ea4f78
 # ╟─32af4180-fdd1-11ea-284e-b73926bba2fb
+# ╠═68718350-ff8e-11ea-3da4-57a5b1b41c72
 # ╠═472da810-fdd4-11ea-2627-af24b931e523
 # ╠═5314a490-fdd3-11ea-25ef-2d1f7fc1e992
 # ╠═db19e470-fdd5-11ea-2975-41ca92f2cb6d

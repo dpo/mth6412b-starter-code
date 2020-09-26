@@ -1,9 +1,15 @@
 import Base.show
-
+""" Abstrct type where all the Edges will be derived from"""
 abstract type AbstractEdge{P} end
 
 
 # In the future, this edge will have to implement directionality
+"""
+Type Edge derivedfrom Abstract Edge 
+
+Example: 
+        edge = Edge(("Paris", "Pluton"), 100000.0)   
+"""
 mutable struct Edge{P} <: AbstractEdge{P}
     nodes::Tuple{String, String}
     value::P

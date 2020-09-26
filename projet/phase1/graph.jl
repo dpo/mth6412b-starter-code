@@ -11,9 +11,15 @@ Example :
     node1 = Node("Joe", 3.14)
     node2 = Node("Steve", exp(1))
     node3 = Node("Jill", 4.12)
-    G = Graph("Ick", [node1, node2, node3])
+    edge = Edge(("Paris", "Pluton"), 100000.0)
+    G = Graph("Ick", [node1, node2, node3], [edge])
 
 All nodes must have the same datatype!
+All edges must have the same datatype!
+Nodes and edges don't need to have the same datatype
+
+Ex:
+    type of Node("Joe", 3.14) is Float64, type of Edge(('1', '1'), 2) is Int64
 """
 mutable struct Graph{T, P} <: AbstractGraph{T,P}
   name::String
@@ -102,25 +108,33 @@ end
 
 """This function builds a graph by reading the file"""
 function build_graph(filename::String)
-  data_nodes, data_edges = read_stsp(filename)
-  header = read_header(filename)
-  graph = Graph{Vector{Float64},Float64}()
+  try
+    data_nodes, data_edges = read_stsp(filename)
+    header = read_header(filename)
+    graph = Graph{Vector{Float64},Float64}()
 
-  # 1. Build Node Ojbects
-  # Disclaimer: it generates random coords for the Nodes if there are no coords given in the file
-  # two nodes might have the same coordinates even if it's unlikely
-  for data_node in data_nodes
-    data_dict = Dict(data_node.first => data_node.second)
-    node = Node(data_dict)
-    add_node!(graph, node; dim=length(data_nodes))
-  end
+    # 1. Build Node Ojbects
+    # Disclaimer: it generates random coords for the Nodes if there are no coords given in the file
+    # two nodes might have the same coordinates even if it's unlikely
+    for data_node in data_nodes
+      data_dict = Dict(data_node.first => data_node.second)
+      node = Node(data_dict)
+      add_node!(graph, node; dim=length(data_nodes))
+    end
+  
+    # 2. Build Edge Ojbects
+    for data_edge in data_edges
+      add_edge!(graph, Edge(("$(data_edge[1][1])", "$(data_edge[1][2])"), data_edge[2]))
+    end
 
-  # 2. Build Edge Ojbects
-  for data_edge in data_edges
-    add_edge!(graph, Edge(("$(data_edge[1][1])", "$(data_edge[1][2])"), data_edge[2]))
+    return graph
+    # This catch-all catches all errors for now which is not great. Will have to change this in phase2
+  catch err
+    println("Error encountered while building graph: ", err, "exiting now.")
+  finally
+    # Exit no matter what the error is. This will be changed in phase 2 
+    exit()
   end
- 
-  return graph
 end
 
 """ Plots the graph by giving a graph object as an argument"""

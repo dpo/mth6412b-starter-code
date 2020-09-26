@@ -16,7 +16,7 @@ mutable struct Node{T} <: AbstractNode{T}
   data::T
 end
 
-"""Constructs a node by giving a dictionary as an argument"""
+"""Constructs a node by giving a dictionary of specific type as an argument"""
 function Node(dict::Dict{Int64, Vector{Float64}})  
   if length(dict) != 1
     throw(NodeError("invalid dictionary given to build Node"))

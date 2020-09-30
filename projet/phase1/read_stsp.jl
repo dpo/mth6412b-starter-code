@@ -146,7 +146,9 @@ function read_edges(header::Dict{String}{String}, filename::String)
             else
               warn("Unknown format - function read_edges")
             end
-            edge_dict[edge] = parse(Float64, data[j+1])
+            if edge[1] != edge[2]
+              edge_dict[edge] = parse(Float64, data[j+1])
+            end
             i += 1
           end
 

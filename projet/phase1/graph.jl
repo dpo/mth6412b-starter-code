@@ -40,7 +40,7 @@ Graph{T,P}() where {T,P} = Graph("", Node{T}[], Edge{P}[])
   meaning the total number of nodes in the graph. its use is to create 
   arbitrary coordinates if the nodes don't have coordinates.
 """
-function add_node!(graph::Graph{T,P}, node::Node{T}; dim = 1) where {T,P}
+function add_node!(graph::AbstractGraph{T,P}, node::Node{T}; dim = 1) where {T,P}
 
   if !isnothing(findfirst(x -> x.name == node.name, nodes(graph)))
     throw(NodeError("Node with that name already exists"))
@@ -59,7 +59,7 @@ end
   It will check if the edge is unique in the graph
   It will check if the nodes that are linked by the edge exist
 """
-function add_edge!(graph::Graph{T,P}, edge::Edge{P};) where {T,P}
+function add_edge!(graph::AbstractGraph{T,P}, edge::Edge{P}) where {T,P}
 
   #If one of the vertex is not in the graph we do not add the edge
   if isnothing(findfirst(x->x==edge.nodes[1],[nd.name for nd in graph.nodes])) || isnothing(findfirst(x->x==edge.nodes[2],[nd.name for nd in graph.nodes])) 

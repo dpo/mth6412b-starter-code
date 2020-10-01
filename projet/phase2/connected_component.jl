@@ -23,12 +23,11 @@ function kruskal(graph::Graph{T,P}) where {T,P}
     while(length(connected_components) > 1)
         smallest_edge = pop!(ordered_edges)
         # finding components linked by the smallest edges in the original graph, but not yet connected in the MST
-        biggest_component, smallest_component = get_components(nodes(smallest_edge), connected_components)
-        if biggest_component.root != smallest_component.root
-            merged_component = merge_components!(biggest_component, smallest_component)
-            add_edge!(merged_component, smallest_edge)
+        first_component, second_component = get_components(nodes(smallest_edge), connected_components)
+        if first_component.root != second_component.root
+            merged_component = merge_components!(first_component, second_component, smallest_edge)
             connected_components[merged_component.root] = merged_component
-            delete!(connected_components, smallest_component.root)
+            delete!(connected_components, second_component.root)
         end
     end
     minimal_spanning_tree = collect(values(connected_components))[1]
@@ -45,7 +44,7 @@ function get_components(node_names::Tuple{String, String}, connected_components:
                 push!(components, connected_component[2])
             end
             if length(components) == 2
-                sort!(components, by= x -> length(nodes(x)), rev=true)
+
                 return Tuple(components)
             end
         end
@@ -54,17 +53,18 @@ function get_components(node_names::Tuple{String, String}, connected_components:
 end
 
 """ Write doc """
-function merge_components!(biggest_component::ConnectedComponent{T,P}, smallest_component::ConnectedComponent{T,P}) where {T,P}
+function merge_components!(first_component::ConnectedComponent{T,P}, second_component::ConnectedComponent{T,P}, edge_link::Edge{P}) where {T,P}
 
-    for node in nodes(smallest_component)
-        add_node!(biggest_component, node)
+    for node in nodes(second_component)
+        add_node!(first_component, node)
     end
-    for edge in edges(smallest_component)
-        add_edge!(biggest_component, edge)
+    for edge in edges(second_component)
+        add_edge!(first_component, edge)
     end
-    smallest_component = nothing
+    add_edge!(first_component, edge_link)
+    second_component = nothing
 
-    return biggest_component 
+    return first_component 
 end
 
 """prints a graph"""

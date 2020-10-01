@@ -73,11 +73,9 @@ function add_edge!(graph::AbstractGraph{T,P}, edge::Edge{P}) where {T,P}
 
   #We check the second vertex of all edge that have first vertex equal to the first vertex of the new edge and
   #we check the second vertex of all edge that have first vertex equal to the second vertex of the new edge
-  if !isnothing(findfirst(x->x==edge.nodes[2],v2[findall(x->x==edge.nodes[1],v1)])) || !isnothing(findfirst(x->x==edge.nodes[1],v2[findall(x->x==edge.nodes[2],v1)]))
-    throw(EdgeError("This edge is already in the graph"))
+  if isnothing(findfirst(x->x==edge.nodes[2],v2[findall(x->x==edge.nodes[1],v1)])) || !isnothing(findfirst(x->x==edge.nodes[1],v2[findall(x->x==edge.nodes[2],v1)]))
+    push!(graph.edges, edge)
   end
-
-  push!(graph.edges, edge)
 end
 
 # on présume que tous les graphes dérivant d'AbstractGraph
@@ -128,7 +126,6 @@ function build_graph(filename::String)
     end
 
     return graph
-    # This catch-all catches all errors for now which is not great. Will have to change this in phase2
   catch err
     println("Error encountered while building graph: ", err)
     return Graph{Vector{Float64},Float64}()

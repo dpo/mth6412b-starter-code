@@ -14,7 +14,6 @@ root(connected_component::AbstractConnectedComponent) = connected_component.root
 """ Write doc """
 function kruskal(graph::Graph{T,P}) where {T,P}
     # 1. collect all nodes as connected components
-    # connected_components = sort!([ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)], by=root)
     connected_components = Dict(comp.root => comp for comp in [ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)])
 
     # 2. Order the edges by weight (smallest to biggest)

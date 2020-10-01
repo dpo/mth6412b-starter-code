@@ -14,35 +14,39 @@ root(connected_component::AbstractConnectedComponent) = connected_component.root
 """ Write doc """
 function kruskal(graph::Graph{T,P}) where {T,P}
     # 1. collect all nodes as connected components
-    connected_components = [ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)]
+    # connected_components = sort!([ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)], by=root)
+    connected_components = Dict(comp.root => comp for comp in [ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)])
+
     # 2. Order the edges by weight (smallest to biggest)
     ordered_edges = sort(edges(graph), by=value, rev=true)
+
     # 3. adding iteratively edges
     while(length(connected_components) > 1)
         smallest_edge = pop!(ordered_edges)
         # finding components linked by the smallest edges in the original graph, but not yet connected in the MST
-        disconnected_components = get_components(nodes(smallest_edge), connected_components)
-        if root(disconnected_components[1]) != root(disconnected_components[2])
-            merged_component = merge_components!(disconnected_components)
+        biggest_component, smallest_component = get_components(nodes(smallest_edge), connected_components)
+        if biggest_component.root != smallest_component.root
+            merged_component = merge_components!(biggest_component, smallest_component)
             add_edge!(merged_component, smallest_edge)
-            filter!(component -> !isnothing(component), connected_components)
+            connected_components[merged_component.root] = merged_component
+            delete!(connected_components, smallest_component.root)
         end
     end
-
-    return connected_components[1]
+    minimal_spanning_tree = collect(values(connected_components))[1]
+    return minimal_spanning_tree
 end
 
 """ Write doc """
-function get_components(node_names::Tuple{String, String}, connected_components::Vector{ConnectedComponent{T,P}}) where {T,P}
+function get_components(node_names::Tuple{String, String}, connected_components::Dict{String, ConnectedComponent{T,P}}) where {T,P}
 
     components = Vector{ConnectedComponent{T,P}}()
     for connected_component in connected_components
-        for node in nodes(connected_component)
+        for node in nodes(connected_component[2])
             if name(node) in node_names
-                push!(components, connected_component)
+                push!(components, connected_component[2])
             end
             if length(components) == 2
-
+                sort!(components, by= x -> length(nodes(x)), rev=true)
                 return Tuple(components)
             end
         end
@@ -51,16 +55,26 @@ function get_components(node_names::Tuple{String, String}, connected_components:
 end
 
 """ Write doc """
-function merge_components!((first_component, second_component)::Tuple{ConnectedComponent{T,P}, ConnectedComponent{T,P}}) where {T,P}
+function merge_components!(biggest_component::ConnectedComponent{T,P}, smallest_component::ConnectedComponent{T,P}) where {T,P}
 
-    for node in nodes(second_component)
-        add_node!(first_component, node)
+    for node in nodes(smallest_component)
+        add_node!(biggest_component, node)
     end
-    for edge in edges(second_component)
-        add_edge!(first_component, edge)
+    for edge in edges(smallest_component)
+        add_edge!(biggest_component, edge)
     end
-    second_component = nothing
-    GC.gc()
+    smallest_component = nothing
 
-    return first_component 
+    return biggest_component 
+end
+
+"""prints a graph"""
+function show(MST::ConnectedComponent, graph::Graph)
+  println("MST of the graph ", name(graph), " has ", length(nodes(MST)), " nodes.")
+  for node in nodes(MST)
+    show(node)
+  end
+  for edge in edges(MST)
+    show(edge)
+  end
 end

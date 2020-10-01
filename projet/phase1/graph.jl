@@ -137,7 +137,7 @@ end
 
 """ Plots the graph by giving a graph object as an argument"""
 
-function plot_graph(graph::Graph{T,P}) where {T,P}
+function plot_graph(graph::AbstractGraph{T,P}) where {T,P}
   fig = plot(legend=false)
   
   for edge in graph.edges

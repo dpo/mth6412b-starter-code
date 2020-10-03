@@ -1,7 +1,14 @@
 """ abstract type for connected components of a graph """
 abstract type AbstractConnectedComponent{T,P} <: AbstractGraph{T,P} end
 
-""" Write doc """
+""" Datatype for a connected component of a graph
+
+    Used for the implementation of Kruskal. One can think 
+        of this datatype as the representation of a sub-graph
+
+    Ex: c1 = ConnectedComponent("a", [Node("a",12), Node("b", π)], [Edge(("a","b"), e)])
+
+"""
 mutable struct ConnectedComponent{T,P} <: AbstractConnectedComponent{T,P}
     root::String
     nodes::Vector{Node{T}}
@@ -11,7 +18,12 @@ end
 root(connected_component::AbstractConnectedComponent) = connected_component.root
 
 
-""" Write doc """
+""" Kruskal Algortihm
+    
+    takes a Graph{T,P} as an argument
+
+    returns mininmal spanning tree of the graph
+"""
 function kruskal(graph::Graph{T,P}) where {T,P}
     # 1. collect all nodes as connected components
     connected_components = Dict(comp.root => comp for comp in [ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)])
@@ -34,7 +46,7 @@ function kruskal(graph::Graph{T,P}) where {T,P}
     return minimal_spanning_tree
 end
 
-""" Write doc """
+""" returns the components connected by the nodes given as arguments """
 function get_components(node_names::Tuple{String, String}, connected_components::Dict{String, ConnectedComponent{T,P}}) where {T,P}
 
     components = Vector{ConnectedComponent{T,P}}()
@@ -52,7 +64,10 @@ function get_components(node_names::Tuple{String, String}, connected_components:
     throw(error("the nodes aren't in any connected component"))
 end
 
-""" Write doc """
+""" Merges two connected components into one. 
+    Takes two components
+    returns a merged component of the two given as arguments 
+"""
 function merge_components!(first_component::ConnectedComponent{T,P}, second_component::ConnectedComponent{T,P}, edge_link::Edge{P}) where {T,P}
 
     for node in nodes(second_component)
@@ -67,7 +82,7 @@ function merge_components!(first_component::ConnectedComponent{T,P}, second_comp
     return first_component 
 end
 
-"""prints a graph"""
+"""prints a ConnectedComponent"""
 function show(MST::ConnectedComponent, graph::Graph)
   println("MST of the graph ", name(graph), " has ", length(nodes(MST)), " nodes.")
   for node in nodes(MST)

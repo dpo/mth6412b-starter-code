@@ -7,11 +7,11 @@ using InteractiveUtils
 # ╔═╡ e222eeae-fdcb-11ea-18d4-85725dcdfef7
 using Pkg
 
+# ╔═╡ a43c3ca0-0591-11eb-0877-e90edd32d010
+using PlutoUI
+
 # ╔═╡ 8b41a962-04b5-11eb-3418-972d158d0809
 using Test
-
-# ╔═╡ 4139d1b0-ff7b-11ea-2315-ff5faf32e879
-using PlutoUI
 
 # ╔═╡ 68718350-ff8e-11ea-3da4-57a5b1b41c72
 include("exceptions.jl")
@@ -27,28 +27,21 @@ begin
 end
 
 # ╔═╡ db19e470-fdd5-11ea-2975-41ca92f2cb6d
-begin 
-	include("graph.jl")
-end
+include("graph.jl")
 
 # ╔═╡ 64c277b0-04b5-11eb-0750-b320f1b4196e
 begin 
 	include("Connected_component.jl")
 end
 
-# ╔═╡ a6e50270-04b5-11eb-2ef6-7b3c86f3c407
-begin 
-	include("..\\tests\\test_kruskal.jl")
-end
-
 # ╔═╡ 0be9edd0-fdcb-11ea-2e0b-99438dea97c4
 md"""
-## MTH6412B Project: Phase 1
+# MTH6412B Project: Phase 2
 """
 
 # ╔═╡ f37e7e90-ff88-11ea-1f2c-0ff0dac33bd4
 md"""
-### Authors: Monssaf Toukal (1850319) and Matteo Cacciola (2044855)
+## Authors: Monssaf Toukal (1850319) and Matteo Cacciola (2044855)
 """
 
 # ╔═╡ 8ad5b910-ff8f-11ea-3835-734df59563c6
@@ -69,69 +62,92 @@ pwd()
 Pkg.activate("mth6412b")
 
 # ╔═╡ d1eaae90-fdce-11ea-38ab-070f79ea4f78
-Pkg.add("Plots")
+md"""
+### Here are some functions to display results in the notebook
+* `display(filename)` displays the whole file in the notebook
+* `display(filename, line1, line2)` displays thelines between the two given lines of the file
+
+"""
+
+# ╔═╡ a132cd30-0591-11eb-2517-b15c37fb4fdd
+begin	
+	function display(filename)
+		with_terminal() do
+			open(filename, "r") do file
+				for line in readlines(file)
+					println(stdout, line)
+				end
+			end
+		end
+	end
+
+	function display(filename, line1, line2)
+		with_terminal() do
+			open(filename, "r") do file
+				lines = readlines(file)
+				for i in line1:line2
+					println(stdout, lines[i])
+				end
+			end
+		end
+	end
+end
 
 # ╔═╡ 32af4180-fdd1-11ea-284e-b73926bba2fb
 md"""
 ### Building a Graph from a .tsp file
 """
 
-# ╔═╡ 8144f8b0-ff7c-11ea-221f-9b616016224b
-md"""
-Implementation of connected component of a graph
+# ╔═╡ 42dd0570-0591-11eb-02d8-238f137cf89c
+display("exceptions.jl")
+
+# ╔═╡ 8461cff0-0599-11eb-0461-1bbbd9bb87ce
+display("Node.jl")
+
+# ╔═╡ 955e1c00-0599-11eb-21fe-0db2e4a54261
+display("Edge.jl")
+
+# ╔═╡ c5acbf60-0599-11eb-2883-2d28ad492ab2
+display("graph.jl",1,34)
+
+# ╔═╡ facebcc0-0599-11eb-2f85-ffa3dee4d629
+display("Connected_component.jl", 1, 18)
+
+# ╔═╡ 782977c0-059d-11eb-0b1c-49a27e489b9b
+md""" ### Kruskal Algorithm
+* Kruskal is an algorithm that returns the minimum spanning tree of a given undirected fully connected graph
+* it uses two auxiliary functions: 
+1. **`get_components(...)`** $\rightarrow$ returns two components connected by a given edge
+2. **`merge_components!(...)`** $\rightarrow$ returns the result of a merge (i.e a connection) of two connected components of the given graph
 """
 
-# ╔═╡ 94e8e520-ff7c-11ea-0b05-f98eb5cb924d
-with_terminal() do
-	open("Connected_component.jl","r") do file
-		check=false
-			for line in readlines(file)
-			
-				if !isempty(split(line))
-					line_start=split(line)[1]
-					
-					if line_start=="mutable"
-						check=true
-					end
-					if check
-						println(line)
-					end
-					if line_start=="end"
-						check=false
-					end
-				end
-		end
-	end
-end
-
 # ╔═╡ 8f72d320-04b9-11eb-345d-39aa659720d5
-md"""We implemented Kruskal using two ausiliary function merge() and get_component() Here I need that the documentation is written so i can display some of it"""
+display("Connected_component.jl", 21, 47)
 
-# ╔═╡ afccd670-04b9-11eb-2e1b-43f890b76f42
-with_terminal() do
-	open("Connected_component.jl","r") do file
-		check=false
-			for line in readlines(file)
-			
-				if !isempty(split(line))
-					line_start=split(line)[1]
-					
-					if line_start=="\"\"\"Write"
-						check=true
-					end
-					if check
-						println(line)
-					end
-					if line_start=="#"
-						check=false
-					end
-				end
-		end
-	end
-end
+# ╔═╡ d94dfa72-059e-11eb-3bb1-5911eb41cd97
+display("Connected_component.jl", 49, 65)
+
+# ╔═╡ e9e3e390-059e-11eb-33b0-0d00bad34395
+display("Connected_component.jl", 71, 83)
+
+# ╔═╡ 3780d0de-059f-11eb-2bf9-8b71114fd0cf
+md"""
+#### Testing Kruskal
+
+Here are some tests of our implementation of Kruskal
+
+1. The first test will use the graph given in the 3rd slide of the pdf *mst-handout.pdf*
+
+
+2. We will also show the different unit tests implemented to make sure that Kruskal works as designed
+
+
+3. There will be some examples of Kruskal for different symmetric instances given. 
+
+"""
 
 # ╔═╡ 3b388650-fdcb-11ea-2782-a386ba2050c2
-md""" Now we build the course notes graph and we plot it"""
+md""" __We build the course notes graph and we plot it__"""
 
 # ╔═╡ 2baedd10-fdcb-11ea-0fbb-b579f5848782
 begin
@@ -142,7 +158,9 @@ begin
 end
 
 # ╔═╡ 26fe7460-fdcb-11ea-353c-1da85f1370be
-md"""Now we run Kruscal on this graph and we plot the result"""
+md"""
+**Now we run Kruskal on this graph and we plot the result**
+"""
 
 # ╔═╡ ed44cc3e-04b6-11eb-2ce5-8fa5be74d570
 begin
@@ -153,35 +171,30 @@ end
 # ╔═╡ 4e032f90-04b7-11eb-18cb-2bf48d66fd53
 begin
 with_terminal() do
-		show(mst)
+		show(mst, graph_notes)
 	end
 end
 
 # ╔═╡ f3b1e3a0-04b7-11eb-1c4c-5f56d8c0663a
-md""" Here we run the unit test"""
+md""" **Here we display and run the unit tests for the Kruskal algorithm**"""
 
-# ╔═╡ 342a0070-04bd-11eb-1016-3be140c9bfe7
-with_terminal() do
-	open("..\\tests\\test_kruskal.jl","r") do file
-			for line in readlines(file)
-			
-				if !isempty(split(line))
-					line_start=split(line)[1]
-					
-				if line_start=="@test" ||line_start=="for" || line_start=="end"
-						println(line)
-					println("...")
-					end
-				end
-		end
+# ╔═╡ ab21f052-059b-11eb-231a-ddb82d46d137
+begin 
+	display("..\\tests\\test_kruskal.jl")
+end
+
+# ╔═╡ 7b4110a0-05a0-11eb-3409-f924951ba14a
+md"""**Running unit tests for Kruskal**"""
+
+# ╔═╡ f3598a70-04b7-11eb-1fec-455aa43becd4
+begin
+	with_terminal() do	
+		include("..\\tests\\test_kruskal.jl")
 	end
 end
 
-# ╔═╡ f3598a70-04b7-11eb-1fec-455aa43becd4
-test_kruskal()
-
 # ╔═╡ 5911bb80-04b8-11eb-20b4-7929f4a9c2d5
-md""" Now we test kruscal on various instances"""
+md""" **Now we test kruskal on various instances (symmetric)**"""
 
 # ╔═╡ d67d94e0-04b8-11eb-2369-2ddcdec25056
 filename1 = "..\\..\\instances\\stsp\\bayg29.tsp"
@@ -223,9 +236,6 @@ begin
 	plot_graph(mst_hk48)
 end
 
-# ╔═╡ 6dd74490-04b8-11eb-0632-4dd06814ea1e
-
-
 # ╔═╡ Cell order:
 # ╟─0be9edd0-fdcb-11ea-2e0b-99438dea97c4
 # ╟─f37e7e90-ff88-11ea-1f2c-0ff0dac33bd4
@@ -235,35 +245,41 @@ end
 # ╠═5a358530-ff8d-11ea-073c-41440515443a
 # ╟─11961ed0-fdcf-11ea-2e24-6fe10bafe291
 # ╠═5b511e60-fdcc-11ea-2574-fd7e50a08873
-# ╠═d1eaae90-fdce-11ea-38ab-070f79ea4f78
+# ╟─d1eaae90-fdce-11ea-38ab-070f79ea4f78
+# ╠═a43c3ca0-0591-11eb-0877-e90edd32d010
+# ╟─a132cd30-0591-11eb-2517-b15c37fb4fdd
 # ╟─32af4180-fdd1-11ea-284e-b73926bba2fb
 # ╠═68718350-ff8e-11ea-3da4-57a5b1b41c72
+# ╟─42dd0570-0591-11eb-02d8-238f137cf89c
 # ╠═472da810-fdd4-11ea-2627-af24b931e523
+# ╟─8461cff0-0599-11eb-0461-1bbbd9bb87ce
 # ╠═5314a490-fdd3-11ea-25ef-2d1f7fc1e992
+# ╟─955e1c00-0599-11eb-21fe-0db2e4a54261
 # ╠═db19e470-fdd5-11ea-2975-41ca92f2cb6d
+# ╟─c5acbf60-0599-11eb-2883-2d28ad492ab2
 # ╠═64c277b0-04b5-11eb-0750-b320f1b4196e
-# ╠═a6e50270-04b5-11eb-2ef6-7b3c86f3c407
+# ╟─facebcc0-0599-11eb-2f85-ffa3dee4d629
 # ╠═8b41a962-04b5-11eb-3418-972d158d0809
-# ╠═4139d1b0-ff7b-11ea-2315-ff5faf32e879
-# ╠═8144f8b0-ff7c-11ea-221f-9b616016224b
-# ╟─94e8e520-ff7c-11ea-0b05-f98eb5cb924d
-# ╠═8f72d320-04b9-11eb-345d-39aa659720d5
-# ╟─afccd670-04b9-11eb-2e1b-43f890b76f42
+# ╠═782977c0-059d-11eb-0b1c-49a27e489b9b
+# ╟─8f72d320-04b9-11eb-345d-39aa659720d5
+# ╟─d94dfa72-059e-11eb-3bb1-5911eb41cd97
+# ╠═e9e3e390-059e-11eb-33b0-0d00bad34395
+# ╟─3780d0de-059f-11eb-2bf9-8b71114fd0cf
 # ╠═3b388650-fdcb-11ea-2782-a386ba2050c2
-# ╠═2baedd10-fdcb-11ea-0fbb-b579f5848782
+# ╟─2baedd10-fdcb-11ea-0fbb-b579f5848782
 # ╠═26fe7460-fdcb-11ea-353c-1da85f1370be
 # ╟─4e032f90-04b7-11eb-18cb-2bf48d66fd53
-# ╠═ed44cc3e-04b6-11eb-2ce5-8fa5be74d570
+# ╟─ed44cc3e-04b6-11eb-2ce5-8fa5be74d570
 # ╠═f3b1e3a0-04b7-11eb-1c4c-5f56d8c0663a
-# ╟─342a0070-04bd-11eb-1016-3be140c9bfe7
-# ╠═f3598a70-04b7-11eb-1fec-455aa43becd4
-# ╠═5911bb80-04b8-11eb-20b4-7929f4a9c2d5
+# ╟─ab21f052-059b-11eb-231a-ddb82d46d137
+# ╟─7b4110a0-05a0-11eb-3409-f924951ba14a
+# ╟─f3598a70-04b7-11eb-1fec-455aa43becd4
+# ╟─5911bb80-04b8-11eb-20b4-7929f4a9c2d5
 # ╠═d67d94e0-04b8-11eb-2369-2ddcdec25056
-# ╠═03422720-04b9-11eb-23bf-e3385299b08f
+# ╟─03422720-04b9-11eb-23bf-e3385299b08f
 # ╠═942960de-04ba-11eb-08a9-5bc69d9207e8
-# ╠═9521556e-04ba-11eb-1886-5fb77792b5ca
+# ╟─9521556e-04ba-11eb-1886-5fb77792b5ca
 # ╠═57c1bbe0-04b8-11eb-2e9b-9564cbcce0a8
-# ╠═6f1039c0-04b8-11eb-37a0-5ddffdd83883
+# ╟─6f1039c0-04b8-11eb-37a0-5ddffdd83883
 # ╠═6ecc52f0-04b8-11eb-1e34-03354dd214d1
-# ╠═6e81dc70-04b8-11eb-0a7b-638519001181
-# ╠═6dd74490-04b8-11eb-0632-4dd06814ea1e
+# ╟─6e81dc70-04b8-11eb-0a7b-638519001181

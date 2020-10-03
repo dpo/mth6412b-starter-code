@@ -28,7 +28,7 @@ function kruskal(graph::Graph{T,P}) where {T,P}
     # 1. collect all nodes as connected components
     connected_components = Dict(comp.root => comp for comp in [ConnectedComponent(name(node), [node], Vector{Edge{P}}()) for node in nodes(graph)])
 
-    # 2. Order the edges by weight (smallest to biggest)
+    # 2. Order the edges by weight (biggest to smallest)
     ordered_edges = sort(edges(graph), by=value, rev=true)
 
     # 3. adding iteratively edges

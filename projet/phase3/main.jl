@@ -8,17 +8,26 @@ include(joinpath(@__DIR__, "node.jl"))
 include(joinpath(@__DIR__, "edge.jl"))
 include(joinpath(@__DIR__, "graph.jl"))
 include(joinpath(@__DIR__, "connected_component.jl"))
-include(joinpath(@__DIR__, "kruskal.jl"))
 include(joinpath(@__DIR__, "heuristics.jl"))
+include(joinpath(@__DIR__, "kruskal.jl"))
+include(joinpath(@__DIR__, "prim.jl"))
 
-# filename = joinpath(@__DIR__, "..\\..\\instances\\stsp\\bays29.tsp")
 
-# graph = build_graph(filename)
 
-lab_nodes = [Node("a",[-0.5,0.5]),Node("b",[0.0,1.0]),Node("c",[1.0,1.0]),Node("d",[2.0,1.0]),Node("e",[2.5,0.5]),Node("f",[2.0,0.0]),Node("g",[1.0,0.0]),Node("h",[0.0,0.0]),Node("i",[0.5,0.5])]
-lab_edges = [Edge(("a","b"),4),Edge(("a","h"),8),Edge(("b","c"),8),Edge(("b","h"),11),Edge(("c","d"),7),Edge(("c","f"),4),Edge(("c","i"),2),Edge(("d","e"),9),Edge(("d","f"),14),Edge(("e","f"),10),Edge(("f","g"),2),Edge(("g","h"),1),Edge(("g","i"),6),Edge(("h","i"),7)]
-graph = Graph("laboratory graph", lab_nodes, lab_edges)
+filename = joinpath(@__DIR__, "..\\..\\instances\\stsp\\bays29.tsp")
 
-forest = [comp for comp in [ConnectedComponent(name(node), [node], Vector{Edge{Int64}}()) for node in nodes(graph)]]
-component, ranks = merge_disjoint_components_by_rank!(forest)
-plot_graph(component)
+graph = build_graph(filename)
+
+# lab_nodes = [Node("a",[-0.5,0.5]),Node("b",[0.0,1.0]),Node("c",[1.0,1.0]),Node("d",[2.0,1.0]),Node("e",[2.5,0.5]),Node("f",[2.0,0.0]),Node("g",[1.0,0.0]),Node("h",[0.0,0.0]),Node("i",[0.5,0.5])]
+# lab_edges = [Edge(("a","b"),4),Edge(("a","h"),8),Edge(("b","c"),8),Edge(("b","h"),11),Edge(("c","d"),7),Edge(("c","f"),4),Edge(("c","i"),2),Edge(("d","e"),9),Edge(("d","f"),14),Edge(("e","f"),10),Edge(("f","g"),2),Edge(("g","h"),1),Edge(("g","i"),6),Edge(("h","i"),7)]
+# graph = Graph("laboratory graph", lab_nodes, lab_edges)
+
+mst_kruskal, kruskal_weight = kruskal(graph)
+
+mst_prim, prim_weight = prim(graph)
+
+println("kruskal_weight: ", kruskal_weight, "prim_weight: ", prim_weight)
+
+plot_graph(mst_kruskal)
+
+plot_graph(mst_prim)

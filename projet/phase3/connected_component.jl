@@ -13,9 +13,17 @@ mutable struct ConnectedComponent{T,P} <: AbstractConnectedComponent{T,P}
     root::String
     nodes::Vector{Node{T}}
     edges::Vector{Edge{P}} 
+    rank::Int64
 end
 
 root(connected_component::AbstractConnectedComponent) = connected_component.root
+rank(connected_component::AbstractConnectedComponent) = connected_component.rank
+
+function total_weight(connected_component::ConnectedComponent{T,P}) where {T,P}
+
+  return sum(x -> x.value, edges(connected_component))  
+end
+
 
 """prints a ConnectedComponent"""
 function show(MST::ConnectedComponent, graph::Graph)

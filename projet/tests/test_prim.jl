@@ -11,31 +11,30 @@ function test_prim()
 
 
     println("test if mst has the same nb_nodes as the graph")
-    @test length(nodes(mst)) == nb_nodes(graph)
+    @test length(nodes(prim_mst)) == nb_nodes(graph)
 
     println("test if mst has the same nodes as the graph")
     for node in nodes(graph)
         println("test if Node $(name(node)) is contained in mst")
-        @test !isnothing(findfirst(x -> x.name == node.name, nodes(mst)))
+        @test !isnothing(findfirst(x -> x.name == node.name, nodes(prim_mst)))
     end
 
     println("compare prim and kruskal using graph given in notes: ")
 
     @test kruskal_weight == prim_weight
 
-    instance_directory = joinpath(@__DIR__, "instances")
+    instance_directory = joinpath(@__DIR__, "..\\..\\instances\\stsp")
     for (root, dirs, files) in walkdir(instance_directory)
-        for dir in dirs
-            if dir == "atsp"
-                continue
-            end
-            for file in files
-                filename = joinpath(root, dir, file)
+        for file in files
+            if file != "pa561.tsp"
+                filename = joinpath(root, file)
+                println(filename)
                 graph = build_graph(filename)
                 prim_mst, prim_weight = prim(graph)
                 mst_kruskal, kruskal_weight = kruskal(graph)
                 @test kruskal_weight == prim_weight
             end
+        end
     end
 end
 

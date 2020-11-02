@@ -19,6 +19,7 @@ end
 root(connected_component::AbstractConnectedComponent) = connected_component.root
 rank(connected_component::AbstractConnectedComponent) = connected_component.rank
 
+""" returns the total weight of a graph (i.e the total weight of a minimal spannign tree)"""
 function total_weight(connected_component::ConnectedComponent{T,P}) where {T,P}
 
   return sum(x -> x.value, edges(connected_component))  

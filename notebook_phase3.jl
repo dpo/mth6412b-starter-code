@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.11.14
+# v0.12.6
 
 using Markdown
 using InteractiveUtils
@@ -31,7 +31,23 @@ include("graph.jl")
 
 # ╔═╡ 64c277b0-04b5-11eb-0750-b320f1b4196e
 begin 
-	include("Connected_component.jl")
+	include("connected_component.jl")
+end
+
+# ╔═╡ 346e3af2-1d5f-11eb-1ec8-671bdd1ab73d
+include( "heuristics.jl")
+
+# ╔═╡ 58045670-1d5f-11eb-3f41-956faefc6410
+include( "kruskal.jl")
+
+# ╔═╡ 5db82560-1d5f-11eb-3cc8-3f0f181a3748
+include("prim.jl")
+
+# ╔═╡ f3598a70-04b7-11eb-1fec-455aa43becd4
+begin
+	with_terminal() do	
+		include("..\\tests\\test_prim.jl")
+	end
 end
 
 # ╔═╡ 0be9edd0-fdcb-11ea-2e0b-99438dea97c4
@@ -50,7 +66,7 @@ md"""
 """
 
 # ╔═╡ 6af932d0-fdd1-11ea-2222-4bbb807b0db4
-cd(joinpath(@__DIR__, "projet\\phase2"))
+cd(joinpath(@__DIR__, "projet\\phase3"))
 
 # ╔═╡ 5a358530-ff8d-11ea-073c-41440515443a
 pwd()
@@ -101,7 +117,7 @@ md"""
 # ╔═╡ 42dd0570-0591-11eb-02d8-238f137cf89c
 display("exceptions.jl")
 
-# ╔═╡ 8461cff0-0599-11eb-0461-1bbbd9bb87ce
+# ╔═╡ 145b79d0-1d5f-11eb-07cf-b55cdb5a5fc7
 display("Node.jl")
 
 # ╔═╡ 955e1c00-0599-11eb-21fe-0db2e4a54261
@@ -113,22 +129,35 @@ display("graph.jl",1,34)
 # ╔═╡ facebcc0-0599-11eb-2f85-ffa3dee4d629
 display("Connected_component.jl", 1, 18)
 
-# ╔═╡ 782977c0-059d-11eb-0b1c-49a27e489b9b
-md""" ### Kruskal Algorithm
-* Kruskal is an algorithm that returns the minimum spanning tree of a given undirected fully connected graph
-* it uses two auxiliary functions: 
-1. **`get_components(...)`** $\rightarrow$ returns two components connected by a given edge
-2. **`merge_components!(...)`** $\rightarrow$ returns the result of a merge (i.e a connection) of two connected components of the given graph
+# ╔═╡ 43ceff70-1d5f-11eb-135d-13a5c8d4210e
+display("heuristics.jl")
+
+# ╔═╡ 8b53f510-1d70-11eb-1442-11fa6eb5d4a4
+md"""
+### Some explanations of the heuristics (or the lack thereof)
+
+1. Path compression:
+
+As you can see in the file above, there is no path compression implemented. The reason is because, in some way, it is already implemented in our structure (see ConnectedComponent struct). As you can see, for each ConnectedComponent object, there is an root attribute that give us access in constant time to its root. therefore, we don't need to iterate through a path like we would in a tree. However, this structrure (ConnectedComponent) is terrible for searching since in the worst case, to find a node, we have to go through all the nodes of the graph.
+
+2. Rank heuristic: 
+
+We implemented the rank heuristic, but it is not useful in practice exactly because of the ConnectedComponent structure (see justification above). Using this heuristic, it will change the final root of the tree, making the final tree shorter, but we cannot exploit this shortcut because we are limited by our implementation. 
+
 """
 
-# ╔═╡ 8f72d320-04b9-11eb-345d-39aa659720d5
-display("Connected_component.jl", 21, 47)
+# ╔═╡ 6be4617e-1d5f-11eb-2d65-f5bb4f7de7f5
+display("kruskal.jl", 1, 29)
 
-# ╔═╡ d94dfa72-059e-11eb-3bb1-5911eb41cd97
-display("Connected_component.jl", 49, 65)
+# ╔═╡ 6cca2da0-1d5f-11eb-00d3-69943a0ca28b
+display("prim.jl")
 
-# ╔═╡ e9e3e390-059e-11eb-33b0-0d00bad34395
-display("Connected_component.jl", 71, 83)
+# ╔═╡ 782977c0-059d-11eb-0b1c-49a27e489b9b
+md""" ### Prim Algorithm
+* Prim is an algorithm that returns the minimum spanning tree of a given undirected fully connected graph
+* it uses two auxiliary functions: 
+1. **`find_edge(...)`** $\rightarrow$ returns a tuple and an edge
+"""
 
 # ╔═╡ 3780d0de-059f-11eb-2bf9-8b71114fd0cf
 md"""
@@ -159,82 +188,84 @@ end
 
 # ╔═╡ 26fe7460-fdcb-11ea-353c-1da85f1370be
 md"""
-**Now we run Kruskal on this graph and we plot the result**
+**Now we run Prim on this graph and we plot the result**
+"""
+
+# ╔═╡ 4e032f90-04b7-11eb-18cb-2bf48d66fd53
+begin
+	mst_prim, prim_weight = prim(graph_notes)
+	with_terminal() do
+		show(mst_prim, graph_notes)
+		println("prim_weight: ", prim_weight)
+	end
+end
+
+# ╔═╡ e9e61cd0-1d60-11eb-158c-13afbf9b69f9
+md"""
+**Note:** There is a step  where we have two minimal edges that connect to a node that is not in the current solution. Therefore, that is why we get a different minimal spanning tree than with kruskal. They still have the same total weight.
 """
 
 # ╔═╡ ed44cc3e-04b6-11eb-2ce5-8fa5be74d570
 begin
-	mst = kruskal(graph_notes)
-	plot_graph(mst)
-end
-
-# ╔═╡ 4e032f90-04b7-11eb-18cb-2bf48d66fd53
-begin
-with_terminal() do
-		show(mst, graph_notes)
-	end
+	plot_graph(mst_prim)
 end
 
 # ╔═╡ f3b1e3a0-04b7-11eb-1c4c-5f56d8c0663a
-md""" **Here we display and run the unit tests for the Kruskal algorithm**"""
+md""" **Here we display and run the unit tests for the Prim algorithm**"""
 
 # ╔═╡ ab21f052-059b-11eb-231a-ddb82d46d137
 begin 
-	display("..\\tests\\test_kruskal.jl")
+	display("..\\tests\\test_prim.jl")
 end
 
 # ╔═╡ 7b4110a0-05a0-11eb-3409-f924951ba14a
-md"""**Running unit tests for Kruskal**"""
+md"""**Running unit tests for Prim**"""
 
-# ╔═╡ f3598a70-04b7-11eb-1fec-455aa43becd4
-begin
-	with_terminal() do	
-		include("..\\tests\\test_kruskal.jl")
-	end
-end
+# ╔═╡ 463ca740-1d63-11eb-14f8-95eed0b2e9ac
+md"""## Rank Heuristics Proof
+	
+Let S be a set of disjoint forests. We will show that the rank of any node after the merge of all the elements of S will be less or equal than $\lfloor\log_2 |S|\rfloor$:
 
-# ╔═╡ 5911bb80-04b8-11eb-20b4-7929f4a9c2d5
-md""" **Now we test kruskal on various instances (symmetric)**"""
+Proof:
 
-# ╔═╡ d67d94e0-04b8-11eb-2369-2ddcdec25056
-filename1 = "..\\..\\instances\\stsp\\bayg29.tsp"
+ * We will prove the thesis using the root node as it has the highest rank of all the nodes.
 
-# ╔═╡ 03422720-04b9-11eb-23bf-e3385299b08f
-begin
-	graph_bayg29=build_graph(filename1)
-	mst_bayg29 = kruskal(graph_bayg29)
-	plot_graph(mst_bayg29)
-end
+* We will do this by induction using the cardinality of S. 
 
-# ╔═╡ 942960de-04ba-11eb-08a9-5bc69d9207e8
-filename2 = "..\\..\\instances\\stsp\\dantzig42.tsp"
+1. base case: 
+	
+If $|S| = 1$ or $|S| = 2$, the statement is obvious and the inequality is valid.
 
-# ╔═╡ 9521556e-04ba-11eb-1886-5fb77792b5ca
-begin
-	graph_dantzing42=build_graph(filename2)
-	mst_dantzing42 = kruskal(graph_dantzing42)
-	plot_graph(mst_dantzing42)
-end
 
-# ╔═╡ 57c1bbe0-04b8-11eb-2e9b-9564cbcce0a8
-filename3 = "..\\..\\instances\\stsp\\gr17.tsp"
+2. Induction
 
-# ╔═╡ 6f1039c0-04b8-11eb-37a0-5ddffdd83883
-begin
-	graph_gr17=build_graph(filename3)
-	mst_gr17 = kruskal(graph_gr17)
-	plot_graph(mst_gr17)
-end
+let $r(S)$ be the rank of the root of the final component when all elements of S are merged.
 
-# ╔═╡ 6ecc52f0-04b8-11eb-1e34-03354dd214d1
-filename4 = "..\\..\\instances\\stsp\\hk48.tsp"
+Suppose that if $|S| = k$ such that $k \leq n$ for $k,n \in \mathbf{N}$
 
-# ╔═╡ 6e81dc70-04b8-11eb-0a7b-638519001181
-begin
-	graph_hk48=build_graph(filename4)
-	mst_hk48 = kruskal(graph_hk48)
-	plot_graph(mst_hk48)
-end
+then $r(S) \leq \log_2 |k|$.
+
+Now, suppose that $|S| = n + 1$
+
+let $a, b$ be the two final components lefts before the last merging step. 
+
+Let $S_1, S_2$ such that $S_1 \cup S_2 = S$ be the two sets such that $a$ is the result of the merging of $S_1$ and $b$ is the result of the merging of $S_2$.
+
+Since $|S_1| < n+1$ and $|S_2| < n+1$, we can use the inductive hypothesis.
+
+Therefore, $r(S) \leq \max\{\max\{\log_2(|S_1|), \log_2(|S_2|)\}, \log_2(\frac{n+1}{2}) + 1\}$ where $|S_1| + |S_2| = n + 1$
+
+$\max\{\log_2(|S_1|), \log_2(|S_2|)\} \leq \log_2(n) \leq \log_2(n+1)$
+
+$\log_2(\frac{n+1}{2}) + 1 = \log_2(n+1) - 1 + 1 = \log_2(n+1)$
+
+Therefore, $r(S) \leq \log_2(n+1)$
+
+Since the $r(S)$ is a positive integer, we also have  $r \leq \lfloor\log_2 |n+1|\rfloor$
+
+
+
+"""
 
 # ╔═╡ Cell order:
 # ╟─0be9edd0-fdcb-11ea-2e0b-99438dea97c4
@@ -252,34 +283,31 @@ end
 # ╠═68718350-ff8e-11ea-3da4-57a5b1b41c72
 # ╟─42dd0570-0591-11eb-02d8-238f137cf89c
 # ╠═472da810-fdd4-11ea-2627-af24b931e523
-# ╟─8461cff0-0599-11eb-0461-1bbbd9bb87ce
+# ╠═145b79d0-1d5f-11eb-07cf-b55cdb5a5fc7
 # ╠═5314a490-fdd3-11ea-25ef-2d1f7fc1e992
 # ╟─955e1c00-0599-11eb-21fe-0db2e4a54261
 # ╠═db19e470-fdd5-11ea-2975-41ca92f2cb6d
 # ╟─c5acbf60-0599-11eb-2883-2d28ad492ab2
 # ╠═64c277b0-04b5-11eb-0750-b320f1b4196e
 # ╟─facebcc0-0599-11eb-2f85-ffa3dee4d629
+# ╠═346e3af2-1d5f-11eb-1ec8-671bdd1ab73d
+# ╠═43ceff70-1d5f-11eb-135d-13a5c8d4210e
+# ╠═8b53f510-1d70-11eb-1442-11fa6eb5d4a4
+# ╠═58045670-1d5f-11eb-3f41-956faefc6410
+# ╟─6be4617e-1d5f-11eb-2d65-f5bb4f7de7f5
+# ╠═5db82560-1d5f-11eb-3cc8-3f0f181a3748
+# ╟─6cca2da0-1d5f-11eb-00d3-69943a0ca28b
 # ╠═8b41a962-04b5-11eb-3418-972d158d0809
 # ╠═782977c0-059d-11eb-0b1c-49a27e489b9b
-# ╟─8f72d320-04b9-11eb-345d-39aa659720d5
-# ╟─d94dfa72-059e-11eb-3bb1-5911eb41cd97
-# ╠═e9e3e390-059e-11eb-33b0-0d00bad34395
 # ╟─3780d0de-059f-11eb-2bf9-8b71114fd0cf
-# ╠═3b388650-fdcb-11ea-2782-a386ba2050c2
-# ╟─2baedd10-fdcb-11ea-0fbb-b579f5848782
-# ╠═26fe7460-fdcb-11ea-353c-1da85f1370be
-# ╟─4e032f90-04b7-11eb-18cb-2bf48d66fd53
-# ╟─ed44cc3e-04b6-11eb-2ce5-8fa5be74d570
+# ╟─3b388650-fdcb-11ea-2782-a386ba2050c2
+# ╠═2baedd10-fdcb-11ea-0fbb-b579f5848782
+# ╟─26fe7460-fdcb-11ea-353c-1da85f1370be
+# ╠═4e032f90-04b7-11eb-18cb-2bf48d66fd53
+# ╟─e9e61cd0-1d60-11eb-158c-13afbf9b69f9
+# ╠═ed44cc3e-04b6-11eb-2ce5-8fa5be74d570
 # ╠═f3b1e3a0-04b7-11eb-1c4c-5f56d8c0663a
-# ╟─ab21f052-059b-11eb-231a-ddb82d46d137
-# ╟─7b4110a0-05a0-11eb-3409-f924951ba14a
-# ╟─f3598a70-04b7-11eb-1fec-455aa43becd4
-# ╟─5911bb80-04b8-11eb-20b4-7929f4a9c2d5
-# ╠═d67d94e0-04b8-11eb-2369-2ddcdec25056
-# ╟─03422720-04b9-11eb-23bf-e3385299b08f
-# ╠═942960de-04ba-11eb-08a9-5bc69d9207e8
-# ╟─9521556e-04ba-11eb-1886-5fb77792b5ca
-# ╠═57c1bbe0-04b8-11eb-2e9b-9564cbcce0a8
-# ╟─6f1039c0-04b8-11eb-37a0-5ddffdd83883
-# ╠═6ecc52f0-04b8-11eb-1e34-03354dd214d1
-# ╟─6e81dc70-04b8-11eb-0a7b-638519001181
+# ╠═ab21f052-059b-11eb-231a-ddb82d46d137
+# ╠═7b4110a0-05a0-11eb-3409-f924951ba14a
+# ╠═f3598a70-04b7-11eb-1fec-455aa43becd4
+# ╠═463ca740-1d63-11eb-14f8-95eed0b2e9ac

@@ -5,20 +5,18 @@ mutable struct Tree{P}
     children:: Vector{Tree{P}}
     parent_weight::Union{P, Nothing}
 end
+"""TODO """
 data(tree::Tree{P}) where{P} = tree.data
+
+""" TODO"""
 function Tree(cp::ConnectedComponent{T,P}) where {T,P}
     root = Tree(cp.root, nothing, Vector{Tree{P}}(), nothing)
     edge_queue = edges(cp)
     tree_stack = Vector{Tree{P}}()
     push!(tree_stack, root)
-    println(typeof(root))
-    println(typeof(cp))
-    edge_count = 0
-    
     while(length(edge_queue) != 0)
         added_trees = Vector{Tree{P}}()
         edge_idx_to_delete = Vector{Int64}()
-        println(edge_count)
         for (idx, edge) in enumerate(edge_queue)
             node_names = [node_name for node_name in nodes(edge)]
             for tree in tree_stack
@@ -40,4 +38,18 @@ function Tree(cp::ConnectedComponent{T,P}) where {T,P}
         tree_stack = added_trees
     end
     return root
+end
+
+""" TODO"""
+function dfs(tree::Tree)
+    preorder = Vector{String}()
+    push!(preorder, data(tree))
+    # Go through the children first:
+    [dfs(child, preorder) for child in tree.children if !isnothing(tree.children)]
+    return preorder
+end
+
+function dfs(tree::Tree, preorder::Vector{String})
+    push!(preorder, data(tree))
+    [dfs(child, preorder) for child in tree.children if !isnothing(tree.children)]
 end

@@ -78,6 +78,13 @@ function add_edge!(graph::AbstractGraph{T,P}, edge::Edge{P}) where {T,P}
   end
 end
 
+""" TODO """
+
+function total_weight(graph::Graph{T,P}) where {T,P}
+
+  return sum(x -> x.value, edges(graph))  
+end
+
 # on présume que tous les graphes dérivant d'AbstractGraph
 # posséderont des champs `name` et `nodes`.
 

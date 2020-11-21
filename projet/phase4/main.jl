@@ -3,6 +3,8 @@
 using Test
 import Base.show
 using Plots
+using LinearAlgebra
+
 include(joinpath(@__DIR__, "exceptions.jl"))
 include(joinpath(@__DIR__, "node.jl"))
 include(joinpath(@__DIR__, "edge.jl"))
@@ -12,10 +14,12 @@ include(joinpath(@__DIR__, "heuristics.jl"))
 include(joinpath(@__DIR__, "kruskal.jl"))
 include(joinpath(@__DIR__, "prim.jl"))
 include(joinpath(@__DIR__, "tree.jl"))
-include(joinpath(@__DIR__, "rsl.jl"))
+include(joinpath(@__DIR__, "RSL.jl"))
+include(joinpath(@__DIR__, "HK.jl"))
 
 
-filename = joinpath(@__DIR__, "..\\..\\instances\\stsp\\bays29.tsp")
+
+filename = joinpath(@__DIR__, "..\\..\\instances\\stsp\\bayg29.tsp")
 
 graph = build_graph(filename)
 
@@ -24,7 +28,8 @@ graph = build_graph(filename)
 # graph = Graph("laboratory graph", lab_nodes, lab_edges)
 
 
-rsl_graph, rsl_graph_weight = rsl(graph, nodes(graph)[1]; is_kruskal = true)
+# rsl_graph, rsl_graph_weight = rsl(graph, nodes(graph)[1]; is_kruskal = true)
+hk_graph, hk_graph_weight = hk(graph; is_kruskal = true)
 
 plot_graph(rsl_graph)
 println(rsl_graph_weight)

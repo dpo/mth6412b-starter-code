@@ -11,7 +11,7 @@ data(tree::Tree{P}) where{P} = tree.data
 """ TODO"""
 function Tree(cp::ConnectedComponent{T,P}) where {T,P}
     root = Tree(cp.root, nothing, Vector{Tree{P}}(), nothing)
-    edge_queue = edges(cp)
+    edge_queue = copy(edges(cp))
     tree_stack = Vector{Tree{P}}()
     push!(tree_stack, root)
     while(length(edge_queue) != 0)

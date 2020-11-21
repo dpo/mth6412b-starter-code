@@ -29,7 +29,7 @@ graph = build_graph(filename)
 
 
 # rsl_graph, rsl_graph_weight = rsl(graph, nodes(graph)[1]; is_kruskal = true)
-hk_graph, hk_graph_weight = hk(graph; is_kruskal = true)
-
-plot_graph(rsl_graph)
-println(rsl_graph_weight)
+hk_graph, hk_graph_weight = hk(graph; is_kruskal = true, version=2)
+println("stop")
+#plot_graph(hk_graph)
+#println(hk_graph_weight)

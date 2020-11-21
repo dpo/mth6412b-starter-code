@@ -1,4 +1,6 @@
-"""TODO"""
+"""Tree Data Structure that can be traversed node by node 
+Ex: : TODO
+"""
 mutable struct Tree{P}
     data::String
     parent:: Union{Tree{P}, Nothing}

@@ -61,10 +61,11 @@ function hk(graph::Graph{T,P}; is_kruskal = true, step_size_0::Float64 = 1.0, ϵ
                 gradient[second_node_name] += 1
             end
             π = π .+ (step_size * gradient)
-            println("iter:", Int(norm(period,1)-period[end]+iter))
-            println("gradient: ", norm(gradient), " step: ",step_size, " Last period: ", period[end])
-            println("W: " , W_state[2])
-            println(" ")
+            # TODO: delete this
+            # println("iter:", Int(norm(period,1)-period[end]+iter))
+            # println("gradient: ", norm(gradient), " step: ",step_size, " Last period: ", period[end])
+            # println("W: " , W_state[2])
+            # println(" ")
         end
         if version == slow_convergence
             new_period = 1

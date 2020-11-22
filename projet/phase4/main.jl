@@ -19,7 +19,7 @@ include(joinpath(@__DIR__, "RSL.jl"))
 include(joinpath(@__DIR__, "HK.jl"))
 
 println("Make sure you are running this file from the phase4 folder!")
-println("Choose a symmetric instance (only the filename): ")
+println("Choose a symmetric instance (e.g bays29.tsp): ")
 
 filename = readline()
 filepath = joinpath(@__DIR__, "..","..","instances", "stsp", filename)

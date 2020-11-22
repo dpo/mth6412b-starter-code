@@ -1,5 +1,5 @@
 """Tree Data Structure that can be traversed node by node 
-Ex: : TODO
+Ex: :   parent = Tree("a", nothing, Vector{Tree{P}}(), nothing)
 """
 mutable struct Tree{P}
     data::String
@@ -7,12 +7,15 @@ mutable struct Tree{P}
     children:: Vector{Tree{P}}
     parent_weight::Union{P, Nothing}
 end
-"""TODO """
+
+""" getter for the data attribute of a Tree node """
 data(tree::Tree{P}) where{P} = tree.data
 
-""" TODO"""
+""" Tree constructor given a ConnectedComponent instance"""
 function Tree(cp::ConnectedComponent{T,P}) where {T,P}
+    # choosing the root as the root of the connected component
     root = Tree(cp.root, nothing, Vector{Tree{P}}(), nothing)
+    # copying vector of edges to not modify the original structure
     edge_queue = copy(edges(cp))
     tree_stack = Vector{Tree{P}}()
     push!(tree_stack, root)
@@ -25,6 +28,7 @@ function Tree(cp::ConnectedComponent{T,P}) where {T,P}
                 potential_children = [node_name for node_name in node_names if node_name != data(tree)]
                 if length(potential_children) == 1
                     potential_children = pop!(potential_children)
+                    # building new tree after finding the node connected to the previous node
                     new_tree = Tree(potential_children, tree, Vector{Tree{P}}(), value(edge))
                     push!(tree.children, new_tree)
                     push!(added_trees, new_tree)
@@ -33,6 +37,7 @@ function Tree(cp::ConnectedComponent{T,P}) where {T,P}
                 end
             end
         end
+        # removing edge from list. It was already accounted for
         for index in edge_idx_to_delete
             popat!(edge_queue, index)
             edge_idx_to_delete[findfirst(x -> x == index, edge_idx_to_delete):end] .-= 1
@@ -42,7 +47,7 @@ function Tree(cp::ConnectedComponent{T,P}) where {T,P}
     return root
 end
 
-""" TODO"""
+"""implements depth-first-search algorithm recursively"""
 function dfs(tree::Tree)
     preorder = Vector{String}()
     push!(preorder, data(tree))
@@ -51,6 +56,7 @@ function dfs(tree::Tree)
     return preorder
 end
 
+""" depth-first-search algorithm with different signature to combine result in one vector"""
 function dfs(tree::Tree, preorder::Vector{String})
     push!(preorder, data(tree))
     [dfs(child, preorder) for child in tree.children if !isnothing(tree.children)]

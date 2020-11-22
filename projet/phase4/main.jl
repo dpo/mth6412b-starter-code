@@ -18,7 +18,7 @@ include(joinpath(@__DIR__, "tree.jl"))
 include(joinpath(@__DIR__, "RSL.jl"))
 include(joinpath(@__DIR__, "HK.jl"))
 
-
+println("Make sure you are running this file from the phase4 folder!")
 println("Choose a symmetric instance (only the filename): ")
 
 filename = readline()

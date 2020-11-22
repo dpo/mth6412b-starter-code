@@ -78,7 +78,10 @@ function add_edge!(graph::AbstractGraph{T,P}, edge::Edge{P}) where {T,P}
   end
 end
 
-""" TODO """
+""" 
+returns the total weight of a given graph
+returns the sum of all the edges of the graph
+"""
 
 function total_weight(graph::Graph{T,P}) where {T,P}
 

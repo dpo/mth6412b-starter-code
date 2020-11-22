@@ -1,4 +1,12 @@
-"""TODO"""
+"""
+Implementation of the Held and Karp Algorithm
+
+returns at best a cycle, but it is not guaranteed. In all cases, it returns a 1-tree
+returns the weight of the 1-tree which corresponds to a lower bound to the optimal tour of the graph given
+
+It presupposes that the graph given is a complete graph.
+
+"""
 
 function hk(graph::Graph{T,P}; is_kruskal = true, step_size_0::Float64 = 1.0, ϵ::Float64 = 1*10^-5, version = lin_kernighan, timer::Int64 = 60) where {T,P}
     # Compute Minimal Spanning Tree of the graph:
@@ -53,20 +61,17 @@ function hk(graph::Graph{T,P}; is_kruskal = true, step_size_0::Float64 = 1.0, ϵ
             else
                 stop_doubling = true   
             end
-
+            # computing subgradient:
             gradient = [-2.0 for i in 1:length(π)]
             for edge in edges(one_tree)
                 first_node_name, second_node_name = map(x-> parse(Int, x), nodes(edge))
                 gradient[first_node_name] += 1
                 gradient[second_node_name] += 1
             end
+            # updating π vector with the new subgradient:
             π = π .+ (step_size * gradient)
-            # TODO: delete this
-            # println("iter:", Int(norm(period,1)-period[end]+iter))
-            # println("gradient: ", norm(gradient), " step: ",step_size, " Last period: ", period[end])
-            # println("W: " , W_state[2])
-            # println(" ")
         end
+        # implementation changes based on the named parameters values given:
         if version == slow_convergence
             new_period = 1
         else

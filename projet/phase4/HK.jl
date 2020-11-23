@@ -40,12 +40,16 @@ function hk(graph::Graph{T,P}; is_kruskal = true, step_size_0::Float64 = 1.0, ϵ
             mst, mst_weight = is_kruskal ? kruskal(pi_graph) : prim(pi_graph)
             
             # build a 1-tree:
-            one_tree = Graph("1-tree", nodes(pi_graph), sort!(edges(mst), by = value))
+            one_tree = Graph("1-tree", nodes(pi_graph), copy(sort!(edges(mst), by = value)))
             sorted_graph_edges = sort!(edges(pi_graph), by = value)
 
             # Finding the smallest edge not in mst and adding it to 1-tree graph
-            idx = findfirst(edge -> !(edge ∈ edges(one_tree)), sorted_graph_edges)
+            node_names = [node_name for node_name in [nodes(edge) for edge in edges(one_tree)]]
+            node_names_graph=[node_name for node_name in [nodes(edge) for edge in edges(graph)]]
+            idx = findfirst(edge -> !((nodes(edge) in node_names) || reverse(nodes(edge)) in node_names), sorted_graph_edges)
+           
             new_smallest_edge = !isnothing(idx) ? sorted_graph_edges[idx] : return
+            
             add_edge!(one_tree, new_smallest_edge)
 
             # updating total_weights:

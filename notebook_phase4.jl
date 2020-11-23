@@ -10,6 +10,9 @@ using Pkg
 # ╔═╡ a43c3ca0-0591-11eb-0877-e90edd32d010
 using PlutoUI
 
+# ╔═╡ e06be140-2d1d-11eb-19eb-39c368aa1849
+using LinearAlgebra
+
 # ╔═╡ 68718350-ff8e-11ea-3da4-57a5b1b41c72
 include("exceptions.jl")
 
@@ -47,7 +50,7 @@ include("tree.jl")
 include("RSL.jl")
 
 # ╔═╡ 2e4eda40-2d08-11eb-14b7-8f93dbb6f196
-include("hk.jl")
+include("HK.jl")
 
 # ╔═╡ 0be9edd0-fdcb-11ea-2e0b-99438dea97c4
 md"""
@@ -65,10 +68,7 @@ md"""
 """
 
 # ╔═╡ 6af932d0-fdd1-11ea-2222-4bbb807b0db4
-cd(joinpath(@__DIR__, "projet\\phase4"))
-
-# ╔═╡ 5a358530-ff8d-11ea-073c-41440515443a
-pwd()
+cd(joinpath(@__DIR__, "projet", "phase4"))
 
 # ╔═╡ 11961ed0-fdcf-11ea-2e24-6fe10bafe291
 pwd()
@@ -206,33 +206,54 @@ md"""
 # ╔═╡ 1e191180-2d13-11eb-115c-bbe0bf32fa71
 graph = build_graph(filepath)
 
-# ╔═╡ 3a1511e0-2d13-11eb-26e4-0b8e93ffc5b5
-begin 
+# ╔═╡ d1eaf140-2d24-11eb-13b6-293093398a19
 	best_rsl_graph, best_rsl_graph_weight = rsl(graph, nodes(graph)[1]; is_kruskal = true)
-	optimal_tour_weight = 2020.0
+
+
+# ╔═╡ ddb0668e-2d24-11eb-282a-ddac4d4631c9
+optimal_tour_weight = 2020.0
+
+# ╔═╡ e262f220-2d24-11eb-18da-130f7fe301dc
 	rsl_relative_error = round(abs(optimal_tour_weight - best_rsl_graph_weight)/optimal_tour_weight; digits = 2)
-	println("best rsl graph weight: $(best_rsl_graph_weight)")
-	println("optimal tour: ",  optimal_tour_weight)
-	println("rsl_relative_error: ", rsl_relative_error)
+
+
+# ╔═╡ e306ac2e-2d24-11eb-075a-cd6e94deeba1
+best_rsl_graph_weight
+
+
+# ╔═╡ e38c7e00-2d24-11eb-0a94-0d1dc4862d75
+optimal_tour_weight
+
+
+# ╔═╡ e40dbbf2-2d24-11eb-1b06-334452d27fd8
+rsl_relative_error
+
+
+# ╔═╡ e48cafee-2d24-11eb-1e96-61f25a383e18
 	plot_graph(best_rsl_graph)
-end
 
 # ╔═╡ 91fb82e0-2d13-11eb-1be7-af5a1083ab20
 md"""
 ### Showing the 1-tree  returned by the Held-Karp algorithm with bays29.tsp instance
 """
 
-# ╔═╡ 1217280e-2d16-11eb-025f-774b7c376e94
-@enum Version slow_convergence = 1 lin_kernighan = 2
+# ╔═╡ 7d5a3af0-2d24-11eb-3ca5-5754b30243b6
+	best_hk_graph, best_hk_graph_weight = hk(graph; is_kruskal = false, step_size_0 = 1.0, ϵ = 10^-5)
+
+
+# ╔═╡ 98c12740-2d24-11eb-3394-5790a731e05c
+	 hk_relative_error = round(abs(optimal_tour_weight-best_hk_graph_weight)/optimal_tour_weight; digits = 2)
+
+
+# ╔═╡ 9a5ab300-2d24-11eb-273f-b52a17bc624b
+best_hk_graph_weight
+
+
+# ╔═╡ a0bc9c40-2d24-11eb-06d4-15cb2cecdc0d
+ hk_relative_error
 
 # ╔═╡ 2fa3c570-2d14-11eb-1809-8187820d24c2
-begin
-	best_hk_graph, best_hk_graph_weight = hk(graph; is_kruskal = false, step_size_0 = 1.0, ϵ = 10^-5, version = lin_kernighan)
-	 hk_relative_error = round(abs(optimal_tour_weight-best_hk_graph_weight)/optimal_tour_weight; digits = 2)
-	println("best hk graph weight: $(best_hk_graph_weight)")
-	println("hk_relative_error: ", hk_relative_error)
-	plot_graph(best_hk_graph)
-end
+plot_graph(best_hk_graph)
 
 # ╔═╡ Cell order:
 # ╟─0be9edd0-fdcb-11ea-2e0b-99438dea97c4
@@ -240,7 +261,6 @@ end
 # ╟─8ad5b910-ff8f-11ea-3835-734df59563c6
 # ╠═e222eeae-fdcb-11ea-18d4-85725dcdfef7
 # ╠═6af932d0-fdd1-11ea-2222-4bbb807b0db4
-# ╠═5a358530-ff8d-11ea-073c-41440515443a
 # ╟─11961ed0-fdcf-11ea-2e24-6fe10bafe291
 # ╠═5b511e60-fdcc-11ea-2574-fd7e50a08873
 # ╟─d1eaae90-fdce-11ea-38ab-070f79ea4f78
@@ -277,7 +297,17 @@ end
 # ╠═2e0219d0-2d08-11eb-1c48-751a5549c05e
 # ╠═b89beda2-2d12-11eb-253f-4b763a273ca6
 # ╠═1e191180-2d13-11eb-115c-bbe0bf32fa71
-# ╠═3a1511e0-2d13-11eb-26e4-0b8e93ffc5b5
+# ╠═d1eaf140-2d24-11eb-13b6-293093398a19
+# ╠═ddb0668e-2d24-11eb-282a-ddac4d4631c9
+# ╠═e262f220-2d24-11eb-18da-130f7fe301dc
+# ╠═e306ac2e-2d24-11eb-075a-cd6e94deeba1
+# ╠═e38c7e00-2d24-11eb-0a94-0d1dc4862d75
+# ╠═e40dbbf2-2d24-11eb-1b06-334452d27fd8
+# ╠═e48cafee-2d24-11eb-1e96-61f25a383e18
 # ╠═91fb82e0-2d13-11eb-1be7-af5a1083ab20
-# ╠═1217280e-2d16-11eb-025f-774b7c376e94
+# ╠═e06be140-2d1d-11eb-19eb-39c368aa1849
+# ╠═7d5a3af0-2d24-11eb-3ca5-5754b30243b6
+# ╠═98c12740-2d24-11eb-3394-5790a731e05c
+# ╠═9a5ab300-2d24-11eb-273f-b52a17bc624b
+# ╠═a0bc9c40-2d24-11eb-06d4-15cb2cecdc0d
 # ╠═2fa3c570-2d14-11eb-1809-8187820d24c2

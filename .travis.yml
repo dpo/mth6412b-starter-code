@@ -1,0 +1,25 @@
+language: julia
+coveralls: true
+
+## Documentation: http://docs.travis-ci.com/user/languages/julia/
+os:
+  - osx
+  - linux
+  - windows
+  - freebsd
+
+julia:
+  - 1.0
+  - 1.5
+  - nightly
+
+branches:
+  only:
+    - master
+
+script:
+- julia -e 'include("projet/phase1/runtests.jl")'
+
+jobs:
+  allow_failures:
+  - julia: nightly

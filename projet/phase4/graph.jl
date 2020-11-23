@@ -162,5 +162,6 @@ function plot_graph(graph::AbstractGraph{T,P}) where {T,P}
   scatter!(x, y)
 
   fig
+  return fig
 
 end

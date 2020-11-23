@@ -82,4 +82,8 @@ println("optimal tour: ",  optimal_tour_weight)
 println("rsl_relative_error: ", rsl_relative_error)
 println("hk_relative_error: ", hk_relative_error)
 
-[plot_graph(best_graph) for best_graph in (best_rsl_graph, best_hk_graph)]
+println("plotting hamiltonian cycle, press enter after closing the plot to show the second graph")
+display(plot_graph(best_rsl_graph))
+readline()
+display(plot_graph(best_hk_graph))
+readline()

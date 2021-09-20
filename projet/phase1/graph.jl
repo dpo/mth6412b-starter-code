@@ -22,13 +22,13 @@ mutable struct Graph{T, I} <: AbstractGraph{T, I}
 end
 
 """Ajoute un noeud au graphe."""
-function add_node!(graph::Graph, node::Node)
+function add_node!(graph::Graph{T}, node::Node{T}) where T
   push!(graph.nodes, node)
   graph
 end
 
 """Ajoute une arète au graphe."""
-function add_edge!(graph::Graph, edge::Edge)
+function add_edge!(graph::Graph{T, I}, edge::Edge{I}) where {T, I}
   push!(graph.edges, edge)
   graph
 end

@@ -94,6 +94,7 @@ end
 function read_edges(header::Dict{String}{String}, filename::String)
 
   edges = []
+  weights = []
   edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
   known_edge_weight_formats = ["FULL_MATRIX", "UPPER_ROW", "LOWER_ROW",
   "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
@@ -145,6 +146,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
             end
             push!(edges, edge)
             i += 1
+            push!(weights, data[i])
           end
 
           n_to_read -= n_on_this_line
@@ -166,7 +168,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
     end
   end
   close(file)
-  return edges
+  return edges, weights
 end
 
 """Renvoie les noeuds et les arêtes du graphe."""

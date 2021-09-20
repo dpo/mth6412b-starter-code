@@ -5,4 +5,8 @@ include("projet/phase1/node.jl")
 include("projet/phase1/graph.jl")
 include("projet/phase1/read_stsp.jl")
 
-read_header(raw"instances/stsp/bays29.tsp")
+dict_bays29 = read_header("mth6412b-starter-code/instances/stsp/bays29.tsp")
+@test typeof(dict_bays29) <: Dict
+
+edge_list, weight_list = read_edges(dict_bays29, "mth6412b-starter-code/instances/stsp/bays29.tsp")
+@test length(edge_list)==length(weight_list)

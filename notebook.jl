@@ -4,31 +4,65 @@
 using Markdown
 using InteractiveUtils
 
+# ╔═╡ dcf9974c-8211-47e4-b34b-a4f89a2ecbcb
+using PlutoUI
+
 # ╔═╡ 5db9df1d-66b0-4717-9c94-9b19ce8b10d8
 begin
-	begin
-		begin
-			
-				using Plots
-			
-				include("projet/phase1/edge.jl")
-				include("projet/phase1/node.jl")
-				include("projet/phase1/graph.jl")
-				include("projet/phase1/read_stsp.jl")
-				
-			
-		end
-	end
+	using Plots
+	
+	include("projet/phase1/edge.jl")
+	include("projet/phase1/node.jl")
+	include("projet/phase1/graph.jl")
+	include("projet/phase1/read_stsp.jl")
 end
+
+# ╔═╡ 489635f8-4065-45e1-bb76-5b60aba7ee70
+md"""
+# Implémentation d'algorithmes de recherche opérationnelle. Projet phase 1
+
+Polytechnique Montréal
+
+MTH6412B
+
+Xavier Lebeuf et Geoffroy Leconte
+
+Septembre 2021
+"""
 
 # ╔═╡ 85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 md"""
-### Importation des fichiers
+# 1. Importation des fichiers
+
+Lien vers nos documents GitHub:
 """
 
 # ╔═╡ d106146b-a34e-4af8-9182-97071790c6ad
 md"""
-# Création du graphe
+# 2. Type Edge
+
+Nous avons créé un type Edge, très similaire au type déjà existant Node. Le type Edge comporte trois attributs: le nom, un tuple contenant les deux extrémités et le poids.
+"""
+
+# ╔═╡ 4a4dd74f-fa96-4425-8ec4-1506facc8a80
+md"""
+# 3 et 4. Étendre les fonctions existantes
+
+Nous avons ajouté un attribut vecteur contenant des types Edge au type Graph. Nous avons aussi ajouté un paramètre I pour ce nouvel attribut. Une seconde boucle for à été ajoutée à la fonction `show` pour montrer les arêtes également.
+"""
+
+# ╔═╡ 4a1e5693-955a-40ce-a34e-f39f50852c0f
+md"""
+# 5. Prendre en compte les poids
+
+La fonction `read_edges` contient maintenant un second tableau auquel on ajoute les poids des arêtes à chaque itération. Nous avons aussi ajouté une condition `if` de façon à ne pas ajouter de poids et d'arêtes si ces dernières ont le même noeud comme successeur et prédécesseur. Ces arètes ne sont pas utiles dans le contexte  du voyageur de commerce et elles alourdissent l'algorithme.
+"""
+
+# ╔═╡ ce163cc1-c6c3-4f7c-95fd-555227963b2a
+md"""
+# 6. Fonction créant un graphe
+
+Voici la fonction créant un objet de type Graphe à partir d'un fichier .tsp, ainsi qu'un exemple avec le fichier bayg29.tsp.
 """
 
 # ╔═╡ 8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
@@ -41,43 +75,43 @@ function createGraph(graphname::String, filename::String)
 	edge_list, weight_list = read_edges(dict, filename)
 	node_list = read_nodes(dict, filename)
 		
-	G = Graph(graphname, Node{Int64}[], Edge{Int64}[])
-	
+	G = Graph(graphname, Node{Vector{Float64}}[], Edge{Int64}[])
+
 	for no in node_list
 		newnode = Node(string(no[1]), no[2])
 		add_node!(G, newnode)
 	end
 	
 	for i in 1:length(edge_list)
-		newedge = Edge(string(edge_list[i][1], ↔, edge_list[i][2]), edge_list[i], weight_list[i])
+		newedge = Edge(string(edge_list[i][1], "↔", edge_list[i][2]), edge_list[i], weight_list[i])
 		add_edge!(G, newedge)
 	end
 	G
 end
 
-# ╔═╡ 19e608a2-a6ca-43b6-b91a-97525b18a922
-md"""
-# Autres modifications
-En plus des modifications indiquées dans l'énoncé de la phase 1, nous avons ajouté deux lignes à la fonction `read_edges` de façon à ne pas créer d'arêtes qui ont les mêmes noeuds comme successeur et prédécesseur. Ces arètes ne sont pas utiles dans le contexte  du voyageur de commerce et elles alourdissent l'algorithme.
-"""
-
-
 # ╔═╡ 0706dc2d-86b3-48f3-ba91-67ee2c244e27
-G = createGraph("bays29", raw"./instances/stsp/bayg29.tsp")
+G = createGraph("bays29", raw"./instances/stsp/bays29.tsp");
 
 # ╔═╡ 4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
+with_terminal() do
 show(G)
+end
 
 # ╔═╡ 0c3327ac-2c8f-4fea-9ddc-224e8bedf188
-plot_graph(raw"mth6412b-starter-code/instances/stsp/bayg29.tsp")
+plot_graph(raw"./instances/stsp/bayg29.tsp")
+
+# ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 Plots = "~1.22.1"
+PlutoUI = "~0.7.9"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -533,6 +567,12 @@ git-tree-sha1 = "4c2637482176b1c2fb99af4d83cb2ff0328fc33c"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.22.1"
 
+[[PlutoUI]]
+deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
+git-tree-sha1 = "44e225d5837e2a2345e69a1d1e01ac2443ff9fcb"
+uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+version = "0.7.9"
+
 [[Preferences]]
 deps = ["TOML"]
 git-tree-sha1 = "00cfd92944ca9c760982747e9a1d0d5d86ab1e5a"
@@ -640,6 +680,11 @@ deps = ["Adapt", "DataAPI", "StaticArrays", "Tables"]
 git-tree-sha1 = "2ce41e0d042c60ecd131e9fb7154a3bfadbf50d3"
 uuid = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
 version = "0.6.3"
+
+[[Suppressor]]
+git-tree-sha1 = "a819d77f31f83e5792a76081eee1ea6342ab8787"
+uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+version = "0.2.0"
 
 [[TOML]]
 deps = ["Dates"]
@@ -889,13 +934,18 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
+# ╠═489635f8-4065-45e1-bb76-5b60aba7ee70
 # ╠═85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
+# ╠═dcf9974c-8211-47e4-b34b-a4f89a2ecbcb
 # ╠═5db9df1d-66b0-4717-9c94-9b19ce8b10d8
 # ╠═d106146b-a34e-4af8-9182-97071790c6ad
+# ╠═4a4dd74f-fa96-4425-8ec4-1506facc8a80
+# ╠═4a1e5693-955a-40ce-a34e-f39f50852c0f
+# ╠═ce163cc1-c6c3-4f7c-95fd-555227963b2a
 # ╠═8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
-# ╠═19e608a2-a6ca-43b6-b91a-97525b18a922
 # ╠═0706dc2d-86b3-48f3-ba91-67ee2c244e27
 # ╠═4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
 # ╠═0c3327ac-2c8f-4fea-9ddc-224e8bedf188
+# ╠═c3a6e502-f708-488f-b789-46076c5b122f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

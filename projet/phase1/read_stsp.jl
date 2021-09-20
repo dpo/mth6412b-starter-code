@@ -147,7 +147,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
             i += 1
             if edge[1] != edge[2]
               push!(edges, edge)
-              push!(weights, parse(Int64, data[i]))
+              push!(weights, parse(Int64, data[j+1]))
             end
           end
 

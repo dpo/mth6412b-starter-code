@@ -1,5 +1,5 @@
-using Test
-
+using Plots
+	
 include("projet/phase1/edge.jl")
 include("projet/phase1/node.jl")
 include("projet/phase1/graph.jl")
@@ -28,6 +28,7 @@ function createGraph(graphname::String, filename::String)
 	G
 end
 
+#Exemple avec bays29.tsp
 G = createGraph("bays29", raw"mth6412b-starter-code/instances/stsp/bays29.tsp")
 show(G)
 

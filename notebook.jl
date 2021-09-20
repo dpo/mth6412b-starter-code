@@ -6,12 +6,19 @@ using InteractiveUtils
 
 # ╔═╡ 5db9df1d-66b0-4717-9c94-9b19ce8b10d8
 begin
-	using Plots
-
-	include("projet/phase1/edge.jl")
-	include("projet/phase1/node.jl")
-	include("projet/phase1/graph.jl")
-	include("projet/phase1/read_stsp.jl")
+	begin
+		begin
+			
+				using Plots
+			
+				include("projet/phase1/edge.jl")
+				include("projet/phase1/node.jl")
+				include("projet/phase1/graph.jl")
+				include("projet/phase1/read_stsp.jl")
+				
+			
+		end
+	end
 end
 
 # ╔═╡ 85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
@@ -19,8 +26,50 @@ md"""
 ### Importation des fichiers
 """
 
-# ╔═╡ e5dc3fbb-7074-46b0-b5ed-fde0ef130093
+# ╔═╡ d106146b-a34e-4af8-9182-97071790c6ad
+md"""
+# Création du graphe
+"""
 
+# ╔═╡ 8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
+"""
+Renvoie un objet de type Graphe à partir d'un fichier .tsp
+"""
+function createGraph(graphname::String, filename::String)
+	
+	dict = read_header(filename)
+	edge_list, weight_list = read_edges(dict, filename)
+	node_list = read_nodes(dict, filename)
+		
+	G = Graph(graphname, Node{Int64}[], Edge{Int64}[])
+	
+	for no in node_list
+		newnode = Node(string(no[1]), no[2])
+		add_node!(G, newnode)
+	end
+	
+	for i in 1:length(edge_list)
+		newedge = Edge(string(edge_list[i][1], ↔, edge_list[i][2]), edge_list[i], weight_list[i])
+		add_edge!(G, newedge)
+	end
+	G
+end
+
+# ╔═╡ 19e608a2-a6ca-43b6-b91a-97525b18a922
+md"""
+# Autres modifications
+En plus des modifications indiquées dans l'énoncé de la phase 1, nous avons ajouté deux lignes à la fonction `read_edges` de façon à ne pas créer d'arêtes qui ont les mêmes noeuds comme successeur et prédécesseur. Ces arètes ne sont pas utiles dans le contexte  du voyageur de commerce et elles alourdissent l'algorithme.
+"""
+
+
+# ╔═╡ 0706dc2d-86b3-48f3-ba91-67ee2c244e27
+G = createGraph("bays29", raw"./instances/stsp/bayg29.tsp")
+
+# ╔═╡ 4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
+show(G)
+
+# ╔═╡ 0c3327ac-2c8f-4fea-9ddc-224e8bedf188
+plot_graph(raw"mth6412b-starter-code/instances/stsp/bayg29.tsp")
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -97,9 +146,9 @@ uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.5.7"
 
 [[DataAPI]]
-git-tree-sha1 = "bec2532f8adb82005476c141ec23e921fc20971b"
+git-tree-sha1 = "cc70b17275652eb47bc9e5f81635981f13cea5c8"
 uuid = "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
-version = "1.8.0"
+version = "1.9.0"
 
 [[DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
@@ -842,6 +891,11 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╠═85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 # ╠═5db9df1d-66b0-4717-9c94-9b19ce8b10d8
-# ╠═e5dc3fbb-7074-46b0-b5ed-fde0ef130093
+# ╠═d106146b-a34e-4af8-9182-97071790c6ad
+# ╠═8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
+# ╠═19e608a2-a6ca-43b6-b91a-97525b18a922
+# ╠═0706dc2d-86b3-48f3-ba91-67ee2c244e27
+# ╠═4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
+# ╠═0c3327ac-2c8f-4fea-9ddc-224e8bedf188
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

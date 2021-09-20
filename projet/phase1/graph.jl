@@ -1,7 +1,7 @@
 import Base.show
 
 """Type abstrait dont d'autres types de graphes dériveront."""
-abstract type AbstractGraph{T} end
+abstract type AbstractGraph{T, I} end
 
 """Type representant un graphe comme un ensemble de noeuds.
 
@@ -15,20 +15,20 @@ Exemple :
 
 Attention, tous les noeuds doivent avoir des données de même type.
 """
-mutable struct Graph{T} <: AbstractGraph{T}
+mutable struct Graph{T, I} <: AbstractGraph{T, I}
   name::String
   nodes::Vector{Node{T}}
-  edges::Vector{Edge{T}}
+  edges::Vector{Edge{I}}
 end
 
 """Ajoute un noeud au graphe."""
-function add_node!(graph::Graph{T}, node::Node{T}) where T
+function add_node!(graph::Graph, node::Node)
   push!(graph.nodes, node)
   graph
 end
 
 """Ajoute une arète au graphe."""
-function add_edge!(graph::Graph{T}, edge::Edge{T}) where T
+function add_edge!(graph::Graph, edge::Edge)
   push!(graph.edges, edge)
   graph
 end

@@ -33,8 +33,6 @@ Septembre 2021
 # ╔═╡ 85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 md"""
 # 1. Importation des fichiers
-
-Lien vers nos documents GitHub:
 """
 
 # ╔═╡ d106146b-a34e-4af8-9182-97071790c6ad
@@ -62,7 +60,7 @@ La fonction `read_edges` contient maintenant un second tableau auquel on ajoute 
 md"""
 # 6. Fonction créant un graphe
 
-Voici la fonction créant un objet de type Graphe à partir d'un fichier .tsp, ainsi qu'un exemple avec le fichier bayg29.tsp.
+Voici la fonction créant un objet de type Graphe à partir d'un fichier .tsp, ainsi qu'un exemple avec le fichier bayg29.tsp. Le code montré ci-sessous est le même que celui contenu dans le fichier mainphase1.
 """
 
 # ╔═╡ 8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
@@ -101,7 +99,11 @@ end
 plot_graph(raw"./instances/stsp/bayg29.tsp")
 
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
+md"""
+# 7. Branche phase1 sur GitHub
 
+Lien: https://github.com/XavierLebeuf/mth6412b-starter-code/tree/phase1
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """

@@ -1,5 +1,6 @@
 import Base.show
 
+
 """Type abstrait dont d'autres types de graphes dériveront."""
 abstract type AbstractGraph{T} end
 

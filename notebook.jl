@@ -1,21 +1,20 @@
 ### A Pluto.jl notebook ###
-# v0.16.1
+# v0.15.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ dcf9974c-8211-47e4-b34b-a4f89a2ecbcb
-using PlutoUI
-
 # ╔═╡ 5db9df1d-66b0-4717-9c94-9b19ce8b10d8
 begin
 	using Plots
+	using PlutoUI
 	
 	include("projet/phase1/edge.jl")
 	include("projet/phase1/node.jl")
 	include("projet/phase1/graph.jl")
 	include("projet/phase1/read_stsp.jl")
 end
+#hidden line
 
 # ╔═╡ 489635f8-4065-45e1-bb76-5b60aba7ee70
 md"""
@@ -29,11 +28,13 @@ Xavier Lebeuf et Geoffroy Leconte
 
 Septembre 2021
 """
+#hidden line
 
 # ╔═╡ 85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 md"""
 # 1. Importation des fichiers
 """
+#hidden line
 
 # ╔═╡ d106146b-a34e-4af8-9182-97071790c6ad
 md"""
@@ -41,6 +42,7 @@ md"""
 
 Nous avons créé un type Edge, très similaire au type déjà existant Node. Le type Edge comporte trois attributs: le nom, un tuple contenant les deux extrémités et le poids.
 """
+#hidden line
 
 # ╔═╡ 4a4dd74f-fa96-4425-8ec4-1506facc8a80
 md"""
@@ -48,6 +50,7 @@ md"""
 
 Nous avons ajouté un attribut vecteur contenant des types Edge au type Graph. Nous avons aussi ajouté un paramètre I pour ce nouvel attribut. Une seconde boucle for à été ajoutée à la fonction `show` pour montrer les arêtes également.
 """
+#hidden line
 
 # ╔═╡ 4a1e5693-955a-40ce-a34e-f39f50852c0f
 md"""
@@ -55,13 +58,15 @@ md"""
 
 La fonction `read_edges` contient maintenant un second tableau auquel on ajoute les poids des arêtes à chaque itération. Nous avons aussi ajouté une condition `if` de façon à ne pas ajouter de poids et d'arêtes si ces dernières ont le même noeud comme successeur et prédécesseur. Ces arètes ne sont pas utiles dans le contexte  du voyageur de commerce et elles alourdissent l'algorithme.
 """
+#hidden line
 
 # ╔═╡ ce163cc1-c6c3-4f7c-95fd-555227963b2a
 md"""
 # 6. Fonction créant un graphe
 
-Voici la fonction créant un objet de type Graphe à partir d'un fichier .tsp, ainsi qu'un exemple avec le fichier bayg29.tsp. Le code montré ci-sessous est le même que celui contenu dans le fichier mainphase1.
+Voici la fonction créant un objet de type Graphe à partir d'un fichier .tsp, ainsi qu'un exemple avec le fichier bayg29.tsp. Le code montré ci-dessous est le même que celui contenu dans le fichier mainphase1.
 """
+#hidden line
 
 # ╔═╡ 8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
 """
@@ -86,17 +91,21 @@ function createGraph(graphname::String, filename::String)
 	end
 	G
 end
+#hidden line
 
 # ╔═╡ 0706dc2d-86b3-48f3-ba91-67ee2c244e27
 G = createGraph("bays29", raw"./instances/stsp/bays29.tsp");
+#hidden line
 
 # ╔═╡ 4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
 with_terminal() do
 show(G)
 end
+#hidden line
 
 # ╔═╡ 0c3327ac-2c8f-4fea-9ddc-224e8bedf188
 plot_graph(raw"./instances/stsp/bayg29.tsp")
+#hidden line
 
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
 md"""
@@ -104,6 +113,7 @@ md"""
 
 Lien: https://github.com/XavierLebeuf/mth6412b-starter-code/tree/phase1
 """
+#hidden line
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -113,7 +123,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 Plots = "~1.22.1"
-PlutoUI = "~0.7.9"
+PlutoUI = "~0.7.10"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -325,6 +335,11 @@ deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll",
 git-tree-sha1 = "8a954fed8ac097d5be04921d595f741115c1b2ad"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+0"
+
+[[HypertextLiteral]]
+git-tree-sha1 = "72053798e1be56026b81d4e2682dbe58922e5ec9"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.0"
 
 [[IniFile]]
 deps = ["Test"]
@@ -570,10 +585,10 @@ uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.22.1"
 
 [[PlutoUI]]
-deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
-git-tree-sha1 = "44e225d5837e2a2345e69a1d1e01ac2443ff9fcb"
+deps = ["Base64", "Dates", "HypertextLiteral", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
+git-tree-sha1 = "26b4d16873562469a0a1e6ae41d90dec9e51286d"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.9"
+version = "0.7.10"
 
 [[Preferences]]
 deps = ["TOML"]
@@ -938,7 +953,6 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╠═489635f8-4065-45e1-bb76-5b60aba7ee70
 # ╠═85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
-# ╠═dcf9974c-8211-47e4-b34b-a4f89a2ecbcb
 # ╠═5db9df1d-66b0-4717-9c94-9b19ce8b10d8
 # ╠═d106146b-a34e-4af8-9182-97071790c6ad
 # ╠═4a4dd74f-fa96-4425-8ec4-1506facc8a80

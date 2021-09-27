@@ -17,6 +17,12 @@ using Markdown
 using InteractiveUtils
 end
 
+# ╔═╡ f412df0e-910c-43af-8ee3-37b4c124b1db
+begin
+using Images
+exemple = load("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/exemple.png")
+end
+
 # ╔═╡ a40d8394-4283-49c4-8dae-a220e0612ee3
 md"# Ecole polytechnique de Montréal"
 
@@ -45,13 +51,22 @@ end
 
 # ╔═╡ 42cce623-9fe6-4988-b92a-0f7c993eb2b0
 begin 
-md" Le type Edge est défini avec 3 attributs comme suit: les deux sommets (string, string) reliés par l'arête et le poids de cette arête (Int).
+md" Le type Edge est défini avec 3 attributs comme suit: les deux sommets (string, string) reliés par l'arête et le poids de cette arête (Int). Par exemple, l'arête Edge(\"1\" , \"5\" , 86) reliant le noeud 1 au noeud 5 ayant pour poids 86 dans le fichier EXPLICIT bayg29.tsp.  voir la capture ci-dessous pour lus de visualisation.  \
+	Le type Graph renvoie un vecteur des données à format flottant (Float64). Ces données sont composées d'un nom Graph, d'une liste de noeuds (Node) et d'une liste d'arêtes (Edge). Le type Graph a été modifié pour permettre l'inclusion des arêtes.\
+	Le programme principal main.jl a été élaboré pour lire une instance TSP symétrique dont les poids sont au format EXPLICIT.\
 	
-Le type Graph a été modifié pour permettre l'inclusion des arêtes."
+L'utilisateur fait appel à la fonction create_graph(\"chemin du fichier EXPLICIT\") dans Julia pour générer le graphe correspondant dans le Terminal. Comme indiqué dans la capture ci-dessous. "
 end
 
-# ╔═╡ f412df0e-910c-43af-8ee3-37b4c124b1db
+# ╔═╡ aafbc9da-a403-49e4-b4f4-e9c17b9008c6
 
+
+# ╔═╡ 9645dcb3-c614-414f-b927-4e1ae089819f
+begin
+	md"## Références: 
+	1. Notes de cours
+	2. "
+end
 
 # ╔═╡ Cell order:
 # ╟─5a00dbe0-3dd4-4f24-aebe-174de68724ce
@@ -63,4 +78,6 @@ end
 # ╟─f111cda5-de3d-4616-9a8a-cb4e4169ae89
 # ╟─92c9398d-4310-4aa6-8236-adb8e005b3da
 # ╠═42cce623-9fe6-4988-b92a-0f7c993eb2b0
-# ╠═f412df0e-910c-43af-8ee3-37b4c124b1db
+# ╟─f412df0e-910c-43af-8ee3-37b4c124b1db
+# ╠═aafbc9da-a403-49e4-b4f4-e9c17b9008c6
+# ╠═9645dcb3-c614-414f-b927-4e1ae089819f

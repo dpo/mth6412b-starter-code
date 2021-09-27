@@ -7,9 +7,8 @@ abstract type AbstractNode{T} end
 
 Exemple:
 
-        noeud = Node("James", [π, exp(1)])
-        noeud = Node("Kirk", "guitar")
-        noeud = Node("Lars", 2)
+  noeud = Node("James", [π, exp(1)])
+  noeud = Node("Kirk", "guitar")
 
 """
 mutable struct Node{T} <: AbstractNode{T}

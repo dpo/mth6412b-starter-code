@@ -1,24 +1,27 @@
 import Base.show
 
 """Type abstrait dont d'autres types de graphes dériveront."""
-abstract type AbstractGraph{T, I} end
+abstract type AbstractGraph{T, I, J} end
 
 """Type representant un graphe comme un ensemble de noeuds.
 
 Exemple :
 
-    node1 = Node("Joe", 3.14)
-    node2 = Node("Steve", exp(1))
-    node3 = Node("Jill", 4.12)
+    node1 = Node("Montreal", 24.12)
+    node2 = Node("Quebec", 4.12)
     edge1 = Edge("Mtl_Qc", (1.0, 2.0), 20.0)
-    G = Graph("Ick", [node1, node2, node3], [edge1])
+    G = Graph("Ick", [node1, node2], [edge1])
 
 Attention, tous les noeuds doivent avoir des données de même type.
 """
-mutable struct Graph{T, I} <: AbstractGraph{T, I}
+mutable struct Graph{T, I, J} <: AbstractGraph{T, I, J}
   name::String
   nodes::Vector{Node{T}}
-  edges::Vector{Edge{I}}
+  edges::Vector{Edge{I, J}}
+end
+
+mutable struct ConnexComp{T}
+  nodenames::Vector{T}
 end
 
 """Ajoute un noeud au graphe."""
@@ -28,10 +31,11 @@ function add_node!(graph::Graph{T}, node::Node{T}) where T
 end
 
 """Ajoute une arète au graphe."""
-function add_edge!(graph::Graph{T, I}, edge::Edge{I}) where {T, I}
+function add_edge!(graph::Graph{T, I, J}, edge::Edge{I, J}) where {T, I, J}
   push!(graph.edges, edge)
   graph
 end
+
 
 # on présume que tous les graphes dérivant d'AbstractGraph
 # posséderont des champs `name`, `edges` et `nodes`.

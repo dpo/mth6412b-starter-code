@@ -47,6 +47,7 @@ Nous avons d'abord ajouté à la fonction createGraph() l'ajout de sommets lorsq
 with_terminal() do
 	test_creation_graphe(raw"./instances/stsp")
 end
+#hidden line
 
 # ╔═╡ 4a4dd74f-fa96-4425-8ec4-1506facc8a80
 md"""
@@ -78,6 +79,7 @@ begin
 		println("G exemple du cours ✓")
 	end
 end
+#hidden line
 
 # ╔═╡ 62189caf-b553-4943-a98e-c09811b05257
 md"""
@@ -91,6 +93,7 @@ La fonction test_kruskal() performe l'algorithme sur tous les fichiers .tsp.
 with_terminal() do
 	test_kruskal(raw"./instances/stsp")
 end
+#hidden line
 
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
 md"""

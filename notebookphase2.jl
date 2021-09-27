@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.1
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -8,17 +8,16 @@ using InteractiveUtils
 begin
 	using Plots
 	using PlutoUI
+	using Test
 	
-	include("projet/phase1/edge.jl")
-	include("projet/phase1/node.jl")
-	include("projet/phase1/graph.jl")
-	include("projet/phase1/read_stsp.jl")
+	include("mainphase1.jl")
+	include("mainphase2.jl")
 end
 #hidden line
 
 # ╔═╡ 489635f8-4065-45e1-bb76-5b60aba7ee70
 md"""
-# Implémentation d'algorithmes de recherche opérationnelle. Projet phase 1
+# Implémentation d'algorithmes de recherche opérationnelle. Projet phase 2
 
 Polytechnique Montréal
 
@@ -38,19 +37,47 @@ md"""
 
 # ╔═╡ d106146b-a34e-4af8-9182-97071790c6ad
 md"""
-# 2. Type Edge
+# 2. Modifications à la phase 1
 
-Nous avons créé un type Edge, très similaire au type déjà existant Node. Le type Edge comporte trois attributs: le nom, un tuple contenant les deux extrémités et le poids.
+Nous avons d'abord ajouté à la fonction createGraph() l'ajout de sommets lorsque le fichier .tsp ne contient pas de coordonnées pour les noeuds. Ensuite, nous avons créé une fonction qui teste la création de graphe sur tous les fichiers .tsp.
 """
 #hidden line
+
+# ╔═╡ e9750118-5253-4b1d-ba7a-3057c162f5ee
+with_terminal() do
+	test_creation_graphe(raw"./instances/stsp")
+end
 
 # ╔═╡ 4a4dd74f-fa96-4425-8ec4-1506facc8a80
 md"""
-# 3 et 4. Étendre les fonctions existantes
+# 3. Création d'une structure ConnexComp
 
-Nous avons ajouté un attribut vecteur contenant des types Edge au type Graph. Nous avons aussi ajouté un paramètre I pour ce nouvel attribut. Une seconde boucle for à été ajoutée à la fonction `show` pour montrer les arêtes également.
+Cette structure ne contient qu'un vecteur contenant les noms des sommets faisant partie de la composante connexe. Elle a été définie dans le fichier graph.jl à la ligne 23.
 """
 #hidden line
+
+# ╔═╡ 34090aa6-03c4-4894-afdd-ac7a96256ae3
+md"""
+# 4 et 5. Implémentation de l'algorithme de Kruskal et tests unitaires
+
+L'algorithme a été implémenté sous forme de fonction prenant en argument une graphe et renvoyant l'arbre de moindre coût recouvrant le graphe. L'algorithme suit les étapes montrées dans les notes de cours.
+
+Dans la cellule suivante, on performe l'algorithme sur le graphe en exemple dans le cours. Les arêtes de l'arbre trouvé sont affichées et cette solution diffère de celle des notes de cours. Toutefois, elle est également optimale. Deux tests sont ensuite effectués. Premièrement, le nombre d'arêtes dans l'arbre doit correspondre au nombre de sommets du graphe original - 1. C'est une propriété des arbres de recouvrement si le graphe est connexe. Deuxièmement, on teste l'optimalité en vérifiant que la somme des coûts est de 37, comme dans les notes de cours.
+"""
+#hidden line
+
+# ╔═╡ 83c01fdd-902b-4ee4-9dd6-a8cc742d5ae6
+begin
+	arbrecoutmin = kruskal(Gexcours)
+	with_terminal() do
+		for e in arbrecoutmin
+		    println(e)
+		end
+		@test length(arbrecoutmin) == nb_nodes(Gexcours) - 1
+		@test sommeweights(arbrecoutmin) == 37
+		println("G exemple du cours ✓")
+	end
+end
 
 # ╔═╡ 4a1e5693-955a-40ce-a34e-f39f50852c0f
 md"""
@@ -60,52 +87,18 @@ La fonction `read_edges` contient maintenant un second tableau auquel on ajoute 
 """
 #hidden line
 
-# ╔═╡ ce163cc1-c6c3-4f7c-95fd-555227963b2a
+# ╔═╡ 62189caf-b553-4943-a98e-c09811b05257
 md"""
-# 6. Fonction créant un graphe
+# 6. Test sur toutes les instances
 
-Voici la fonction créant un objet de type Graphe à partir d'un fichier .tsp, ainsi qu'un exemple avec le fichier bayg29.tsp. Le code montré ci-dessous est le même que celui contenu dans le fichier mainphase1.
+La fonction test_kruskal() performe l'algorithme sur tous les fichiers .tsp.
 """
 #hidden line
 
-# ╔═╡ 8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
-"""
-Renvoie un objet de type Graphe à partir d'un fichier .tsp
-"""
-function createGraph(graphname::String, filename::String)
-	
-	dict = read_header(filename)
-	edge_list, weight_list = read_edges(dict, filename)
-	node_list = read_nodes(dict, filename)
-		
-	G = Graph(graphname, Node{Vector{Float64}}[], Edge{Int64}[])
-
-	for no in node_list
-		newnode = Node(string(no[1]), no[2])
-		add_node!(G, newnode)
-	end
-	
-	for i in 1:length(edge_list)
-		newedge = Edge(string(edge_list[i][1], "↔", edge_list[i][2]), edge_list[i], weight_list[i])
-		add_edge!(G, newedge)
-	end
-	G
-end
-#hidden line
-
-# ╔═╡ 0706dc2d-86b3-48f3-ba91-67ee2c244e27
-G = createGraph("bays29", raw"./instances/stsp/bays29.tsp");
-#hidden line
-
-# ╔═╡ 4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
+# ╔═╡ a0600f30-ad65-4f78-93e6-36dd7ef63403
 with_terminal() do
-show(G)
+	test_kruskal(raw"./instances/stsp")
 end
-#hidden line
-
-# ╔═╡ 0c3327ac-2c8f-4fea-9ddc-224e8bedf188
-plot_graph(raw"./instances/stsp/bayg29.tsp")
-#hidden line
 
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
 md"""
@@ -120,6 +113,7 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 Plots = "~1.22.1"
@@ -955,13 +949,13 @@ version = "0.9.1+5"
 # ╠═85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 # ╠═5db9df1d-66b0-4717-9c94-9b19ce8b10d8
 # ╠═d106146b-a34e-4af8-9182-97071790c6ad
+# ╠═e9750118-5253-4b1d-ba7a-3057c162f5ee
 # ╠═4a4dd74f-fa96-4425-8ec4-1506facc8a80
+# ╠═34090aa6-03c4-4894-afdd-ac7a96256ae3
+# ╠═83c01fdd-902b-4ee4-9dd6-a8cc742d5ae6
 # ╠═4a1e5693-955a-40ce-a34e-f39f50852c0f
-# ╠═ce163cc1-c6c3-4f7c-95fd-555227963b2a
-# ╠═8c90c688-ed7c-484e-aaf4-46a5d0cd0cf4
-# ╠═0706dc2d-86b3-48f3-ba91-67ee2c244e27
-# ╠═4a391e13-8b2d-4cd3-a6f7-c52e61aebae8
-# ╠═0c3327ac-2c8f-4fea-9ddc-224e8bedf188
+# ╠═62189caf-b553-4943-a98e-c09811b05257
+# ╠═a0600f30-ad65-4f78-93e6-36dd7ef63403
 # ╠═c3a6e502-f708-488f-b789-46076c5b122f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

@@ -7,10 +7,10 @@ abstract type AbstractGraph{T, I, J} end
 
 Exemple :
 
-    node1 = Node("Montreal", 24.12)
-    node2 = Node("Quebec", 4.12)
-    edge1 = Edge("Mtl_Qc", (1.0, 2.0), 20.0)
-    G = Graph("Ick", [node1, node2], [edge1])
+  node1 = Node("Montreal", 24.12)
+  node2 = Node("Quebec", 4.12)
+  edge1 = Edge("Mtl_Qc", (1.0, 2.0), 20.0)
+  G = Graph("Ick", [node1, node2], [edge1])
 
 Attention, tous les noeuds doivent avoir des données de même type.
 """
@@ -20,6 +20,14 @@ mutable struct Graph{T, I, J} <: AbstractGraph{T, I, J}
   edges::Vector{Edge{I, J}}
 end
 
+"""
+Exemple :
+
+  node1 = Node("Montreal", 24.12)
+  node2 = Node("Quebec", 4.12)
+  composante = ConnexComp(["Montreal", "Quebec"])
+
+"""
 mutable struct ConnexComp{T}
   nodenames::Vector{T}
 end

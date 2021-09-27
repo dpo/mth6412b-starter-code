@@ -6,7 +6,7 @@ include("projet/phase1/graph.jl")
 include("projet/phase1/read_stsp.jl")
 
 """
-Renvoie un objet de type Graphe à partir d'un fichier .tsp
+Renvoie un objet de type Graphe à partir d'un fichier .tsp.
 """
 function createGraph(graphname::String, filename::String)
 	
@@ -37,7 +37,7 @@ function createGraph(graphname::String, filename::String)
 end
 
 """
-Crée un graphe G pour chaque fichier .tsp. Seulement le premier est affiché.
+Crée un graphe G pour chaque fichier .tsp.
 """
 function test_creation_graphe(path)
 	for file_name in readdir(path)

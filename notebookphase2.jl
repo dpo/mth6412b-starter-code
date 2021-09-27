@@ -79,14 +79,6 @@ begin
 	end
 end
 
-# ╔═╡ 4a1e5693-955a-40ce-a34e-f39f50852c0f
-md"""
-# 5. Prendre en compte les poids
-
-La fonction `read_edges` contient maintenant un second tableau auquel on ajoute les poids des arêtes à chaque itération. Nous avons aussi ajouté une condition `if` de façon à ne pas ajouter de poids et d'arêtes si ces dernières ont le même noeud comme successeur et prédécesseur. Ces arètes ne sont pas utiles dans le contexte  du voyageur de commerce et elles alourdissent l'algorithme.
-"""
-#hidden line
-
 # ╔═╡ 62189caf-b553-4943-a98e-c09811b05257
 md"""
 # 6. Test sur toutes les instances
@@ -102,9 +94,9 @@ end
 
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
 md"""
-# 7. Branche phase1 sur GitHub
+# 7. Branche phase2 sur GitHub
 
-Lien: https://github.com/XavierLebeuf/mth6412b-starter-code/tree/phase1
+Lien: https://github.com/XavierLebeuf/mth6412b-starter-code/tree/phase2
 """
 #hidden line
 
@@ -953,7 +945,6 @@ version = "0.9.1+5"
 # ╠═4a4dd74f-fa96-4425-8ec4-1506facc8a80
 # ╠═34090aa6-03c4-4894-afdd-ac7a96256ae3
 # ╠═83c01fdd-902b-4ee4-9dd6-a8cc742d5ae6
-# ╠═4a1e5693-955a-40ce-a34e-f39f50852c0f
 # ╠═62189caf-b553-4943-a98e-c09811b05257
 # ╠═a0600f30-ad65-4f78-93e6-36dd7ef63403
 # ╠═c3a6e502-f708-488f-b789-46076c5b122f

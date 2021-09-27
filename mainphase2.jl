@@ -2,6 +2,9 @@ using Plots
 using Test
 include("mainphase1.jl")
 
+"""
+Applique l'algorithme de Kruskal sur un graphe. Renvoie l'arbre de coût minimum recouvrant le graphe.
+"""
 function kruskal(graph::Graph{T, I, J}) where{T, I, J}
     # Trier les arêtes du graphe en ordre croissant de poids.
     weights = J[]
@@ -52,6 +55,7 @@ function kruskal(graph::Graph{T, I, J}) where{T, I, J}
     arbre
 end
 
+#Construction du graphe présent dans les notes de cours.
 Gexcours = Graph("Gtest", [Node("a", [0, 0]),
 Node("b", [0, 0]),
 Node("c", [0, 0]),
@@ -76,6 +80,9 @@ Edge("c↔f", ("c", "f"), 4),
 Edge("g↔h", ("g", "h"), 1),
 Edge("c↔i", ("c", "i"), 2)])
 
+"""
+Calcule la somme des coûts des arêtes dans un arbre.
+"""
 function sommeweights(arbre)
     somme = 0
     for e in arbre
@@ -84,6 +91,9 @@ function sommeweights(arbre)
     somme
 end
 
+"""
+Teste la fonction kruskal() sur tous les fichiers .tsp.
+"""
 function test_kruskal(path)
 	for file_name in readdir(path)
 		if file_name[end-3:end] == ".tsp"

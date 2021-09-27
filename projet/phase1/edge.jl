@@ -1,19 +1,19 @@
 import Base.show
 
 """Type abstrait dont d'autres types d'arètes dériveront."""
-abstract type AbstractEdge{T} end
+abstract type AbstractEdge{I, J} end
 
 """Type représentant les arètes d'un graphe.
 
 Exemple:
 
-        edge = Edge("Mtl_Qc", (1, 2), 20)
+  edge = Edge("Mtl_Qc", (1, 2), 20)
 
 """
-mutable struct Edge{T} <: AbstractEdge{T}
+mutable struct Edge{I, J} <: AbstractEdge{I, J}
   name::String
-  data::Tuple{T, T}
-  weight::T
+  data::Tuple{I, I}
+  weight::J
 end
 
 # on présume que tous les arètes dérivant d'AbstractEdge

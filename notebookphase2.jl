@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.1
+# v0.15.1
 
 using Markdown
 using InteractiveUtils
@@ -61,7 +61,7 @@ Cette structure ne contient qu'un vecteur contenant les noms des sommets faisant
 md"""
 # 4 et 5. Implémentation de l'algorithme de Kruskal et tests unitaires
 
-L'algorithme a été implémenté sous forme de fonction prenant en argument une graphe et renvoyant l'arbre de moindre coût recouvrant le graphe. L'algorithme suit les étapes montrées dans les notes de cours.
+L'algorithme a été implémenté sous forme de fonction prenant en argument un graphe et renvoyant l'arbre de moindre coût recouvrant le graphe. L'algorithme suit les étapes montrées dans les notes de cours.
 
 Dans la cellule suivante, on performe l'algorithme sur le graphe en exemple dans le cours. Les arêtes de l'arbre trouvé sont affichées et cette solution diffère de celle des notes de cours. Toutefois, elle est également optimale. Deux tests sont ensuite effectués. Premièrement, le nombre d'arêtes dans l'arbre doit correspondre au nombre de sommets du graphe original - 1. C'est une propriété des arbres de recouvrement si le graphe est connexe. Deuxièmement, on teste l'optimalité en vérifiant que la somme des coûts est de 37, comme dans les notes de cours.
 """

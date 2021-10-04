@@ -13,6 +13,7 @@ Queue{T}() where T = Queue(T[])
 
 """Ajoute `item` à la fin de la file `s`."""
 function push!(q::AbstractQueue{T}, item::T) where T
+    for i = 1
     push!(q.items, item)
     q
 end

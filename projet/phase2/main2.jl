@@ -16,10 +16,13 @@ function create_graph(filename::String)
     lis_edges = Edge[]
     for k =1 : length(graph_edges)
         for l =1: length(graph_edges[k])
+            if l != k
             push!(lis_edges, Edge(string(k), string(graph_edges[k][l][1]) , graph_edges[k][l][2] ))
+            #sort!(lis_edges)
+            end 
         end
     end
-
+    
     Connex(filename, lis_nodes, lis_edges)
 end
 

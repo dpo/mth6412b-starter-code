@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.1
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -39,7 +39,14 @@ md"""
 md"""
 # 2. Modifications à la phase 1
 
-Nous avons d'abord ajouté à la fonction createGraph() l'ajout de sommets lorsque le fichier .tsp ne contient pas de coordonnées pour les noeuds. Ensuite, nous avons créé une fonction qui teste la création de graphe sur tous les fichiers .tsp.
+Nous avons d'abord modifié la structure "Edges" pour qu'elle comprenne des structures "Nodes" dans son champ "data". Conséquemment, la fonction createGraph() et show(edge::AbstractEdge) ont été mises à jour.
+
+Aussi, nous avons ajouté à la fonction createGraph() l'ajout de sommets lorsque le fichier .tsp ne contient pas de coordonnées pour les noeuds.
+
+Ensuite, nous avons ajouté deux tests unitaires. Un qui vérifie que les multi-arêtes et les arêtes vers elle-mêmes n'existent pas et un qui vérifie que le nombre total d'arêtes créées est égal à n*(n-1)/2 où n est le nombre de sommets. Ceci est une propriété des graphes denses.
+
+Finalement, nous avons créé une fonction test\_creation\_graphe(path) qui teste la création de graphe sur tous les fichiers .tsp et qui effectue les tests unitaires.
+
 """
 #hidden line
 
@@ -53,7 +60,7 @@ end
 md"""
 # 3. Création d'une structure ConnexComp
 
-Cette structure ne contient qu'un vecteur contenant les noms des sommets faisant partie de la composante connexe. Elle a été définie dans le fichier graph.jl à la ligne 23.
+Cette structure ne contient qu'un vecteur contenant les noeuds faisant partie de la composante connexe. Elle a été définie dans le fichier graph.jl à la ligne 23.
 """
 #hidden line
 
@@ -72,7 +79,7 @@ begin
 	arbrecoutmin = kruskal(Gexcours)
 	with_terminal() do
 		for e in arbrecoutmin
-		    println(e)
+		    show(e)
 		end
 		@test length(arbrecoutmin) == nb_nodes(Gexcours) - 1
 		@test sommeweights(arbrecoutmin) == 37
@@ -940,16 +947,16 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╠═489635f8-4065-45e1-bb76-5b60aba7ee70
-# ╠═85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
+# ╟─489635f8-4065-45e1-bb76-5b60aba7ee70
+# ╟─85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 # ╠═5db9df1d-66b0-4717-9c94-9b19ce8b10d8
-# ╠═d106146b-a34e-4af8-9182-97071790c6ad
+# ╟─d106146b-a34e-4af8-9182-97071790c6ad
 # ╠═e9750118-5253-4b1d-ba7a-3057c162f5ee
-# ╠═4a4dd74f-fa96-4425-8ec4-1506facc8a80
-# ╠═34090aa6-03c4-4894-afdd-ac7a96256ae3
+# ╟─4a4dd74f-fa96-4425-8ec4-1506facc8a80
+# ╟─34090aa6-03c4-4894-afdd-ac7a96256ae3
 # ╠═83c01fdd-902b-4ee4-9dd6-a8cc742d5ae6
-# ╠═62189caf-b553-4943-a98e-c09811b05257
+# ╟─62189caf-b553-4943-a98e-c09811b05257
 # ╠═a0600f30-ad65-4f78-93e6-36dd7ef63403
-# ╠═c3a6e502-f708-488f-b789-46076c5b122f
+# ╟─c3a6e502-f708-488f-b789-46076c5b122f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

@@ -9,7 +9,7 @@ Exemple :
 
   node1 = Node("Montreal", 24.12)
   node2 = Node("Quebec", 4.12)
-  edge1 = Edge("Mtl_Qc", (1.0, 2.0), 20.0)
+  edge1 = Edge("Mtl_Qc", (node1, node2), 20.0)
   G = Graph("Ick", [node1, node2], [edge1])
 
 Attention, tous les noeuds doivent avoir des données de même type.
@@ -25,11 +25,11 @@ Exemple :
 
   node1 = Node("Montreal", 24.12)
   node2 = Node("Quebec", 4.12)
-  composante = ConnexComp(["Montreal", "Quebec"])
+  composante = ConnexComp([node1, node2])
 
 """
 mutable struct ConnexComp{T}
-  nodenames::Vector{T}
+  nodes::Vector{Node{T}}
 end
 
 """Ajoute un noeud au graphe."""

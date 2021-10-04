@@ -23,6 +23,15 @@ using Images
 exemple = load("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/exemple.png")
 end
 
+# ╔═╡ aafbc9da-a403-49e4-b4f4-e9c17b9008c6
+begin
+	include("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/node.jl")
+	include("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/edge.jl")
+	include("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/read_stsp.jl")
+	include("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/graph.jl")
+	include("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/phase1/main.jl")
+end
+
 # ╔═╡ a40d8394-4283-49c4-8dae-a220e0612ee3
 md"# Ecole polytechnique de Montréal"
 
@@ -58,8 +67,23 @@ md" Le type Edge est défini avec 3 attributs comme suit: les deux sommets (stri
 L'utilisateur fait appel à la fonction create_graph(\"chemin du fichier EXPLICIT\") dans Julia pour générer le graphe correspondant dans le Terminal. Comme indiqué dans la capture ci-dessous. "
 end
 
-# ╔═╡ aafbc9da-a403-49e4-b4f4-e9c17b9008c6
+# ╔═╡ d42ef91f-2379-44f4-906a-2ea2d9a744e6
+md" ## Afficahge de graphes "
 
+# ╔═╡ 26d4f974-251c-4820-b074-bb70277aaf7e
+md" On fait appel à nos codes sources node.jl, edege.jl, graph.jl, read_stsp.jl et main.jl ."
+
+# ╔═╡ 9e221536-fa6a-4f83-9f4c-313b6d698dd2
+md" Quelques exemples de graphes :"
+
+# ╔═╡ e9a1dad6-e79e-4a21-bf40-f48c11119cdf
+create_graph("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/instances/stsp/fri26.tsp")
+
+# ╔═╡ bd8cc6a7-9bc2-4f1f-bf02-20c052630563
+create_graph("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/instances/stsp/bays29.tsp")
+
+# ╔═╡ 076248f9-5916-4e34-b8fc-fd8f786db778
+display(plot_graph("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/instances/stsp/bays29.tsp"))
 
 # ╔═╡ 9645dcb3-c614-414f-b927-4e1ae089819f
 begin
@@ -71,13 +95,19 @@ end
 # ╔═╡ Cell order:
 # ╟─5a00dbe0-3dd4-4f24-aebe-174de68724ce
 # ╟─5e196205-7c7b-4abb-9294-8d1cde587df9
-# ╟─a40d8394-4283-49c4-8dae-a220e0612ee3
-# ╟─325540e9-bdd8-498b-a003-05de98f8b4de
-# ╟─fc911268-1ca1-11ec-3cea-316e634ec1f1
-# ╟─aae45e52-3b2c-4dbf-b800-5ad74e32e107
-# ╟─f111cda5-de3d-4616-9a8a-cb4e4169ae89
+# ╠═a40d8394-4283-49c4-8dae-a220e0612ee3
+# ╠═325540e9-bdd8-498b-a003-05de98f8b4de
+# ╠═fc911268-1ca1-11ec-3cea-316e634ec1f1
+# ╠═aae45e52-3b2c-4dbf-b800-5ad74e32e107
+# ╠═f111cda5-de3d-4616-9a8a-cb4e4169ae89
 # ╟─92c9398d-4310-4aa6-8236-adb8e005b3da
 # ╠═42cce623-9fe6-4988-b92a-0f7c993eb2b0
 # ╟─f412df0e-910c-43af-8ee3-37b4c124b1db
+# ╟─d42ef91f-2379-44f4-906a-2ea2d9a744e6
+# ╟─26d4f974-251c-4820-b074-bb70277aaf7e
 # ╠═aafbc9da-a403-49e4-b4f4-e9c17b9008c6
+# ╟─9e221536-fa6a-4f83-9f4c-313b6d698dd2
+# ╟─e9a1dad6-e79e-4a21-bf40-f48c11119cdf
+# ╟─bd8cc6a7-9bc2-4f1f-bf02-20c052630563
+# ╠═076248f9-5916-4e34-b8fc-fd8f786db778
 # ╠═9645dcb3-c614-414f-b927-4e1ae089819f

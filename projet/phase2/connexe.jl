@@ -20,10 +20,12 @@ end
 
 """Ajoute une arete de poids non nul au sous-graphe. """
 function add_edge!(connex::Connex, edge:: Edge)  
-    if edge.poids != 0                              # Les arêtes de poids nuls ne seront pas prises en compte
+  for k = 1 : length(edges)  
+   if edges[][][k] != 0                              # Les arêtes de poids nuls ne seront pas prises en compte
     push!(connex.edges, edge)
-    graph
+    connex
     end 
+  end
 end
   
   
@@ -34,8 +36,9 @@ end
 name(connex::AbstractConnex) = connex.name
   
 """Renvoie la liste des noeuds du sous-graphe."""
-nodes(connex::AbstractConnex) = connex.nodes
-  
+function nodes(connex::AbstractConnex)
+    connex.nodes
+end
 """ Renvoie la liste des aretes du sous-graphe. """
 edges(connex::AbstractConnex) = connex.edges
   

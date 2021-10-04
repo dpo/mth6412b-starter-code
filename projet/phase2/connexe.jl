@@ -19,8 +19,8 @@ end
 
 
 """Ajoute une arete de poids non nul au sous-graphe. """
-function add_edge!(connex::Connex, edge:: Edge)  # Les arêtes de poids nuls ne seront pas prises en compte
-    if edge.poids != 0
+function add_edge!(connex::Connex, edge:: Edge)  
+    if edge.poids != 0                              # Les arêtes de poids nuls ne seront pas prises en compte
     push!(connex.edges, edge)
     graph
     end 

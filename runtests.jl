@@ -1,60 +1,26 @@
 include("mainphase1.jl")
 
-Gtest = Graph("Gtest", [Node("1", [0, 0]),
-Node("2", [0, 0]),
-Node("3", [0, 0]),
-Node("4", [0, 0]),
-Node("5", [0, 0]),
-Node("6", [0, 0])],
-[Edge("1↔2", (1, 2), 2),
-Edge("2↔4", (2, 4), 4),
-Edge("4↔6", (4, 6), 2),
-Edge("6↔5", (6, 5), 2),
-Edge("5↔3", (5, 3), 3),
-Edge("1↔3", (1, 3), 13),
-Edge("2↔3", (2, 3), 1),
-Edge("4↔5", (4, 5), 3)])
-
-function kruskal2(graph::Graph{T, I}) where{T, I}
-    # Triage des arètes du graphe en ordre croissant des poids
-    weights = I[]
-    for e in graph.edges
-        push!(weights, e.weight)
-    end
-    perms = sortperm(weights)
-    permute!(graph.edges, perms)
-    graph
-
-    #Construction de l'arbre A
-    A = Edge{I}[]
-    SC = [Int64[]]
-    for i in 1:length(graph.nodes)
-        push!(SC, Int64[parse(I, graph.nodes[i].name)])
-    end
-
-    composantes = [0, 0]
-    for edge1 in graph.edges
-        si = edge1.data[1]
-        sj = edge1.data[2]
-        composantes .= 0
-        for i in 1:length(SC)
-            for s in SC[i]
-                if s == si
-                    composantes[1] = i
-                elseif s == sj
-                    composantes[2] = i
-                end
-            end
-        end
-        if composantes[1] != composantes[2]
-            push!(A, edge1)
-            for edge2 in SC[composantes[1]]
-                push!(SC[composantes[2]], edge2)
-            end
-            deleteat!(SC, composantes[1])
-        end
-    end
-    A
-end
-
-#kruskal2(Gtest)
+a = Node("a", [0, 0])
+b = Node("b", [0, 0])
+c = Node("c", [0, 0])
+d = Node("d", [0, 0])
+e = Node("e", [0, 0])
+f = Node("f", [0, 0])
+g = Node("g", [0, 0])
+h = Node("h", [0, 0])
+i = Node("i", [0, 0])
+Gexcours = Graph("Gtest", [a, b, c, d, e, f, g, h, i],
+[Edge("a↔b", (a, b), 4),
+Edge("b↔c", (b, c), 8),
+Edge("c↔d", (c, d), 7),
+Edge("d↔e", (d, e), 9),
+Edge("e↔f", (e, f), 10),
+Edge("f↔g", (f, g), 2),
+Edge("a↔h", (a, h), 8),
+Edge("i↔h", (i, h), 7),
+Edge("b↔h", (b, h), 11),
+Edge("g↔i", (g, i), 6),
+Edge("f↔d", (f, d), 14),
+Edge("c↔f", (c, f), 4),
+Edge("g↔h", (g, h), 1),
+Edge("c↔i", (c, i), 2)])

@@ -7,12 +7,12 @@ abstract type AbstractEdge{I, J} end
 
 Exemple:
 
-  edge = Edge("Mtl_Qc", (1, 2), 20)
+  edge = Edge("Mtl_Qc", (node1, node2), 20)
 
 """
 mutable struct Edge{I, J} <: AbstractEdge{I, J}
   name::String
-  data::Tuple{I, I}
+  data::Tuple{Node{I}, Node{I}}
   weight::J
 end
 
@@ -30,5 +30,5 @@ weight(edge::AbstractEdge) = edge.weight
 
 """Affiche une arète."""
 function show(edge::AbstractEdge)
-  println("Edge ", name(edge), ", data: ", data(edge), ", weight: ", weight(edge))
+  println("Edge ", name(edge), ", data: (", name(data(edge)[1]), ", ", name(data(edge)[2]), "), weight: ", weight(edge))
 end

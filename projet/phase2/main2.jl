@@ -4,10 +4,7 @@ include("connexe.jl")
 include("read_stsp.jl")
 
 
-function create_graph(filename::String)
-
-    
-    
+function create_graph(filename::String) 
     graph_nodes,graph_edges = read_stsp(filename)
 
     lis_nodes = Node{Vector{Float64}}[]

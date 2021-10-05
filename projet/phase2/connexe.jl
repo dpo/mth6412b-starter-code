@@ -21,16 +21,18 @@ end
 """Ajoute une arete de poids non nul au sous-graphe. """
 function add_edge!(connex::Connex, edge:: Edge)  
   for k = 1 : length(edges)  
-   if edges[][][k] != 0                              # Les arêtes de poids nuls ne seront pas prises en compte
-    push!(connex.edges, edge)
-    connex
+   
+    if poids(edge) != 0                              # Les arêtes de poids nuls ne seront pas prises en compte
+   
+      push!(connex.edges, edge)
+   
+      connex
+   
     end 
+  
   end
+
 end
-  
-  
-# on présume que tous les graphes dérivant d'AbstractGraph
-# posséderont des champs `name` et `nodes`.
   
 """Renvoie le nom du sous-graphe."""
 name(connex::AbstractConnex) = connex.name

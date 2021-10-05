@@ -16,7 +16,7 @@ function create_graph(filename::String)
     lis_edges = Edge[]
     for k =1 : length(graph_edges)
         for l =1: length(graph_edges[k])
-            if l != k
+            if l != k                                                                               # On évite les répétitions des noeuds dans le graphe.
             push!(lis_edges, Edge(string(k), string(graph_edges[k][l][1]) , graph_edges[k][l][2] ))
             #sort!(lis_edges)
             end 

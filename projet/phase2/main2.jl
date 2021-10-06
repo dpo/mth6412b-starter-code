@@ -1,8 +1,9 @@
 include("node.jl")
 include("edge.jl")
+include("graph.jl")
 include("connexe.jl")
 include("read_stsp.jl")
-#include("kruskal.jl")
+include("kruskal.jl")
 
 
 

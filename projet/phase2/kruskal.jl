@@ -13,8 +13,8 @@ Kruskal{T}() where T = Kruskal(T[])
 
 """Ajoute `item` à la fin de la file `s`."""
 function push!(q::AbstractQueue{T}, item::T) where T
-    for i = 1
-    push!(q.items, item)
-    q
+    for i = 1: length(lis_edges)
+        push!(q.items, item)
+        q
     end
 end

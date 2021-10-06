@@ -100,7 +100,7 @@ read_stsp("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-co
 md"On modifie également la fonction plot\_graph pour qu'elle continue de fonctionner comme auparavant (essayer d'afficher les poids des arêtes en plus semble illisible)."
 
 # ╔═╡ 2af3dc6c-5330-417f-ba4e-d662ee88c6b9
-plot_graph("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/instances/stsp/bayg29.tsp")
+plot_graph("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/instances/stsp/bays29.tsp")
 
 # ╔═╡ 9ae3a157-b162-43f8-982e-892656f7a06c
 md"Nous avons remarqué que notre fonction read\_edges n'est pas efficace sur certains fichiers. Par exemple, sur le fichier bays29.stsp, le format FULL\_MATRIX fait que 2 fois trop d'arêtes sont intégrées à la liste d'arêtes finale. Cependant, cela semble liée à l'implémentation initiale de la fonction read\_edges même quand on ne considérait pas les poids donc nous ne l'avons pas modifiée. \
@@ -965,7 +965,7 @@ version = "0.9.1+5"
 # ╠═aae45e52-3b2c-4dbf-b800-5ad74e32e107
 # ╠═f111cda5-de3d-4616-9a8a-cb4e4169ae89
 # ╠═ad4d144c-3f46-4327-b8da-717b01178db1
-# ╟─92c9398d-4310-4aa6-8236-adb8e005b3da
+# ╠═92c9398d-4310-4aa6-8236-adb8e005b3da
 # ╠═1cd6de02-6abf-42a3-85f6-9bf721c2e1ba
 # ╟─42cce623-9fe6-4988-b92a-0f7c993eb2b0
 # ╠═98bdf4ec-9234-4dd7-b8ed-a1d4f921c0c1

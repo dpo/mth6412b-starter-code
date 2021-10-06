@@ -4,7 +4,7 @@ include("connexe.jl")
 include("read_stsp.jl")
 
 
-function create_graph(filename::String) 
+function create_sub_graph(filename::String) 
     graph_nodes,graph_edges = read_stsp(filename)
 
     lis_nodes = Node{Vector{Float64}}[]
@@ -14,8 +14,8 @@ function create_graph(filename::String)
 
     lis_edges = []
     for k =1 : length(graph_edges)
-        for l = 1: length(graph_edges[k])
-            if graph_edges[k][l][2] != 0                                                               # Les arêtes de poids nuls sont exclues.
+        for l = k+1: length(graph_edges[k]) 
+            if graph_edges[k][l][2] != 0                                                           # Les arêtes de poids nuls sont exclues.
              push!(lis_edges, (string(k), string(graph_edges[k][l][1]) , graph_edges[k][l][2] ))  
             end 
         end

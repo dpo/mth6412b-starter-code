@@ -232,6 +232,8 @@ function plot_graph(nodes, edges)
   fig
 end
 
+
+
 """Fonction de commodité qui lit un fichier stsp et trace le graphe."""
 function plot_graph(filename::String)
   graph_nodes, graph_edges = read_stsp(filename)

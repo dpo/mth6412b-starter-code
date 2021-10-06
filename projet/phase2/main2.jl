@@ -22,9 +22,10 @@ function create_sub_graph(filename::String)
             end 
         end
     end
-    lis_edges
+    #lis_edges
     sort!(lis_edges, by = x -> x[3])#; lis_edges                 # On tris les arêtes par ordre croissant de poids. 
-    print(" Compo_Connex = ", lis_edges)
+    (lis_nodes, lis_edges)
+    
 
 end
 

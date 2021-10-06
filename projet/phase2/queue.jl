@@ -16,6 +16,7 @@ function push!(q::AbstractQueue{T}, item::T) where T
     for i = 1
     push!(q.items, item)
     q
+    end
 end
 
 """Retire et renvoie l'objet du début de la file."""

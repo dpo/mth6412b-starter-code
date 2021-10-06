@@ -30,6 +30,7 @@ function show(edge::AbstractEdge)
   for k = 1 : length(edges)
     
     println("Edge ", sommets(edge), ", poids: ", poids(edge))
+ 
   
   end
 

@@ -60,6 +60,9 @@ create_sub_graph("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-sta
 # ╔═╡ 7d24c6b3-bf6d-4563-8bc8-e127a6586621
 md" L'algorithme de Kruskal est appelé sur le sous-graphe de composantes connexes pour donner l'arbre de récouvrement minimal. "
 
+# ╔═╡ b22444b5-5ffe-417d-9870-a0564cd4c1f8
+kruskal("/Users/admin/Documents/PhD Courses/MT6412B/Projet/mth6412b-starter-code/projet/instances/stsp/hk48.tsp")
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -911,7 +914,8 @@ version = "0.9.1+5"
 # ╟─8349ba2b-6f7a-4ebc-a39a-73936e6ab582
 # ╟─9e831848-13de-4010-b7a6-4fd0f7fd08d0
 # ╟─bf00b89c-195c-4481-a70e-d3cd72773ecf
-# ╟─75a5cca1-c364-4bd3-b084-b233be70ffd5
+# ╠═75a5cca1-c364-4bd3-b084-b233be70ffd5
 # ╟─7d24c6b3-bf6d-4563-8bc8-e127a6586621
+# ╠═b22444b5-5ffe-417d-9870-a0564cd4c1f8
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

@@ -2,6 +2,8 @@ include("node.jl")
 include("edge.jl")
 include("connexe.jl")
 include("read_stsp.jl")
+include("kruskal.jl")
+
 
 
 function create_sub_graph(filename::String) 
@@ -21,8 +23,8 @@ function create_sub_graph(filename::String)
         end
     end
     lis_edges
-    sort!(lis_edges, by = x -> x[3]); lis_edges                 # On tris les arêtes par ordre croissant de poids. 
-     
+    sort!(lis_edges, by = x -> x[3])#; lis_edges                 # On tris les arêtes par ordre croissant de poids. 
+    Compo_Connex = Edge[lis_edges]
     #Connex(filename, lis_nodes, lis_edges)
 end
 

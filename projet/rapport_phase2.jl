@@ -15,9 +15,6 @@ end
 # ╔═╡ 52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
 include("phase2\\kruskal.jl")
 
-# ╔═╡ 61dc4a89-3f4c-4de0-8cc9-f8969106d580
-
-
 # ╔═╡ bd96c780-678d-459b-aa23-a166751da087
 md"# Ecole polytechnique de Montréal"
 
@@ -61,20 +58,17 @@ create_graph("instances\\stsp\\brazil58.tsp")
 # ╔═╡ 6e828363-b538-4ac9-8c93-6a3f3f4f65cd
 create_graph("instances\\stsp\\gr17.tsp")
 
-# ╔═╡ 6f5e20f3-dc0f-4535-8ebd-7c4402c9d3db
-
-
 # ╔═╡ b89ce040-d9f8-4b93-9fad-058eb8675e39
 md"Nous avons aussi modifié la fonction plot_graph pour qu'elle marche correctement tant qu'on rentre un vecteur de nodes avec un couple de flottants en données et un ensemble d'arêtes."
-
-# ╔═╡ 0b05f46c-996e-45ad-a31a-c1b93d7bcb2c
-
 
 # ╔═╡ 0b9500da-4a9a-4d90-a11a-c097d92a62c1
 plot_graph("instances\\stsp\\bayg29.tsp")
 
 # ╔═╡ 5d6ab8f7-dbf9-4cc5-b012-3e72776841b3
-plot_graph([Node{Vector{Float64}}("1",[1.,1.]), Node{Vector{Float64}}("2", [1.,2.]), Node{Vector{Float64}}("3", [2,2])], [Edge("1","2",1), Edge("1","3",1)])
+plot_graph([Node{Vector{Float64}}("1",[1.5,1.]), Node{Vector{Float64}}("2", [1.,2.]), Node{Vector{Float64}}("3", [2,2])], [Edge("1","2",1), Edge("1","3",1)])
+
+# ╔═╡ 93af53db-16b5-40e7-864e-2c9f19880aaa
+md"Finalement, nous avons aussi ajouté un tri par poids croissant des arêtes dans la fonction create\_graph. Celui-ci nous sera utile pour l'algorithme de Kruskal."
 
 # ╔═╡ e8565d7a-dc39-4b57-b852-f4f03d505dd5
 md"Nous avons fait le choix de représenter nos composantes connexes par un tableau de Nodes. Ainsi, on supposera que tous les noeuds qui sont dans ce tableau seront dans la même composante connexe. On implémente quelques fonctions de base, et  une fonction merge qui prend en argument 2 composantes connexes et qui renvoie la concaténation des 2. On joint des exemples ci-dessous."
@@ -93,6 +87,9 @@ connex2 =  Connex([Node("4",[]), Node("5",[])])
 
 # ╔═╡ 3f8bd86e-52a2-4920-b5f6-b5eb0cc019bb
 merge!(connex, connex2)
+
+# ╔═╡ f9ede19c-5993-49c2-b78d-6cfe651f48a6
+connex
 
 # ╔═╡ e7d4c976-727a-49c1-b570-0b80bac37224
 md"On a ensuite, dans le programme kruskal.jl, implémenté 2 fonctions qui nous seront utiles pour la suite : la fonction isinConnex qui cherche si un noeud appartient à une composante connexe donnée et une fonction find_connex! qui prend en argument une liste de composantes connexes et un noeud à trouver, et qui renvoit la composante connexe à laquelle appartient le noeud donné en la supprimant de la liste de composantes connexes.
@@ -123,7 +120,7 @@ find_connex!(lis_connex, Node("3", []))
 lis_connex
 
 # ╔═╡ ece014aa-5af7-447b-90d3-726bc58a0502
-md"Nous avons ensuite implémenté l'algorithme de Kruskal. Nous avons fait le choix de lui faire prendre en argument directement le nom du fichier stsp, mais il ne serait pas difficile de le modifier pour lui faire prendre en argument un graphe quelconque. Nous avons déjà utilisé la fonction create\_graph poru trier les arêtes en ordre de poids croissant. Par conséquent, ici, nous nous contentons d'initialiser la liste des composantes connexes comme une liste de n composantes connexes contenant un unique sommet et la liste d'arêtes à garder comme une liste vide. A chaque itération, et tant qu'il reste plus de 2 composantes connexes distinctes, nous retirons l'arête de coût le plus faible, vérifions si elle peut relier 2 composantes connexes distinctes, et si oui nous l'ajoutons à la liste des arêtes à garder et nous fusionnons les 2 composantes connexes. Quand il ne reste plus qu'une composante connexe, le graphe créé est ainsi connexe et correspond à notre arbre de recouvrement minimal"
+md"Nous avons ensuite implémenté l'algorithme de Kruskal. Nous avons fait le choix de lui faire prendre en argument directement le nom du fichier stsp, mais il ne serait pas difficile de le modifier pour lui faire prendre en argument un graphe quelconque. Il faudrait faire attention à trier ses arêtes par ordre croissant, puisqu'ici cela est fait dans la fonction create\_graph qui ne serait alors plus utilisée. Tout d'abord, nous initialisons la liste des composantes connexes comme une liste de n composantes connexes contenant un unique sommet et la liste d'arêtes à garder comme une liste vide. A chaque itération, et tant qu'il reste plus de 2 composantes connexes distinctes, nous retirons l'arête de coût le plus faible, vérifions si elle peut relier 2 composantes connexes distinctes, et si oui, nous l'ajoutons à la liste des arêtes à garder et nous fusionnons les 2 composantes connexes. Quand il ne reste plus qu'une composante connexe, le graphe créé est ainsi connexe et correspond à notre arbre de recouvrement minimal"
 
 # ╔═╡ 00352dd5-98ed-49ea-9dba-311e45a4467f
 graphe = kruskal("instances\\stsp\\bayg29.tsp")
@@ -137,12 +134,12 @@ kruskal("instances\\stsp\\gr17.tsp")
 # ╔═╡ 812389aa-4961-4bc5-a4a3-c514ea1a98d7
 md"Nous avons rajouté quelques tests unitaires pour nous assurer du bon fonctionnement de notre code : nous vérifions entre autres
 * que l'arête en haut de la liste est bien de coût plus faible que la suivante ce qui garantit la croissance 'locale' de la liste.
-* que la liste des composantes connexes comporte toujours le bon nombre de noeuds à chaque itération
-* qu'il ne reste bien qu'une seule composante connexe à la fin de l'algorithme
-* que le nombre d'arêtes correspond bien au nombre de noeuds moins 1 à la fin de l'algorithme, ce qui permet de prouver que l'on a bien un arbre"
+* que la liste des composantes connexes comporte toujours le bon nombre de noeuds à chaque itération.
+* qu'il ne reste bien qu'une seule composante connexe à la fin de l'algorithme.
+* que le nombre d'arêtes correspond bien au nombre de noeuds moins 1 à la fin de l'algorithme, ce qui permet de prouver que l'on a bien un arbre."
 
 # ╔═╡ 31436483-25d9-4a0d-87d4-19d1668460ed
-md"Nous avons finalement appelé la fonction kruskal sur toutes les instances stsp pour vérifier que tous les tests unitaires étaient passés dans la fonction main.jl. Comme la fonction create\_graph est appelée dans cette fonction, on peut s'assurer que les tests unitaires de create\_graph sont aussi passés"
+md"Nous avons finalement appelé la fonction kruskal sur toutes les instances stsp pour vérifier que tous les tests unitaires étaient passés dans le script main.jl. Comme la fonction create\_graph est appelée dans la fonction kruskal, on peut s'assurer que les tests unitaires de create\_graph sont aussi passés"
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -985,7 +982,6 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─3c04ef1e-26cf-11ec-269d-714e657e0a90
 # ╟─52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
-# ╠═61dc4a89-3f4c-4de0-8cc9-f8969106d580
 # ╟─bd96c780-678d-459b-aa23-a166751da087
 # ╟─0c186ad3-5494-4fa5-9791-5c6a1fbc4fab
 # ╟─abc12fa3-0cdd-4c3f-8dc6-6fe41cde8ec9
@@ -998,17 +994,17 @@ version = "0.9.1+5"
 # ╟─ee2fe83f-3e55-4bf8-b2a5-706c53c9b5c5
 # ╠═46df5d63-a08b-44f9-ba6c-70e964b1e95b
 # ╠═6e828363-b538-4ac9-8c93-6a3f3f4f65cd
-# ╠═6f5e20f3-dc0f-4535-8ebd-7c4402c9d3db
 # ╟─b89ce040-d9f8-4b93-9fad-058eb8675e39
-# ╠═0b05f46c-996e-45ad-a31a-c1b93d7bcb2c
 # ╠═0b9500da-4a9a-4d90-a11a-c097d92a62c1
 # ╠═5d6ab8f7-dbf9-4cc5-b012-3e72776841b3
+# ╟─93af53db-16b5-40e7-864e-2c9f19880aaa
 # ╟─e8565d7a-dc39-4b57-b852-f4f03d505dd5
 # ╠═be97c69c-547f-4878-8694-f96e96d7431c
 # ╠═d0e478d2-4d35-4faa-8d5c-ec444c7f0e91
 # ╠═f138fb6b-a669-47fe-b9dd-c868ab0a1bc0
 # ╠═54c75ba9-c1eb-4a39-972f-39354a17987d
 # ╠═3f8bd86e-52a2-4920-b5f6-b5eb0cc019bb
+# ╠═f9ede19c-5993-49c2-b78d-6cfe651f48a6
 # ╟─e7d4c976-727a-49c1-b570-0b80bac37224
 # ╠═41c6e5c5-90cd-4feb-8db4-666c56b017ae
 # ╠═25f7f0c7-201e-4eb9-853c-69278fda2622

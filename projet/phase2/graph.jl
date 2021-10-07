@@ -28,12 +28,28 @@ end
 
 """Ajoute une arete au graphe. """
 function add_edge!(graph::Graph, edge:: Edge) 
-  push!(graph.edges, edge)
+  if poids(edge) != 0
+    push!(graph.edges, edge)
+  end
   graph
 end
 
+function find_nodes(nodes::Vector{Node{T}},edge ::Edge) where T
+  sommet1, sommet2 = sommets(edge)
+  lis_noeuds = Node{T}[]
+  for node in nodes
+    if node.name == sommet1 || node.name == sommet2
+      push!(lis_noeuds, node)
+    end
+  end
 
+  if lis_noeuds[1].name == sommet2
+    return [lis_noeuds[2], lis_noeuds[1]]
+  else
+    return lis_noeuds
+  end
 
+end
 # on présume que tous les graphes dérivant d'AbstractGraph
 # posséderont des champs `name` et `nodes`.
 

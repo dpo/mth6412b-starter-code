@@ -36,11 +36,11 @@ md"Notre code ainsi que ce carnet Pluto sont disponibles sur [ce lien](https://g
 # ╔═╡ f345a0a0-2342-4488-ac0a-7b3c4f5fe381
 begin
 md" Dans cette deuxième phase du projet sur le problème du voyageur de commerce symétrique, nous définissons des structures de données de base adéquates.
-Nous procédons à des modifications des codes de démarrages et à proposer:
+Nous procédons à des modifications des codes de démarrages et nous proposons:
   1. Un type Connex pour présenter les sous-graphes de poids de ses arêtes non nuls à partir d'un graphe non orienté.
-  2. Implémenter l'algorithme de Kruskal.
-  3. Accompagner notre code de tests  unitaires.
-  4. Tester notre implémentation sur diverses  instances de TSP dans un programme principal et commenter."
+  2. Une implémentation de l'algorithme de Kruskal.
+  3. Des tests unitaires pour accompagner notre code.
+  4. Un test de notre implémentation sur les  instances de TSP dans le programme main."
 end
 
 # ╔═╡ d7c42946-efe0-4973-b9e6-8cb82e66c703
@@ -120,7 +120,7 @@ find_connex!(lis_connex, Node("3", []))
 lis_connex
 
 # ╔═╡ ece014aa-5af7-447b-90d3-726bc58a0502
-md"Nous avons ensuite implémenté l'algorithme de Kruskal. Nous avons fait le choix de lui faire prendre en argument directement le nom du fichier stsp, mais il ne serait pas difficile de le modifier pour lui faire prendre en argument un graphe quelconque. Il faudrait faire attention à trier ses arêtes par ordre croissant, puisqu'ici cela est fait dans la fonction create\_graph qui ne serait alors plus utilisée. Tout d'abord, nous initialisons la liste des composantes connexes comme une liste de n composantes connexes contenant un unique sommet et la liste d'arêtes à garder comme une liste vide. A chaque itération, et tant qu'il reste plus de 2 composantes connexes distinctes, nous retirons l'arête de coût le plus faible, vérifions si elle peut relier 2 composantes connexes distinctes, et si oui, nous l'ajoutons à la liste des arêtes à garder et nous fusionnons les 2 composantes connexes. Quand il ne reste plus qu'une composante connexe, le graphe créé est ainsi connexe et correspond à notre arbre de recouvrement minimal"
+md"Nous avons ensuite implémenté l'algorithme de Kruskal. Nous avons fait le choix de lui faire prendre en argument directement le nom du fichier stsp, mais il ne serait pas difficile de le modifier pour lui faire prendre en argument un graphe quelconque. Il faudrait faire attention à trier ses arêtes par ordre croissant, puisqu'ici cela est fait dans la fonction create\_graph qui ne serait alors plus utilisée. Tout d'abord, nous initialisons la liste des composantes connexes comme une liste de n composantes connexes contenant un unique sommet et la liste d'arêtes à garder comme une liste vide. A chaque itération, et tant qu'il reste plus de 2 composantes connexes distinctes, nous retirons l'arête de coût le plus faible, vérifions si elle peut relier 2 composantes connexes distinctes, et si oui, nous l'ajoutons à la liste des arêtes à garder et nous fusionnons les 2 composantes connexes. Quand il ne reste plus qu'une composante connexe, le graphe créé est ainsi connexe et correspond à notre arbre de recouvrement minimal."
 
 # ╔═╡ 00352dd5-98ed-49ea-9dba-311e45a4467f
 graphe = kruskal("instances\\stsp\\bayg29.tsp")

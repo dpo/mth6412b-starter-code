@@ -59,12 +59,14 @@ function kruskal(filename::String)
 
     while length(lis_connex) >= 2 #tant qu'on a plus d'une composante connexe on continue de chercher d'autres arêtes
         arete = popfirst!(lis_edges)
-        @test poids(arete) <= poids(lis_edges[1]) #on vérifie que le poids de l'arête est bien inférieur à celui de la suivante
+        @test poids(arete) <= poids(lis_edges[1]) #On vérifie que le poids de l'arête est bien inférieur à celui de la suivante.
 
         connex1 = find_connex!(lis_connex, Node(arete.sommet1, []))
         if isinConnex(connex1, Node(arete.sommet2, []))
-            push!(lis_connex, connex1)
+            push!(lis_connex, connex1) #On remet la composante connexe enlevée dans la liste.
         else
+            #On cherche la composante connexe du 2ème sommet, on rajoute l'arête à la liste des arêtes pertinentes 
+            #et on fusionne les 2 composantes connexes.
             connex2 = find_connex!(lis_connex, Node(arete.sommet2, []))
             push!(lis_aretes, arete)
             connex_fusionne = merge!(connex1, connex2)
@@ -81,10 +83,10 @@ function kruskal(filename::String)
     end
 
     @test length(lis_connex) == 1 #On vérifie qu'on a qu'une seule composante connexe
-    @test length(lis_aretes) == length(lis_nodes)-1 #Si la propriété est vérifiée, on a un arbre de recouvrement
+    @test length(lis_aretes) == length(lis_nodes)-1 #Si la propriété est vérifiée, on a un arbre de recouvrement.
 
     #Avec ces 2 tests on est sûr d'avoir un arbre de recouvrement ; la minimalité est garantie par le fait que les arêtes sont triées 
-    #par ordre de poids croissant (non testé car trop coûteux mais on a vérifié à chaque itération la croissance "locale").
+    #par ordre de poids croissant, testé à la fin de create_graph et testé "localement" à chaque itération.
     
     Graph("Arbre recouvrement minimal",lis_nodes,lis_aretes)
     

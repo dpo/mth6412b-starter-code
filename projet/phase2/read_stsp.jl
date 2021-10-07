@@ -204,11 +204,4 @@ function read_stsp(filename::String)
   return graph_nodes, graph_edges
 end
 
-"""Affiche un graphe étant données un ensemble de noeuds et d'arêtes.
 
-Exemple :
-
-    graph_nodes, graph_edges = read_stsp("bayg29.tsp")
-    plot_graph(graph_nodes, graph_edges)
-    savefig("bayg29.pdf")
-"""

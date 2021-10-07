@@ -5,4 +5,5 @@ que les tests unitaires associés à create_graph sont toujours validés.
 path = "projet\\instances\\stsp\\"
 for file in readdir(path)
     kruskal(path*file)
+    println("Test passé :"*file)
 end

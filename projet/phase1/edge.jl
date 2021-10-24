@@ -1,7 +1,8 @@
 import Base.show
+import Base.isless
 
 """Type abstrait dont d'autres types d'arètes dériveront."""
-abstract type AbstractEdge{I, J} end
+abstract type AbstractEdge{T, I} end
 
 """Type représentant les arètes d'un graphe.
 
@@ -10,10 +11,10 @@ Exemple:
   edge = Edge("Mtl_Qc", (node1, node2), 20)
 
 """
-mutable struct Edge{I, J} <: AbstractEdge{I, J}
+mutable struct Edge{T, I} <: AbstractEdge{T, I}
   name::String
-  data::Tuple{Node{I}, Node{I}}
-  weight::J
+  data::Tuple{Node{T}, Node{T}}
+  weight::I
 end
 
 # on présume que tous les arètes dérivant d'AbstractEdge
@@ -32,3 +33,6 @@ weight(edge::AbstractEdge) = edge.weight
 function show(edge::AbstractEdge)
   println("Edge ", name(edge), ", data: (", name(data(edge)[1]), ", ", name(data(edge)[2]), "), weight: ", weight(edge))
 end
+
+"""Méthode pour comparer deux arêtes par leur poids"""
+isless(p::Edge, q::Edge) = weight(p) < weight(q)

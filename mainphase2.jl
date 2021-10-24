@@ -1,36 +1,28 @@
-using Plots
-using Test
 include("mainphase1.jl")
+include("projet/phase2/connexcomp.jl")
 
 """
 Applique l'algorithme de Kruskal sur un graphe. Renvoie l'arbre de coût minimum recouvrant le graphe.
 """
-function kruskal(graph::Graph{T, I, J}) where{T, I, J}
+function kruskal(graph::Graph{T, I}) where{T, I}
     # Trier les arêtes du graphe en ordre croissant de poids.
-    weights = J[]
-    for e in graph.edges
-        push!(weights, e.weight)
-    end
-    perms = sortperm(weights)
-    permute!(graph.edges, perms)
+    sort!(graph.edges)
 
-    #Initialisation de l'arbre de coût minimum A
+    #Initialisation de l'arbre de coût minimum
     #et de SC le vecteur des S, où S est une composante connexe de G.
-    arbre = Edge{I, J}[]
-    SC = ConnexComp{I}[]
-    for i in 1:length(graph.nodes)
-        push!(SC, ConnexComp(Node{I}[graph.nodes[i]]))
-    end
+    arbre = Vector{Union{Nothing, Edge{T, I}}}(nothing, nb_nodes(graph) - 1)
+    j = 0
+    SC = [ConnexComp(Node{T}[node]) for node in nodes(graph)]
 
     comp = [0, 0]
-    for edge1 in graph.edges
-        si = edge1.data[1]
-        sj = edge1.data[2]
+    for edge in edges(graph)
+        si = edge.data[1]
+        sj = edge.data[2]
         comp .= 0
         for i in 1:length(SC)
             #Pour chaque arête [si, sj], on place l'indice par rapport à SC de la composante connexe contenant 
             #si et l'indice de sj dans la liste comp.
-            for s in SC[i].nodes
+            for s in nodes(SC[i])
                 if s == si
                     comp[1] = i
                 elseif s == sj
@@ -41,9 +33,10 @@ function kruskal(graph::Graph{T, I, J}) where{T, I, J}
         #Si sj et si sont dans des composantes distinctes, on ajoute l'arète à l'arbre
         #et on fusionne les deux composantes connexes.
         if comp[1] != comp[2]
-            push!(arbre, edge1)
-            for edge2 in SC[comp[1]].nodes
-                push!(SC[comp[2]].nodes, edge2)
+            j += 1
+            arbre[j] = edge
+            for node in nodes(SC[comp[1]])
+                push!(nodes(SC[comp[2]]), node)
             end
             deleteat!(SC, comp[1])
         end
@@ -81,26 +74,25 @@ Edge("c↔i", (c, i), 2)])
 """
 Calcule la somme des coûts des arêtes dans un arbre.
 """
-function sommeweights(arbre)
+function sommeweights(arbre::Vector{Union{Nothing, Edge{T, I}}}) where {T, I}
     somme = 0
     for e in arbre
-        somme += e.weight
+        somme += weight(e)
     end
     somme
 end
 
 """
-Teste la fonction kruskal() sur tous les fichiers .tsp.
+Teste la fonction une implémentation de kruskal sur tous les fichiers .tsp.
 """
-function test_kruskal(path)
+function test_kruskal(path, kruskal_func)
 	for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp"
+		if file_name[end-3:end] == ".tsp"  #&& file_name != "pa561.tsp"
 
 			G = createGraph(string(file_name), string(path, "/", file_name))
-            arbrecoutmin = kruskal(G)
-            @test length(arbrecoutmin) == nb_nodes(G) - 1
-            println(file_name, " ✓")
-
+            arbrecoutmin = kruskal_func(G)
+            @test nothing ∉ arbrecoutmin
+            println(file_name, " ✓\tavec cout total: ", sommeweights(arbrecoutmin))
         end
     end
 end
@@ -111,8 +103,8 @@ end
 #for e in arbrecoutmin
 #    show(e)
 #end
-#@test length(arbrecoutmin) == nb_nodes(Gexcours) - 1
+#@test nothing ∉ arbrecoutmin
 #@test sommeweights(arbrecoutmin) == 37
 #println("G exemple du cours ✓")
-#
-#test_kruskal("mth6412b-starter-code/instances/stsp")
+
+#test_kruskal("mth6412b-starter-code/instances/stsp", kruskal)

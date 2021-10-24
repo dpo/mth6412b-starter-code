@@ -1,7 +1,7 @@
 import Base.show
 
 """Type abstrait dont d'autres types de graphes dériveront."""
-abstract type AbstractGraph{T, I, J} end
+abstract type AbstractGraph{T, I} end
 
 """Type representant un graphe comme un ensemble de noeuds.
 
@@ -14,39 +14,39 @@ Exemple :
 
 Attention, tous les noeuds doivent avoir des données de même type.
 """
-mutable struct Graph{T, I, J} <: AbstractGraph{T, I, J}
+mutable struct Graph{T, I} <: AbstractGraph{T, I}
   name::String
   nodes::Vector{Node{T}}
-  edges::Vector{Edge{I, J}}
+  edges::Vector{Edge{T, I}}
 end
 
-"""
-Exemple :
 
-  node1 = Node("Montreal", 24.12)
-  node2 = Node("Quebec", 4.12)
-  composante = ConnexComp([node1, node2])
-
-"""
-mutable struct ConnexComp{T}
-  nodes::Vector{Node{T}}
+"""Renvoie true si l'edge existe déjà (dans le même sens ou dans le sens inverse) dans la liste de edges."""
+function isinedges(edges, edge)
+	for e in edges
+		if (data(e)[1] == data(edge)[2] && data(e)[2] == data(edge)[1]) ||
+		   (data(e)[1] == data(edge)[1] && data(e)[2] == data(edge)[2])
+			return true
+		end
+	end
+	return false
 end
 
 """Ajoute un noeud au graphe."""
 function add_node!(graph::Graph{T}, node::Node{T}) where T
-  push!(graph.nodes, node)
+  if node ∉ nodes(graph)
+    push!(graph.nodes, node)
+  end
   graph
 end
 
 """Ajoute une arète au graphe."""
-function add_edge!(graph::Graph{T, I, J}, edge::Edge{I, J}) where {T, I, J}
-  push!(graph.edges, edge)
+function add_edge!(graph::Graph{T, I}, edge::Edge{T, I}) where {T, I}
+  if !isinedges(edges(graph), edge)
+    push!(graph.edges, edge)
+  end
   graph
 end
-
-
-# on présume que tous les graphes dérivant d'AbstractGraph
-# posséderont des champs `name`, `edges` et `nodes`.
 
 """Renvoie le nom du graphe."""
 name(graph::AbstractGraph) = graph.name
@@ -72,4 +72,15 @@ function show(graph::Graph)
   for edge in edges(graph)
     show(edge)
   end
+end
+
+"""
+Calcule la somme des coûts sur les sommets d'un graph.
+"""
+function sommeweights(graph::Graph{T, I}) where {T, I}
+    somme = 0
+    for node in nodes(graph)
+        somme += min_weight(node)
+    end
+    somme
 end

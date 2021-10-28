@@ -22,18 +22,14 @@ end
 la supprimant de la liste"""
 function find_connex!(lis_connex, node_to_find)
     n = length(lis_connex)
-    for i = 1 :  n
-        if isinConnex(lis_connex[i], node_to_find)
-            connex = lis_connex[i]
-            deleteat!(lis_connex, i)
-
-            @test length(lis_connex) == n-1 #test qu'on a bien enlevé la composante connexe de la liste 
-            
-
-            return connex
-        end
+    i = 1
+    while i <= n && (isinConnex(lis_connex[i], node_to_find) == false)
+        i = i + 1
     end
-    
+    connex = lis_connex[i]
+    deleteat!(lis_connex, i)
+    return connex
+
 end
 
 

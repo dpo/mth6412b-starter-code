@@ -4,8 +4,11 @@ include("graph.jl")
 include("connexe.jl")
 include("read_stsp.jl")
 
-
-function heuristique1(dico_rang::Dict, dico_parents::Dict,  connex1::Connex, connex2::Connex)
+""" Prend en argument un dictionnaire associant à chaque noeud un rang, un dictionnaire associant à chaque noeud son parent
+dans l'arbre de recherche, et 2 composantes connexes à fusionner. Renvoie une composante connexe contenant les 2 CC passées en argument
+fusionnées avec la méthode de l'union via le rang. Modifie en place les dictionnaires de rang et de parent.
+"""
+function heuristique1!(dico_rang::Dict, dico_parents::Dict,  connex1::Connex, connex2::Connex)
     max_rang1= 0
     sommet_max1 = connex1[1]
     max_rang2 = 0
@@ -39,6 +42,10 @@ function heuristique1(dico_rang::Dict, dico_parents::Dict,  connex1::Connex, con
     merge!(connex1,connex2)
 end
 
+
+""" Prend en argument un noeud dont on cherche l'ancêtre, le dictionnaire des parents des noeuds et des rangs des noeuds.
+Renvoie l'ancêtre de ce noeud en mettant à jour les dictionnaires des parents et des rangs selon la méthode de compression des chemins
+"""
 function heuristique2!(noeud::Node,dico_parents::Dict,dico_rangs::Dict)
     lis_parents = [noeud]
     parent = dico_parents[noeud.name]
@@ -52,7 +59,6 @@ function heuristique2!(noeud::Node,dico_parents::Dict,dico_rangs::Dict)
         dico_rangs[sommet.name] = 1 
     end
 
-    dico_parents,dico_rangs
-
+    parent
 end
 

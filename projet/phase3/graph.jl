@@ -1,3 +1,5 @@
+include("node.jl")
+include("edge.jl")
 import Base.show
 using Test
 """Type abstrait dont d'autres types de graphes dériveront."""
@@ -56,6 +58,17 @@ function find_nodes(nodes::Vector{Node{T}},edge ::Edge) where T
   end
 
 end"
+
+
+function find_edges(node::Node{T}, graph::Graph{T}) where T
+  lis_aretes = Edge{T}[]
+  for edge in graph.edges
+    if edge.sommet1.name == node.name || edge.sommet2.name == node.name
+      push!(lis_aretes, edge)
+    end
+  end
+  lis_aretes
+end
 
 
 """Renvoie le nom du graphe."""

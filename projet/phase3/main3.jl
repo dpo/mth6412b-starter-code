@@ -7,8 +7,10 @@ path = "projet\\instances\\stsp\\"
 for file in readdir(path)
     graph_file = kruskal(path*file)
     graph_file2 = prim(path*file)
-    
-    @test poids_total(graph_file)==poids_total(graph_file2)
+
+    @test poids_total(graph_file)==poids_total(graph_file2) 
+
+    #On teste que les deux algorithmes renvoient le même poids qui est très probablement le poids minimal
 
     println("Test passé :"*file)
     println(file*"Poids minimal : "*string(poids_total(graph_file)))

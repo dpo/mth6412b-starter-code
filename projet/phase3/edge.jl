@@ -26,12 +26,8 @@ poids(edge::AbstractEdge) = edge.poids
 
 """Affiche une arête."""
 function show(edge::AbstractEdge)
-  
-  for k = 1 : length(edges)
-    
-    println("Edge ", sommets(edge), ", poids: ", poids(edge))
- 
-  
-  end
+
+  println("Edge ", sommets(edge), ", poids: ", poids(edge))
+
 
 end

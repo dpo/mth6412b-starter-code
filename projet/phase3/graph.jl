@@ -60,10 +60,10 @@ function find_nodes(nodes::Vector{Node{T}},edge ::Edge) where T
 end"
 
 
-function find_edges(node::Node{T}, graph::Graph{T}) where T
+function find_edges(node_name::String, graph::Graph{T}) where T
   lis_aretes = Edge{T}[]
   for edge in graph.edges
-    if edge.sommet1.name == node.name || edge.sommet2.name == node.name
+    if edge.sommet1.name == node_name || edge.sommet2.name == node_name
       push!(lis_aretes, edge)
     end
   end

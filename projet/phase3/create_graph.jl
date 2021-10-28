@@ -98,8 +98,9 @@ function plot_graph(noeuds::Vector{Node{Vector{Float64}}}, edges::Vector{Edge{Ve
     fig = plot(legend=false)
     # edge positions
     for k = 1 : length(edges)
-      lis_noeuds = find_nodes(noeuds,edges[k])
-        plot!([lis_noeuds[1].data[1], lis_noeuds[2].data[1]], [lis_noeuds[1].data[2],lis_noeuds[2].data[2]],
+      noeud1 = edges[k].sommet1
+      noeud2 = edges[k].sommet2
+        plot!([noeud1.data[1], noeud2.data[1]], [noeud1.data[2],noeud2.data[2]],
             linewidth=1.5, alpha=0.75, color=:lightgray)
     end
 

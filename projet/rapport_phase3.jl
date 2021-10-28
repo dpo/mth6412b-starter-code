@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.1
+# v0.16.3
 
 using Markdown
 using InteractiveUtils
@@ -13,7 +13,10 @@ using InteractiveUtils
 end
 
 # ╔═╡ 52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
-include("phase2\\kruskal.jl")
+include("phase3\\prim.jl")
+
+# ╔═╡ edb29e94-a3b5-42cf-bb38-a4bbe9753dd1
+
 
 # ╔═╡ bd96c780-678d-459b-aa23-a166751da087
 md"# Ecole polytechnique de Montréal"
@@ -140,6 +143,42 @@ md"Nous avons rajouté quelques tests unitaires pour nous assurer du bon fonctio
 
 # ╔═╡ 31436483-25d9-4a0d-87d4-19d1668460ed
 md"Nous avons finalement appelé la fonction kruskal sur toutes les instances stsp pour vérifier que tous les tests unitaires étaient passés dans le script main.jl. Comme la fonction create\_graph est appelée dans la fonction kruskal, on peut s'assurer que les tests unitaires de create\_graph sont aussi passés"
+
+# ╔═╡ 922a462f-ee4f-49d7-a1fe-dbf9a4bade6b
+graph1 = kruskal("instances\\stsp\\dantzig42.tsp")
+
+# ╔═╡ b4763f9b-6d6a-4110-87c1-03eb2720e0e1
+graph2 = prim("instances\\stsp\\dantzig42.tsp")
+
+# ╔═╡ 49e57061-91a9-4518-ac0b-ddd214377144
+poids_total(graph1)
+
+# ╔═╡ 01e99ea2-e67c-4ef7-bf3e-ad9058b2dae1
+poids_total(graph2)
+
+# ╔═╡ 52a054b0-023b-4aed-a38c-a971e74c9dd8
+plot_graph(graph1.nodes,graph1.edges)
+
+# ╔═╡ c9b4fb96-80c3-4b53-b362-6756ab922b55
+plot_graph(graph2.nodes,graph2.edges)
+
+# ╔═╡ ba6d71ec-8a44-4c1f-ad7b-fe76412928d6
+
+
+# ╔═╡ ac521584-8dc8-48db-9139-5adaa79e4365
+graph_test = create_graph("instances\\stsp\\bayg29.tsp")
+
+# ╔═╡ 7032c512-e8a8-40c7-b271-eda818e419fd
+find_edges("24", graph_test)
+
+# ╔═╡ e9f37aa0-c0ab-4901-b548-ef017420d3db
+
+
+# ╔═╡ 91db7dce-cead-4355-a788-d505aef8db45
+
+
+# ╔═╡ d741507a-7ad5-4b31-aeba-435376953de9
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -307,9 +346,9 @@ version = "1.0.10+0"
 
 [[GLFW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Pkg", "Xorg_libXcursor_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll"]
-git-tree-sha1 = "dba1e8614e98949abfa60480b13653813d8f0157"
+git-tree-sha1 = "0c603255764a1fa0b61752d2bec14cfbd18f7fe8"
 uuid = "0656b61e-2033-5cc2-a64a-77c0f6c09b89"
-version = "3.3.5+0"
+version = "3.3.5+1"
 
 [[GR]]
 deps = ["Base64", "DelimitedFiles", "GR_jll", "HTTP", "JSON", "Libdl", "LinearAlgebra", "Pkg", "Printf", "Random", "Serialization", "Sockets", "Test", "UUIDs"]
@@ -981,7 +1020,8 @@ version = "0.9.1+5"
 
 # ╔═╡ Cell order:
 # ╟─3c04ef1e-26cf-11ec-269d-714e657e0a90
-# ╟─52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
+# ╠═edb29e94-a3b5-42cf-bb38-a4bbe9753dd1
+# ╠═52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
 # ╟─bd96c780-678d-459b-aa23-a166751da087
 # ╟─0c186ad3-5494-4fa5-9791-5c6a1fbc4fab
 # ╟─abc12fa3-0cdd-4c3f-8dc6-6fe41cde8ec9
@@ -1020,5 +1060,17 @@ version = "0.9.1+5"
 # ╠═cfd66aa4-bb17-4315-92e5-7a36f8ea89f0
 # ╟─812389aa-4961-4bc5-a4a3-c514ea1a98d7
 # ╟─31436483-25d9-4a0d-87d4-19d1668460ed
+# ╠═922a462f-ee4f-49d7-a1fe-dbf9a4bade6b
+# ╠═b4763f9b-6d6a-4110-87c1-03eb2720e0e1
+# ╠═49e57061-91a9-4518-ac0b-ddd214377144
+# ╠═01e99ea2-e67c-4ef7-bf3e-ad9058b2dae1
+# ╠═52a054b0-023b-4aed-a38c-a971e74c9dd8
+# ╠═c9b4fb96-80c3-4b53-b362-6756ab922b55
+# ╠═ba6d71ec-8a44-4c1f-ad7b-fe76412928d6
+# ╠═ac521584-8dc8-48db-9139-5adaa79e4365
+# ╠═7032c512-e8a8-40c7-b271-eda818e419fd
+# ╠═e9f37aa0-c0ab-4901-b548-ef017420d3db
+# ╠═91db7dce-cead-4355-a788-d505aef8db45
+# ╠═d741507a-7ad5-4b31-aeba-435376953de9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

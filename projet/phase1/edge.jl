@@ -36,3 +36,11 @@ end
 
 """Méthode pour comparer deux arêtes par leur poids"""
 isless(p::Edge, q::Edge) = weight(p) < weight(q)
+
+"""
+Ajoute une extrémité de edge dans les voisins de l'autre et inversement.
+"""
+function add_voisins!(edge::Edge{T, I}) where {T, I}
+  push!(edge.data[1].voisins, (data(edge)[2], weight(edge)))
+  push!(edge.data[2].voisins, (data(edge)[1], weight(edge)))
+end

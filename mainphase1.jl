@@ -56,7 +56,7 @@ Teste la création d'un graphe G pour chaque fichier .tsp.
 """
 function test_creation_graphe(path)
 	for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp" # && file_name != "pa561.tsp"
+		if file_name[end-3:end] == ".tsp"  #&& file_name != "pa561.tsp"
 			G = createGraph(string(file_name), string(path, "/", file_name))
 			for i in 1:nb_edges(G)
 				@test !isinedges(edges(G)[[1:i-1; i+1:nb_edges(G)]], edges(G)[i])

@@ -131,7 +131,7 @@ function prim!(graph::Graph{T, I}, s::Node{T}) where{T, I}
     file = NodeQueue([node for node in nodes(graph)])
     while !(is_empty(file))
 
-        # t est le sommet de plus haute priorité, i.e. dont le champ min_weight est le plus bas
+        #t est le sommet de plus haute priorité, i.e. dont le champ min_weight est le plus bas
         t = popfirst!(file)
         for edge in edges(graph)
             e1 = data(edge)[1]
@@ -139,7 +139,7 @@ function prim!(graph::Graph{T, I}, s::Node{T}) where{T, I}
             uinfile = false
 
             #u est un sommet adjacent à t qui est dans la file
-            if e1 == t && isinfile(file, e2) #name(node)
+            if e1 == t && isinfile(file, e2)
                 u = e2
                 uinfile = true
             elseif e2 == t && isinfile(file, e1)
@@ -156,6 +156,7 @@ function prim!(graph::Graph{T, I}, s::Node{T}) where{T, I}
     end
     return
 end
+
 """
 Vérifie si node est dans la file de sommets file.
 """
@@ -243,12 +244,12 @@ end
 """
 Teste la fonction prim! sur tous les fichiers .tsp.
 """
-function test_prim_all(path)
+function test_prim_all(path, prim_func)
     for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp" # && file_name != "pa561.tsp"
+		if file_name[end-3:end] == ".tsp"  && file_name != "pa561.tsp"
 
             graph = createGraph(string(file_name), string(path, "/", file_name))
-            prim!(graph, nodes(graph)[1])
+            prim_func(graph, nodes(graph)[1])
             i = 0
             for node in nodes(graph)
                 i += 1
@@ -265,10 +266,10 @@ function test_prim_all(path)
 end
 
 """
-Teste la fonction prim! sur le graphe en exemple du cours.
+Teste une fonction prim sur le graphe en exemple du cours.
 """
-function test_prim(graph::Graph{T, I}, s::Node{T}) where{T, I}
-    prim!(graph, s)
+function test_prim(graph::Graph{T, I}, s::Node{T}, prim_func) where{T, I}
+    prim_func(graph, s)
     sum = 0
     i = 0
     solution1 = [nothing, a, b, c, d, c, f, g, c]
@@ -294,7 +295,7 @@ function benchmark_table_KruskalPrim(path)
     row_names = []
     i = 1
     for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp" # && file_name != "pa561.tsp"
+		if file_name[end-3:end] == ".tsp"  #&& file_name != "pa561.tsp"
             graph1 = createGraph(string(file_name), string(path, "/", file_name))
             graph2 = deepcopy(graph1)
             graph3 = deepcopy(graph1)
@@ -331,13 +332,13 @@ end
 #@test nothing ∉ arbrecoutmin
 #@test sommeweights(arbrecoutmin) == 37
 #println("G exemple du cours ✓")
-#
+
 #test_kruskal("mth6412b-starter-code/instances/stsp", kruskal_acc)
 
-#test_prim(Gexcours, a)
+#test_prim(Gexcours, a, prim!)
 #for node in nodes(Gexcours)
 #    show(node)
 #end
-#test_prim_all("mth6412b-starter-code/instances/stsp")
+#test_prim_all("mth6412b-starter-code/instances/stsp", prim!)
 
 #benchmark_table_KruskalPrim("mth6412b-starter-code/instances/stsp")

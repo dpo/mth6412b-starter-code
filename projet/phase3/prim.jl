@@ -6,7 +6,7 @@ include("heuristiques.jl")
 
 
 
-function getfirst!(d::Dict)
+function popfirst!(d::Dict)
     lowest = collect(keys(d))[1]
     for key in keys(d)
         if d[key] < d[lowest]
@@ -27,8 +27,11 @@ end
 
 function prim(graph::Graph, node_depart::Node=graph.nodes[1])
     T = typeof(graph.nodes[1].data)
-    connex_deja_traitee = Connex(Node{Any}[])
-    arete_arbre_min = Edge{T}[]
+    
+    connex_deja_traitee = Connex(Node{Any}[]) # Initialisation de la composante connexe déjà traitée
+    arete_arbre_min = Edge{T}[]     #Initialisation de la liste des arêts de l'arbre de recouvrement minimal
+
+
     dico_min_weights = Dict{String,Any}()
     dico_parents = Dict{String,Any}()
     dico_rangs = Dict{String, Any}()
@@ -39,8 +42,10 @@ function prim(graph::Graph, node_depart::Node=graph.nodes[1])
         push!(dico_parents, node.name => nothing)
         push!(dico_rangs, node.name => 0)
     
-    end
+    end #Dictionnaires des parents et des rangs initialisés
 
+
+    #On commence l'algorithme en traitant le noeud de départ. 
     delete!(dico_min_weights, node_depart.name) 
     edges_connected = find_edges(node_depart.name, graph)
     for edge in edges_connected
@@ -57,12 +62,15 @@ function prim(graph::Graph, node_depart::Node=graph.nodes[1])
     dico_rangs[node_depart.name] = 0
     add_node!(connex_deja_traitee, Node{Any}(node_depart.name, nothing))
 
-    while isempty(dico_min_weights) == false
+    while isempty(dico_min_weights) == false 
+        
+        #Tant qu'il reste un noeud non traité, on récupère le noeud à plus faible distance de la composante connexe déjà traitée et 
+        #on effectue une itération en retrouvant UNE arête à garder qui donnait cette distance minimale et, pour chaque arête connectée
+        #à ce sommet et à un sommet pas encore parcouru, en modifiant la distance à la composante connexe déjà traitée si besoin.
 
-        node_to_add, min_weight = getfirst!(dico_min_weights)
+        node_to_add, min_weight = popfirst!(dico_min_weights)
         edges_connected = find_edges(node_to_add, graph)
         arete_a_garder = nothing
-        noeud_parent = nothing
 
         for edge in edges_connected
             autre_sommet = " "
@@ -79,7 +87,6 @@ function prim(graph::Graph, node_depart::Node=graph.nodes[1])
             else   
                 if edge.poids == min_weight
                     arete_a_garder = edge
-                    noeud_parent = autre_sommet
                 end
             end
         end   
@@ -87,6 +94,7 @@ function prim(graph::Graph, node_depart::Node=graph.nodes[1])
         push!(arete_arbre_min, arete_a_garder)
 
         heuristique1!(dico_rangs,dico_parents,connex_deja_traitee,Connex([Node{Any}(node_to_add, nothing)]))
+        #Rajout du noeud
 
 
 

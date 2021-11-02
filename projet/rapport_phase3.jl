@@ -13,10 +13,19 @@ using InteractiveUtils
 end
 
 # ╔═╡ 52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
-include("phase3\\prim.jl")
+begin
+	path_fonc = joinpath("phase3", "prim.jl")
+	include(path_fonc)
+end
 
 # ╔═╡ edb29e94-a3b5-42cf-bb38-a4bbe9753dd1
 
+
+# ╔═╡ ac10181c-501b-44b0-a0f9-5257d37329aa
+
+
+# ╔═╡ 02181ed8-1f58-4bde-ba30-0d33f6cce8d7
+path_instances = joinpath("instances", "stsp")
 
 # ╔═╡ bd96c780-678d-459b-aa23-a166751da087
 md"# Ecole polytechnique de Montréal"
@@ -31,154 +40,138 @@ md"## Rapport de projet"
 md" ### Pierre Mordant & Mahamadou Sarité"
 
 # ╔═╡ 8914a271-58db-45d0-a227-804ac9cdac5b
-md"### Phase 2"
+md"### Phase 3"
 
 # ╔═╡ 4c380476-c375-4da3-a58e-acdb303d3a76
-md"Notre code ainsi que ce carnet Pluto sont disponibles sur [ce lien](https://github.com/PMordant/mth6412b-starter-code/tree/phase2)"
+md"Notre code ainsi que ce carnet Pluto sont disponibles sur [ce lien](https://github.com/PMordant/mth6412b-starter-code/tree/Phase-3)"
 
 # ╔═╡ f345a0a0-2342-4488-ac0a-7b3c4f5fe381
 begin
-md" Dans cette deuxième phase du projet sur le problème du voyageur de commerce symétrique, nous définissons des structures de données de base adéquates.
-Nous procédons à des modifications des codes de démarrages et nous proposons:
-  1. Un type Connex pour présenter les sous-graphes de poids de ses arêtes non nuls à partir d'un graphe non orienté.
-  2. Une implémentation de l'algorithme de Kruskal.
-  3. Des tests unitaires pour accompagner notre code.
-  4. Un test de notre implémentation sur les  instances de TSP dans le programme main."
+md" Dans cette troisième phase du projet sur le problème du voyageur de commerce symétrique, nous avons implémenté l'algorithme de Prim.
+  1. Nous avons d'abord effectué quelques modifications/corrections des phases précédentes
+  2. Nous avons implémenté les deux heuristiques présentées en TP, puis les avons utilisé pour implémenter l'algorithme de Prim.
+  3. Nous avons effectué des tests de notre implémentation sur les instances de tsp données."
+  
 end
 
-# ╔═╡ d7c42946-efe0-4973-b9e6-8cb82e66c703
-md"Tout d'abord nous avons voulu corriger quelques erreurs de notre phase 1 : nous avons ainsi modifié notre fonction create\_graph pour qu'elle ne prenne en compte qu'une fois les arêtes d'un sommet fixé à un autre. Nous avons aussi empêché l'ajout d'arêtes de poids nul."
-
-# ╔═╡ 221f80e9-921f-423a-abdd-148a17e97100
-md"En parallèle, nous avons aussi modifié notre fonction pour qu'elle prenne en compte les fichiers comme brazil58.tsp ou gr17.tsp qui ne donnaient pas de valeurs pour représenter ses noeuds et donc qui n'étaient pas pris en compte par la fonction create_nodes. Maintenant la liste des noeuds est correctement créée"
-
 # ╔═╡ ee2fe83f-3e55-4bf8-b2a5-706c53c9b5c5
-md"Nous avons rajouté des tests unitaires dans cette fonction, vérifiant surtout que le nombre d'arêtes n'excède pas le nombre maximal fixé par le nombre de noeuds (ce qui permet de vérifier en même temps que le nombre de noeuds n'est pas nul)."
+md"Nous avons tout d'abord modifié quelques points des phases précédentes pour répondre aux remarques faites dans la correction de la phase 2. La plus significative d'entre elle est la modification du type **Edge** : il est maintenant constitué de deux sommets de type **Node** (et non plus **String** qui donnait le nom du sommet) et d'un flottant donnant le poids de l'arête. On présente un exemple ci-dessous"
 
-# ╔═╡ 46df5d63-a08b-44f9-ba6c-70e964b1e95b
-create_graph("instances\\stsp\\brazil58.tsp")
+# ╔═╡ 916261ac-e4c4-4fd6-8e1f-ba9600ebd46b
+begin 
+	node1 = Node{Any}("1",nothing)
+	node2 = Node{Any}("2", nothing)
+	arete = Edge{Any}(node1,node2,3)
+end
 
-# ╔═╡ 6e828363-b538-4ac9-8c93-6a3f3f4f65cd
-create_graph("instances\\stsp\\gr17.tsp")
+# ╔═╡ baf7959e-44c8-45d7-9eef-d681a1d0805d
+md"Il est notable que le type **Edge** dépend maintenant d'un type **T** correspondant à la donnée des noeuds. On peut donc spécifier les types attendus dans les données des sommets dès la création de l'arête."
 
-# ╔═╡ b89ce040-d9f8-4b93-9fad-058eb8675e39
-md"Nous avons aussi modifié la fonction plot_graph pour qu'elle marche correctement tant qu'on rentre un vecteur de nodes avec un couple de flottants en données et un ensemble d'arêtes."
+# ╔═╡ 3f5987dc-cc9f-4be9-9602-c260aba63177
+md"Nous avons également modifié notre fonction kruskal pour qu'elle puisse prendre en argument un graphe et plus seulement un chemin d'accès à une des instances tsp. Nous avons aussi rajouté une fonction permettant de calculer le poids total d'un graphe."
 
-# ╔═╡ 0b9500da-4a9a-4d90-a11a-c097d92a62c1
-plot_graph("instances\\stsp\\bayg29.tsp")
+# ╔═╡ 812748d8-a029-4efb-ae10-8f0b6b4445a6
+begin
+	graph_exemple = create_graph(joinpath(path_instances, "bayg29.tsp"))
+	poids_total(graph_exemple)
+end
 
-# ╔═╡ 5d6ab8f7-dbf9-4cc5-b012-3e72776841b3
-plot_graph([Node{Vector{Float64}}("1",[1.5,1.]), Node{Vector{Float64}}("2", [1.,2.]), Node{Vector{Float64}}("3", [2,2])], [Edge("1","2",1), Edge("1","3",1)])
+# ╔═╡ 2b486cf3-c08a-426b-87f2-f73cd1549d85
+arbre_exemple = kruskal(graph_exemple)
 
-# ╔═╡ 93af53db-16b5-40e7-864e-2c9f19880aaa
-md"Finalement, nous avons aussi ajouté un tri par poids croissant des arêtes dans la fonction create\_graph. Celui-ci nous sera utile pour l'algorithme de Kruskal."
+# ╔═╡ 819f9c7d-d913-496d-a69b-2830db6ebecf
+plot_graph(arbre_exemple.nodes, arbre_exemple.edges)
 
-# ╔═╡ e8565d7a-dc39-4b57-b852-f4f03d505dd5
-md"Nous avons fait le choix de représenter nos composantes connexes par un tableau de Nodes. Ainsi, on supposera que tous les noeuds qui sont dans ce tableau seront dans la même composante connexe. On implémente quelques fonctions de base, et  une fonction merge qui prend en argument 2 composantes connexes et qui renvoie la concaténation des 2. On joint des exemples ci-dessous."
+# ╔═╡ 2832e0c9-9666-4f35-a32c-789087eaf1d8
+poids_total(arbre_exemple)
 
-# ╔═╡ be97c69c-547f-4878-8694-f96e96d7431c
-connex = Connex([Node("1",[]), Node("2",[])])
+# ╔═╡ 8fdb1448-1874-46d8-a291-2b368c8a9747
+md"Après ces corrections, nous avons travaillé sur l'implémentation de l'union via le rang et de la compression des chemins."
 
-# ╔═╡ d0e478d2-4d35-4faa-8d5c-ec444c7f0e91
-add_node!(connex, Node("3",[]))
+# ╔═╡ bd22e5f2-e5a4-4ec2-acfb-1d72eb7e1963
+md"Tout d'abord, en ce qui concerne l'implémentation de l'union via le rang, nous avons construit une fonction *heuristique1!* qui prend en argument un dictionnaire associant à chaque sommet du graphe son rang, un dictionnaire associant à chaque sommet son parent dans l'arbre de recherche, ainsi que 2 composantes connexes de type **Connex** à fusionner. On identifie la racine de chaque composante connexe comme le sommet de rang maximal dans cette composante connexe, on compare les rangs de ces sommets et on fusionne les composantes connexes de la bonne manière en modifiant en plus le dictionnaire des parents et des rangs. On présente un exemple pratique ci-dessous : on utilise cette heuristique pour fusionner la composante connexe 1 composée des noeuds 1 et 2 où 2 est le parent de 1, et la composante connexe 2 composée de l'unique noeud 3."
 
-# ╔═╡ f138fb6b-a669-47fe-b9dd-c868ab0a1bc0
-nb_nodes(connex)
+# ╔═╡ f3dd3618-8077-45bf-b50c-97b3c053df5e
+begin
+	node3 = Node{Any}("3", nothing)
+	connex1 = Connex([node1,node2])
+	connex2 = Connex([node3])
+	dico_parents = Dict{String,Any}("1" => "2", "2" => nothing, "3" => nothing)
+	dico_rangs = Dict{String,Any}("1" => 0, "2" => 1, "3" => 0)
+end
 
-# ╔═╡ 54c75ba9-c1eb-4a39-972f-39354a17987d
-connex2 =  Connex([Node("4",[]), Node("5",[])])
+# ╔═╡ 986e004f-887a-484f-824e-57455fbc9836
+heuristique1!(dico_rangs,dico_parents,connex1,connex2)
 
-# ╔═╡ 3f8bd86e-52a2-4920-b5f6-b5eb0cc019bb
-merge!(connex, connex2)
+# ╔═╡ 63d81785-5649-480c-869b-27f4fac15f67
+dico_rangs
 
-# ╔═╡ f9ede19c-5993-49c2-b78d-6cfe651f48a6
-connex
+# ╔═╡ bae898f1-cb48-4243-b611-84644673877c
+dico_parents
 
-# ╔═╡ e7d4c976-727a-49c1-b570-0b80bac37224
-md"On a ensuite, dans le programme kruskal.jl, implémenté 2 fonctions qui nous seront utiles pour la suite : la fonction isinConnex qui cherche si un noeud appartient à une composante connexe donnée et une fonction find_connex! qui prend en argument une liste de composantes connexes et un noeud à trouver, et qui renvoit la composante connexe à laquelle appartient le noeud donné en la supprimant de la liste de composantes connexes.
-Pour ces 2 fonctions, on identifie comme égaux des noeuds seulement s'ils ont le même nom, on ne s'intéresse pas à la donnée derrière."
+# ╔═╡ 7ffe7a97-1a1f-4726-8e1a-c24bc104f796
+md"Nous avons ensuite créé une fonction *heuristique2!* qui prend en argument un noeud dont on cherche la racine et le dictionnaire des parents des noeuds de l'arbre et renvoie la racine du noeud en ayant correctement modifié l'arbre de recherche par compression des chemins. Pour cela, on remonte jusqu'à la racine du noeud grâce au dictionnaire des parents, avant de remplacer le parent noté dans le dictionnaire par la racine pour chaque sommet parcouru (à l'exception de la racine). On montre un exemple ci-dessous."
 
-# ╔═╡ 41c6e5c5-90cd-4feb-8db4-666c56b017ae
-connex3 = Connex([Node("1",[]), Node("2",[])])
+# ╔═╡ f4591e8c-b2f2-42f5-938f-83f09248dd61
+begin
+	node4 = Node{Any}("4", nothing)
+	node5 = Node{Any}("5", nothing)
+	dico_parents2 = Dict{String,Any}("1" => nothing, "2" => "1", "3" => "2", "4" => "2", "5" => "3")
+end
 
-# ╔═╡ 25f7f0c7-201e-4eb9-853c-69278fda2622
-isinConnex(connex3, Node("1", []))
+# ╔═╡ 54c21dcb-d2f7-4fb0-acbf-0477779a7766
+heuristique2!(node5,dico_parents2)
 
-# ╔═╡ 880b3437-6bb8-44a0-8a57-4d59de1c75e6
-isinConnex(connex3,Node("4",[]))
+# ╔═╡ ad28de88-ecf7-41e9-9ba2-074831b0c9a9
+dico_parents2
 
-# ╔═╡ dbf1f0c2-bdea-4f94-90bd-f1f88d20344d
-isinConnex(connex3, Node("1", [1.,1.]))
+# ╔═╡ 21e8c286-4eba-4af5-b77b-bdb2e54b35c1
+md"Concernant les types de ces dictionnaires, nous avons fait le choix de représenter les clés des dictionnaires comme des chaînes de caractère correspondant aux noms des sommets : cela nous paraissait plus naturel pour un type de clé de dictionnaire. Le dictionnaire des rangs renvoie le rang qui est un entier. Le dictionnaire des parents, lui, ne renvoie qu'une chaîne de caractères correspondant au nom du sommet parent et non pas le noeud entier. Nous avons fait ce choix pour un peu plus de confort sur les types même si cela va à l'encontre de la philosophie d'avoir des objets riches. Cependant, ce dictionnaire des parents étant encore assez peu utilisé, nous n'avons pas été contraints par ce manque d'informations. Si nous avons besoin de plus d'informations sur les noeuds parents au cours des prochaines phases, nous modifierons cette structure pour avoir un **Dict{String,Node}**."
 
-# ╔═╡ 420966c2-5ffe-4abc-a68b-2238ec9db259
-connex4 = Connex([Node("3",[]), Node("4",[])])
+# ╔═╡ d10398fd-4c26-4941-9d44-79c7975f721d
+md"De la même manière, comme nous n'utilisons pas la fonction heuristique2! dans nos fonctions pour l'instant, nous n'avons pas ressenti le besoin de modifier le dictionnaire des rangs lors de la modification de l'arbre de recherche. Si nous en avions besoin lors des prochaines phases, nous le modifierions dans cette fonction heuristique2!"
 
-# ╔═╡ d4bba484-1aad-411c-bf5d-298fbe8c704b
-lis_connex = [connex3, connex4]
+# ╔═╡ 85d62e2a-52aa-4cbc-a112-719cdfc3c829
+md"Finalement, après avoir implémenté ces 2 heuristiques, nous avons implémenté l'algorithme de Prim. Pour cela nous avons utilisé un \"dictionnaire de priorité \" qui correspond en fait à une file de priorité. Pour cela, nous avons implémenté une fonction *popfirst!* qui prend en argument un dictionnaire dont les valeurs sont des réels, qui trouve et retire du dictionnaire la valeur minimale, et qui renvoie la clé (c'est à dire le nom du sommet dans notre cas) et la valeur minimale. On pourra ainsi rajouter ou retirer des entrées dans le dictionnaire, et accéder à l'élément de priorité minimale, qui sera celui qui nous intéressera ici." 
 
-# ╔═╡ c9491f4c-f89e-474f-a76e-6b0d52c2050a
-find_connex!(lis_connex, Node("3", []))
+# ╔═╡ e3b5b822-92b2-4014-944b-049faef255ee
+md"Pour implémenter l'algorithme de Prim, nous avons donc initialisé 3 dictionnaires, de rang, initialisé à 0 pour tous les sommets, de parents, initialisé à nothing pour tous les sommets et de poids minimal initialisé à Inf pour tous les sommets. Ce dernier correspond à un dictionnaire de la distance minimale entre le sommet et les sommets déjà traités. On initialise ce dictionnaire avec le sommet passé en argument comme sommet de départ (dont la valeur par défaut est le 1er sommet de la liste des noeuds du graphe passé en argument). On parcourt ainsi toutes les arêtes connectées à ce sommet pour remplacer la distance de l'autre sommet de l'arête dans le dictionnaire par le poids de l'arête considérée, et on retire finalement ce sommet de départ du dictionnaire dico\_min\_weights. A chaque itération, on va retirer l'élément de distance minimale dans ce dictionnaire, et parcourir toutes les arêtes liées à ce sommet minimal pour mettre à jour la distance minimale si le poids de l'arête est inférieur à la distance minimale déjà connue pour les sommets non déjà traités. Si l'autre sommet de l'arête a déjà été traité, alors on vérifie le poids de l'arête pour savoir s'il s'agit d'une arête qui donnait le poids minimal présent dans le dictionnaire des distances minimales à la composante connexe (s'il y en avait plusieurs on ne gardera que la dernière). On peut alors la rajouter à la liste des arêtes à garder pour former l'arbre de recouvrement minimum. Enfin, on utilise l'heuristique 1 pour rajouter le sommet identifié à la composante connexe déjà traitée."
 
-# ╔═╡ 07e45e8d-d705-44e0-bb24-7fb2f7f2f05d
-lis_connex
+# ╔═╡ 4f4616e4-e2bd-45b6-8d55-fa72621bf1cb
+md"A chaque itération, on retire un sommet du dictionnaire des poids minimaux, qu'on traite pour l'ajouter à la composante connexe déjà incluse. La taille du dictionnaire diminue donc de 1 à chauqe itération, puisqu'à la fin de l'itération il ne contient que les sommets pas encore rajoutés à l'arbre en construction. La boucle while va donc bien se terminer et correspond bien à la condition \"tant qu'il y a des sommets non traités\". "
 
-# ╔═╡ ece014aa-5af7-447b-90d3-726bc58a0502
-md"Nous avons ensuite implémenté l'algorithme de Kruskal. Nous avons fait le choix de lui faire prendre en argument directement le nom du fichier stsp, mais il ne serait pas difficile de le modifier pour lui faire prendre en argument un graphe quelconque. Il faudrait faire attention à trier ses arêtes par ordre croissant, puisqu'ici cela est fait dans la fonction create\_graph qui ne serait alors plus utilisée. Tout d'abord, nous initialisons la liste des composantes connexes comme une liste de n composantes connexes contenant un unique sommet et la liste d'arêtes à garder comme une liste vide. A chaque itération, et tant qu'il reste plus de 2 composantes connexes distinctes, nous retirons l'arête de coût le plus faible, vérifions si elle peut relier 2 composantes connexes distinctes, et si oui, nous l'ajoutons à la liste des arêtes à garder et nous fusionnons les 2 composantes connexes. Quand il ne reste plus qu'une composante connexe, le graphe créé est ainsi connexe et correspond à notre arbre de recouvrement minimal."
+# ╔═╡ bc222d2a-7883-4d9a-b15a-d1119588130d
+md"On note aussi que dans l'algorithme de Prim, on se contente de rajouter des sommets isolés à une composante connexe plus importante. En utilisant l'heuristique 1, on est donc sur qu'à chaque itération l'arbre de recherche décrit par dico_parents et dico_rangs sera un abre de recherche aplati avec une racine de rang 1 et tous les autres sommets déjà traités comme feuilles de rang 0 ; on a donc aucun besoin d'utiliser l'heuristique 2 ici."
 
-# ╔═╡ 00352dd5-98ed-49ea-9dba-311e45a4467f
-graphe = kruskal("instances\\stsp\\bayg29.tsp")
-
-# ╔═╡ f058682d-a3b3-40dc-bda1-60a408d84a54
-plot_graph(graphe.nodes,graphe.edges)
-
-# ╔═╡ cfd66aa4-bb17-4315-92e5-7a36f8ea89f0
-kruskal("instances\\stsp\\gr17.tsp")
-
-# ╔═╡ 812389aa-4961-4bc5-a4a3-c514ea1a98d7
-md"Nous avons rajouté quelques tests unitaires pour nous assurer du bon fonctionnement de notre code : nous vérifions entre autres
-* que l'arête en haut de la liste est bien de coût plus faible que la suivante ce qui garantit la croissance 'locale' de la liste.
-* que la liste des composantes connexes comporte toujours le bon nombre de noeuds à chaque itération.
-* qu'il ne reste bien qu'une seule composante connexe à la fin de l'algorithme.
-* que le nombre d'arêtes correspond bien au nombre de noeuds moins 1 à la fin de l'algorithme, ce qui permet de prouver que l'on a bien un arbre."
-
-# ╔═╡ 31436483-25d9-4a0d-87d4-19d1668460ed
-md"Nous avons finalement appelé la fonction kruskal sur toutes les instances stsp pour vérifier que tous les tests unitaires étaient passés dans le script main.jl. Comme la fonction create\_graph est appelée dans la fonction kruskal, on peut s'assurer que les tests unitaires de create\_graph sont aussi passés"
-
-# ╔═╡ 922a462f-ee4f-49d7-a1fe-dbf9a4bade6b
-graph1 = kruskal("instances\\stsp\\dantzig42.tsp")
-
-# ╔═╡ b4763f9b-6d6a-4110-87c1-03eb2720e0e1
-graph2 = prim("instances\\stsp\\dantzig42.tsp")
-
-# ╔═╡ 49e57061-91a9-4518-ac0b-ddd214377144
-poids_total(graph1)
-
-# ╔═╡ 01e99ea2-e67c-4ef7-bf3e-ad9058b2dae1
-poids_total(graph2)
-
-# ╔═╡ 52a054b0-023b-4aed-a38c-a971e74c9dd8
-plot_graph(graph1.nodes,graph1.edges)
-
-# ╔═╡ c9b4fb96-80c3-4b53-b362-6756ab922b55
-plot_graph(graph2.nodes,graph2.edges)
+# ╔═╡ a58c78f5-6218-4eeb-aa64-bc7b84ccef2d
+md"On présente un exemple de l'algorithme de Prim ci-dessous, avec l'arbre de recouvrement minimal obtenu par l'algorithme de Kruskal en parallèle."
 
 # ╔═╡ ba6d71ec-8a44-4c1f-ad7b-fe76412928d6
+arbre_prim = prim(joinpath(path_instances, "bays29.tsp"))
 
+# ╔═╡ f61d14e6-0c37-41bb-9c53-8cc09a2e2580
+plot_graph(arbre_prim.nodes,arbre_prim.edges)
 
 # ╔═╡ ac521584-8dc8-48db-9139-5adaa79e4365
-graph_test = create_graph("instances\\stsp\\bayg29.tsp")
+arbre_kruskal = kruskal(joinpath(path_instances, "bays29.tsp"))
 
 # ╔═╡ 7032c512-e8a8-40c7-b271-eda818e419fd
-find_edges("24", graph_test)
+plot_graph(arbre_kruskal.nodes,arbre_kruskal.edges)
 
 # ╔═╡ e9f37aa0-c0ab-4901-b548-ef017420d3db
-
+poids_total(arbre_prim)
 
 # ╔═╡ 91db7dce-cead-4355-a788-d505aef8db45
-
+poids_total(arbre_kruskal)
 
 # ╔═╡ d741507a-7ad5-4b31-aeba-435376953de9
+md"On note qu'on a obtenu 2 arbres différents avec ces 2 algorithmes. Néanmoins, ils sont tous les 2 de même poids ce qui est un très bon indice sur le fait que ce soient effectivement des arbres de recouvrement minimaux."
 
+# ╔═╡ 9e1d1e85-48f8-43e3-90d3-9f793cc8d6fd
+md"Finalement, nous avons construit un script principal, *main3.jl*, exécutant les algorithmes de Kruskal et de Prim pour chaque instance de tsp que nous avons. Pour chaque, on teste si dans les graphes obtenus, tous les noeuds sont reliés à une arête c'est à dire s'il n'y a pas de sommet isolé. Ce n'est pas un test de connexité, mais c'est beaucoup moins coûteux et cela donne un plutôt bon indice sur la connexité du graphe, surtout vu la construction lors des algorithmes où on fusionnait les composantes connexes 1 à 1. On teste aussi si le nombre d'arêtes est bien égal au nombre de noeuds -1, qui indiquera, si on admet que le graphe obtenu est connexe, qu'il est aussi acyclique donc qu'il s'agit d'un arbre de recouvrement. Enfin, on teste si les poids minimaux renvoyés par ces 2 algorithmes sont identiques, ce qui sera un très bon indice du fait qu'il s'agit effectivement des poids minimaux."
+
+# ╔═╡ 00fe746b-f971-45c7-b1da-ac243361266c
+md"On a aussi rajouté une balise time pour mesurer le temps d'exécution de chaque algorithme sur chaque fichier. On n'observe pas de différences significatives entre les deux algorithmes sur la majorité des instances, et sur le reste ce n'est pas toujours le même algorithme qui est le plus rapide. On observe enfin qu'en dehors du fichier \"pa561\" qui s'exécute en une quarantaine de secondes, pour tous les autres fichiers on peut trouver des arbres minimaux en moins d'une seconde, voire beaucoup moins sur les plus petites instances, ce qui est plutôt bon signe pour les temps d'exécution de la prochaine phase."
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1021,7 +1014,9 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─3c04ef1e-26cf-11ec-269d-714e657e0a90
 # ╠═edb29e94-a3b5-42cf-bb38-a4bbe9753dd1
-# ╠═52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
+# ╟─52c6ffc6-3ced-4465-95c8-c3ff979a5ff3
+# ╠═ac10181c-501b-44b0-a0f9-5257d37329aa
+# ╟─02181ed8-1f58-4bde-ba30-0d33f6cce8d7
 # ╟─bd96c780-678d-459b-aa23-a166751da087
 # ╟─0c186ad3-5494-4fa5-9791-5c6a1fbc4fab
 # ╟─abc12fa3-0cdd-4c3f-8dc6-6fe41cde8ec9
@@ -1029,48 +1024,39 @@ version = "0.9.1+5"
 # ╟─8914a271-58db-45d0-a227-804ac9cdac5b
 # ╟─4c380476-c375-4da3-a58e-acdb303d3a76
 # ╟─f345a0a0-2342-4488-ac0a-7b3c4f5fe381
-# ╟─d7c42946-efe0-4973-b9e6-8cb82e66c703
-# ╟─221f80e9-921f-423a-abdd-148a17e97100
 # ╟─ee2fe83f-3e55-4bf8-b2a5-706c53c9b5c5
-# ╠═46df5d63-a08b-44f9-ba6c-70e964b1e95b
-# ╠═6e828363-b538-4ac9-8c93-6a3f3f4f65cd
-# ╟─b89ce040-d9f8-4b93-9fad-058eb8675e39
-# ╠═0b9500da-4a9a-4d90-a11a-c097d92a62c1
-# ╠═5d6ab8f7-dbf9-4cc5-b012-3e72776841b3
-# ╟─93af53db-16b5-40e7-864e-2c9f19880aaa
-# ╟─e8565d7a-dc39-4b57-b852-f4f03d505dd5
-# ╠═be97c69c-547f-4878-8694-f96e96d7431c
-# ╠═d0e478d2-4d35-4faa-8d5c-ec444c7f0e91
-# ╠═f138fb6b-a669-47fe-b9dd-c868ab0a1bc0
-# ╠═54c75ba9-c1eb-4a39-972f-39354a17987d
-# ╠═3f8bd86e-52a2-4920-b5f6-b5eb0cc019bb
-# ╠═f9ede19c-5993-49c2-b78d-6cfe651f48a6
-# ╟─e7d4c976-727a-49c1-b570-0b80bac37224
-# ╠═41c6e5c5-90cd-4feb-8db4-666c56b017ae
-# ╠═25f7f0c7-201e-4eb9-853c-69278fda2622
-# ╠═880b3437-6bb8-44a0-8a57-4d59de1c75e6
-# ╠═dbf1f0c2-bdea-4f94-90bd-f1f88d20344d
-# ╠═420966c2-5ffe-4abc-a68b-2238ec9db259
-# ╠═d4bba484-1aad-411c-bf5d-298fbe8c704b
-# ╠═c9491f4c-f89e-474f-a76e-6b0d52c2050a
-# ╠═07e45e8d-d705-44e0-bb24-7fb2f7f2f05d
-# ╟─ece014aa-5af7-447b-90d3-726bc58a0502
-# ╠═00352dd5-98ed-49ea-9dba-311e45a4467f
-# ╠═f058682d-a3b3-40dc-bda1-60a408d84a54
-# ╠═cfd66aa4-bb17-4315-92e5-7a36f8ea89f0
-# ╟─812389aa-4961-4bc5-a4a3-c514ea1a98d7
-# ╟─31436483-25d9-4a0d-87d4-19d1668460ed
-# ╠═922a462f-ee4f-49d7-a1fe-dbf9a4bade6b
-# ╠═b4763f9b-6d6a-4110-87c1-03eb2720e0e1
-# ╠═49e57061-91a9-4518-ac0b-ddd214377144
-# ╠═01e99ea2-e67c-4ef7-bf3e-ad9058b2dae1
-# ╠═52a054b0-023b-4aed-a38c-a971e74c9dd8
-# ╠═c9b4fb96-80c3-4b53-b362-6756ab922b55
-# ╠═ba6d71ec-8a44-4c1f-ad7b-fe76412928d6
-# ╠═ac521584-8dc8-48db-9139-5adaa79e4365
-# ╠═7032c512-e8a8-40c7-b271-eda818e419fd
+# ╠═916261ac-e4c4-4fd6-8e1f-ba9600ebd46b
+# ╟─baf7959e-44c8-45d7-9eef-d681a1d0805d
+# ╟─3f5987dc-cc9f-4be9-9602-c260aba63177
+# ╠═812748d8-a029-4efb-ae10-8f0b6b4445a6
+# ╠═2b486cf3-c08a-426b-87f2-f73cd1549d85
+# ╠═819f9c7d-d913-496d-a69b-2830db6ebecf
+# ╠═2832e0c9-9666-4f35-a32c-789087eaf1d8
+# ╟─8fdb1448-1874-46d8-a291-2b368c8a9747
+# ╟─bd22e5f2-e5a4-4ec2-acfb-1d72eb7e1963
+# ╠═f3dd3618-8077-45bf-b50c-97b3c053df5e
+# ╠═986e004f-887a-484f-824e-57455fbc9836
+# ╠═63d81785-5649-480c-869b-27f4fac15f67
+# ╠═bae898f1-cb48-4243-b611-84644673877c
+# ╟─7ffe7a97-1a1f-4726-8e1a-c24bc104f796
+# ╠═f4591e8c-b2f2-42f5-938f-83f09248dd61
+# ╠═54c21dcb-d2f7-4fb0-acbf-0477779a7766
+# ╠═ad28de88-ecf7-41e9-9ba2-074831b0c9a9
+# ╟─21e8c286-4eba-4af5-b77b-bdb2e54b35c1
+# ╟─d10398fd-4c26-4941-9d44-79c7975f721d
+# ╟─85d62e2a-52aa-4cbc-a112-719cdfc3c829
+# ╟─e3b5b822-92b2-4014-944b-049faef255ee
+# ╟─4f4616e4-e2bd-45b6-8d55-fa72621bf1cb
+# ╟─bc222d2a-7883-4d9a-b15a-d1119588130d
+# ╟─a58c78f5-6218-4eeb-aa64-bc7b84ccef2d
+# ╟─ba6d71ec-8a44-4c1f-ad7b-fe76412928d6
+# ╟─f61d14e6-0c37-41bb-9c53-8cc09a2e2580
+# ╟─ac521584-8dc8-48db-9139-5adaa79e4365
+# ╟─7032c512-e8a8-40c7-b271-eda818e419fd
 # ╠═e9f37aa0-c0ab-4901-b548-ef017420d3db
 # ╠═91db7dce-cead-4355-a788-d505aef8db45
-# ╠═d741507a-7ad5-4b31-aeba-435376953de9
+# ╟─d741507a-7ad5-4b31-aeba-435376953de9
+# ╟─9e1d1e85-48f8-43e3-90d3-9f793cc8d6fd
+# ╟─00fe746b-f971-45c7-b1da-ac243361266c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

@@ -55,7 +55,6 @@ function kruskal(graphe)
     for node in lis_nodes 
         push!(lis_connex, Connex([node]))
     end
-    @test length(lis_connex) == length(lis_nodes)
 
     T = typeof(lis_edges[1].sommet1.data)
     lis_aretes = Edge{T}[] #liste des aretes gardées dans l'arbre minimal
@@ -82,11 +81,7 @@ function kruskal(graphe)
         for i=1 : length(lis_connex)
             somme_noeuds += nb_nodes(lis_connex[i])
         end
-        @test somme_noeuds == length(lis_nodes)
     end
-
-    @test length(lis_connex) == 1 #On vérifie qu'on a qu'une seule composante connexe
-    @test length(lis_aretes) == length(lis_nodes)-1 #Si la propriété est vérifiée, on a un arbre de recouvrement.
 
     #Avec ces 2 tests on est sûr d'avoir un arbre de recouvrement ; la minimalité est garantie par le fait que les arêtes sont triées 
     #par ordre de poids croissant, testé à la fin de create_graph et testé "localement" à chaque itération.

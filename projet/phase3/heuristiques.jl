@@ -46,17 +46,19 @@ end
 """ Prend en argument un noeud dont on cherche l'ancêtre, le dictionnaire des parents des noeuds et des rangs des noeuds.
 Renvoie l'ancêtre de ce noeud en mettant à jour les dictionnaires des parents et des rangs selon la méthode de compression des chemins
 """
-function heuristique2!(noeud::Node,dico_parents::Dict,dico_rangs::Dict)
-    lis_parents = [noeud]
-    parent = dico_parents[noeud.name]
-    while parent.name != dico_parents[parent.name].name
+function heuristique2!(noeud::Node,dico_parents::Dict)
+    lis_parents = []
+    parent =  noeud.name
+
+    while dico_parents[parent] != nothing
         push!(lis_parents, parent)
-        parent = dico_parents[parent.name]
+        parent = dico_parents[parent]
     end
+    #parent correspond maintenant au nom de la racine de l'arbre de recherche 
 
     for sommet in lis_parents
-        dico_parents[sommet.name] = parent
-        dico_rangs[sommet.name] = 1 
+        dico_parents[sommet] = parent
+        #lis_parents s'arrête au fils de parent, on ne modifie donc pas dico_parents[parent]
     end
 
     parent

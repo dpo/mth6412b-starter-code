@@ -55,7 +55,7 @@ g = Node("g", [0, 0])
 h = Node("h", [0, 0])
 i = Node("i", [0, 0])
 
-Gexcours = Graph("Gtest", [b, a, c, d, e, f, g, h, i],
+Gexcours = Graph("Gtest", [a, b, c, d, e, f, g, h, i],
 [Edge("a↔b", (a, b), 4),
 Edge("b↔c", (b, c), 8),
 Edge("c↔d", (c, d), 7),

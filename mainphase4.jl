@@ -19,11 +19,21 @@ function initvoisins!(graph::Graph{T, I}) where{T, I}
 end
 
 """
+Vide les listes d'enfants.
+"""
+function reset_family!(graph::Graph{T, I}) where{T, I}
+    for node in nodes(graph)
+        node.parent = nothing
+        node.min_weight = Inf
+        resize!(node.enfants, 0)
+    end
+end
+
+"""
 Remplit les listes d'enfants à partir des attributs parent.
 """
-function set_enfants!(graph::Graph{T, I}; reset::Bool=false) where{T, I}
+function set_enfants!(graph::Graph{T, I}) where{T, I}
     for node in nodes(graph)
-        !(reset) && resize!(node.enfants, 0)
         (parent(node) !== nothing) && (add_enfant!(node.parent, node))
     end
 end
@@ -31,7 +41,7 @@ end
 """
 Applique l'algorithme de Prim accéléré sur un graphe. Ne renvoie rien.
 """
-function prim_acc!(graph::Graph{T, I}, s::Node{T}; initialisedvoisins=false) where{T, I}
+function prim_acc!(graph::Graph{T, I}, s::Node{T}; initialisedvoisins::Bool=false) where{T, I}
     s.min_weight = 0
     (initialisedvoisins) || (initvoisins!(graph))
 
@@ -89,25 +99,25 @@ function removeNodeGraph!(graph::Graph{T, I}, s::Node{T}) where {T, I}
         end
     end
     filter!(e->e≠ s , nodes(graph))
-    print(length(edgesToDel))
-    println(edgesToDel)
-    return deleteat!(edges(graph), edgesToDel)
+    removedEdges = edges(graph)[edgesToDel]
+    deleteat!(edges(graph), edgesToDel)
+    return removedEdges
 end
 
 """
 Effectue une transformation π sur un les poids des arêtes d'un graphe.
 """
-function πtransfo!(graph::Graph{T, I}, π::Vector{Float64}) where {T, I}
+function πtransfo!(graph::Graph{T, I}, vecteurπ::Vector{Float64}) where {T, I}
     for i in 1:nb_nodes(graph)
-        nodes(graph)[i].π = π[i]
+        nodes(graph)[i].πcost = vecteurπ[i]
     end
     for edge in edges(graph)
-        edge.weight += (data(edge)[1].π + data(edge)[2].π)
+        edge.weight += (data(edge)[1].πcost + data(edge)[2].πcost)
     end
 end
 
 """
-Construit un one-tree par les attributs enfants des sommets du graphe
+Construit un one-tree par les attributs enfants des sommets du graphe.
 """
 function onetree!(graph::Graph{T, I}, removedEdges::Vector{Edge{T, I}}, removedNode::Node{T}) where {T, I}
     for edge in removedEdges
@@ -125,6 +135,8 @@ function onetree!(graph::Graph{T, I}, removedEdges::Vector{Edge{T, I}}, removedN
     elseif data(minEdge[2])[2] == removedNode
         push!(enfants(data(minEdge[2])[1]), removedNode) 
     end
+
+    println(weight(minEdge[1]), " ", weight(minEdge[2]))
 end
 
 """
@@ -157,8 +169,9 @@ function degrees!(d::Vector{Int}, graph::Graph{T, I}, onenode::Node{T}) where {T
     end
 end
 
-        
-
+"""
+Trouve une tournée de cout minimale par l'heuristique de Held et Karp.
+"""
 function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb_nodes(graph)) where {T, I}
     if nb_nodes(graph) <= 1
         return  nodes(graph)
@@ -170,7 +183,7 @@ function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb
 
     k = 1
     W = -Inf
-    π = zeros(Float64, nb_nodes(graph))
+    vecteurπ = zeros(Float64, nb_nodes(graph))
     Δπ = zeros(Float64, nb_nodes(graph))
     v = ones(Int, nb_nodes(graph))
     stopcriterion = false
@@ -178,11 +191,16 @@ function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb
     while !(all(v .== 0) || stopcriterion)
         #trouver arboresence minimale avec un node retiré
         πtransfo!(gtest, Δπ)
-        removedNode = nodes(graph)[1]
+        removedNode = nodes(graph)[end]
         removedNode.parent = nothing
         removedEdges = removeNodeGraph!(graph, removedNode)
         prim_acc!(graph, r, initialisedvoisins = (k != 1))
-        set_enfants!(graph, reset = (k != 1))
+
+        #println([(parent !== nothing) ? (name(parent(node))) : (nothing) for node in nodes(graph)])
+        #println([name(node) for node in nodes(graph)])
+
+
+        set_enfants!(graph)
         #graph contient arboresence minimale (par les enfants ou les parents) avec un node retiré
 
         #construire le 1-tree à partir de l'arboresence
@@ -191,19 +209,22 @@ function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb
         #graph contient un 1-tree minimal par les enfants
 
         #calculer w, W, d, v
-        w = LTπ(graph) - 2*sum(π)
+        w = LTπ(graph) - 2*sum(vecteurπ)
         W = max(W, w)
         degrees!(v, graph, removedNode)
         v .-= 2
 
         #modification des π dans le sens du gradient
-        Δπ = v .* t(k)
-        π .+= Δπ
+        Δπ .= v .* t(k)
+        vecteurπ .+= Δπ
         k += 1
         stopcriterion = k > maxiter
-    end 
-end
 
+        #reset des min_weight, des enfants, et des parents pour la prochaine itération
+        reset_family!(graph)
+        println("itération ", k-1 , " cout = ", w)
+    end
+end
 
 """
 Renvoie la somme des couts d'une tournée par l'ordre des nodes d'un graph.
@@ -311,10 +332,15 @@ solutiontournee = Dict("bayg29" => 1610,
 
 #Les lignes qui suivent sont exécutées en démonstration dans le fichier Pluto.
 
-#test_prim(deepcopy(Gexcours), a, prim_acc!)
+#test_prim(Gexcours, a, prim_acc!)
 #test_prim_all("mth6412b-starter-code/instances/stsp", prim_acc!)
 #
 #test_rsl_all("mth6412b-starter-code/instances/stsp", solutiontournee)
 
-gtest = createGraph("gtest", raw"instances/stsp/gr17.tsp")
-hk!(gtest, nodes(gtest)[2])
+function t1(k, n)
+    periode = Int(ceil(n/2))
+    return 1/2^(Int(ceil(k/periode))-1)
+end
+
+gtest = createGraph("gtest", raw"mth6412b-starter-code/instances/stsp/gr17.tsp")
+hk!(gtest, nodes(gtest)[17], t=k->t1(k,17), maxiter=200)

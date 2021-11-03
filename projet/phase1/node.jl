@@ -21,6 +21,7 @@ mutable struct Node{T} <: AbstractNode{T}
   parent::Union{Node{T}, Nothing}
   voisins::Vector{Tuple{Node{T}, Float64}}
   enfants::Vector{Node{T}}
+  π::Float64
 end
 Node(
   name::String,
@@ -30,7 +31,8 @@ Node(
   parent::Union{Node{T}, Nothing}=nothing,
   voisins=Tuple{Node{T}, Float64}[],
   enfants = Node{T}[],
-  ) where T = Node(name, coordinates, rank, min_weight, parent, voisins, enfants)
+  π = 0.,
+  ) where T = Node(name, coordinates, rank, min_weight, parent, voisins, enfants, π)
 
 """
 Ajoute le node1 aux enfants de node2.

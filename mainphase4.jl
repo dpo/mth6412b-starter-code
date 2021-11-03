@@ -1,5 +1,13 @@
 include("mainphase3.jl")
 using Printf
+using Base.Sort
+
+"""
+Ne trie que les n plus petits éléments de a
+"""
+function smallestn!(a, n)
+  sort!(a; alg=Sort.PartialQuickSort(n))[1:n]
+end
 
 """
 Initialise les listes de voisinages des sommets du graphe.
@@ -13,8 +21,9 @@ end
 """
 Remplit les listes d'enfants à partir des attributs parent.
 """
-function set_enfants!(graph::Graph{T, I}) where{T, I}
+function set_enfants!(graph::Graph{T, I}; reset::Bool=false) where{T, I}
     for node in nodes(graph)
+        !(reset) && resize!(node.enfants, 0)
         (parent(node) !== nothing) && (add_enfant!(node.parent, node))
     end
 end
@@ -22,9 +31,9 @@ end
 """
 Applique l'algorithme de Prim accéléré sur un graphe. Ne renvoie rien.
 """
-function prim_acc!(graph::Graph{T, I}, s::Node{T}) where{T, I}
+function prim_acc!(graph::Graph{T, I}, s::Node{T}; initialisedvoisins=false) where{T, I}
     s.min_weight = 0
-    initvoisins!(graph)
+    (initialisedvoisins) || (initvoisins!(graph))
 
     #Initialisation d'une file de sommets de priorité
     file = NodeQueue([node for node in nodes(graph)])
@@ -66,6 +75,135 @@ function rsl!(graph::Graph{T, I}, r::Node{T}) where {T, I}
     parcours_preordre!(r, orderednodes)
     graph.nodes = orderednodes
 end
+
+"""
+Retire un sommet et toutes les arêtes qui le contiennent à un graphe
+"""
+function removeNodeGraph!(graph::Graph{T, I}, s::Node{T}) where {T, I}
+    edgesToDel = zeros(Int, nb_nodes(graph)-1)
+    j = 0
+    for i in 1:nb_edges(graph)
+        if data(edges(graph)[i])[1] == s || data(edges(graph)[i])[2] == s
+            j += 1
+            edgesToDel[j] = i
+        end
+    end
+    filter!(e->e≠ s , nodes(graph))
+    print(length(edgesToDel))
+    println(edgesToDel)
+    return deleteat!(edges(graph), edgesToDel)
+end
+
+"""
+Effectue une transformation π sur un les poids des arêtes d'un graphe.
+"""
+function πtransfo!(graph::Graph{T, I}, π::Vector{Float64}) where {T, I}
+    for i in 1:nb_nodes(graph)
+        nodes(graph)[i].π = π[i]
+    end
+    for edge in edges(graph)
+        edge.weight += (data(edge)[1].π + data(edge)[2].π)
+    end
+end
+
+"""
+Construit un one-tree par les attributs enfants des sommets du graphe
+"""
+function onetree!(graph::Graph{T, I}, removedEdges::Vector{Edge{T, I}}, removedNode::Node{T}) where {T, I}
+    for edge in removedEdges
+        add_edge!(graph, edge)
+    end
+    #ajouter le sommet 1 du 1-tree dans les enfants des deux arêtes de plus petit cout
+    minEdge = smallestn!(removedEdges, 2)
+    if data(minEdge[1])[1] == removedNode
+        push!(enfants(data(minEdge[1])[2]), removedNode)
+    elseif data(minEdge[1])[2] == removedNode
+        push!(enfants(data(minEdge[1])[1]), removedNode) 
+    end
+    if data(minEdge[2])[1] == removedNode
+        push!(enfants(data(minEdge[2])[2]), removedNode)
+    elseif data(minEdge[2])[2] == removedNode
+        push!(enfants(data(minEdge[2])[1]), removedNode) 
+    end
+end
+
+"""
+Calcule la somme des poids sur les arêtes d'un onetree.
+"""
+function LTπ(graph::Graph{T, I}) where {T, I}
+    LT = zero(I)
+    for edge in edges(graph)
+        if data(edge)[1] ∈ enfants(data(edge)[2]) || data(edge)[2] ∈ enfants(data(edge)[1])
+            LT += weight(edge)
+        end
+    end
+    return LT
+end
+
+"""
+Écrit dans le vecteur d les degrés des sommets d'un 1-tree.
+"""
+function degrees!(d::Vector{Int}, graph::Graph{T, I}, onenode::Node{T}) where {T, I}
+    for i in 1:nb_nodes(graph)
+        node = nodes(graph)[i]
+        if node == onenode
+            d[i] = 2
+        else
+            d[i] = length(enfants(node))
+            if parent(node) !== nothing
+                d[i] += 1
+            end
+        end
+    end
+end
+
+        
+
+function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb_nodes(graph)) where {T, I}
+    if nb_nodes(graph) <= 1
+        return  nodes(graph)
+    elseif nb_nodes == 2
+        nodes(graph)[1].parent = nodes(graph)[2]
+        nodes(graph)[2].parent = nodes(graph)[1]
+        return nodes(graph)
+    end
+
+    k = 1
+    W = -Inf
+    π = zeros(Float64, nb_nodes(graph))
+    Δπ = zeros(Float64, nb_nodes(graph))
+    v = ones(Int, nb_nodes(graph))
+    stopcriterion = false
+
+    while !(all(v .== 0) || stopcriterion)
+        #trouver arboresence minimale avec un node retiré
+        πtransfo!(gtest, Δπ)
+        removedNode = nodes(graph)[1]
+        removedNode.parent = nothing
+        removedEdges = removeNodeGraph!(graph, removedNode)
+        prim_acc!(graph, r, initialisedvoisins = (k != 1))
+        set_enfants!(graph, reset = (k != 1))
+        #graph contient arboresence minimale (par les enfants ou les parents) avec un node retiré
+
+        #construire le 1-tree à partir de l'arboresence
+        add_node!(graph, removedNode)
+        onetree!(graph, removedEdges, removedNode)
+        #graph contient un 1-tree minimal par les enfants
+
+        #calculer w, W, d, v
+        w = LTπ(graph) - 2*sum(π)
+        W = max(W, w)
+        degrees!(v, graph, removedNode)
+        v .-= 2
+
+        #modification des π dans le sens du gradient
+        Δπ = v .* t(k)
+        π .+= Δπ
+        k += 1
+        stopcriterion = k > maxiter
+    end 
+end
+
 
 """
 Renvoie la somme des couts d'une tournée par l'ordre des nodes d'un graph.
@@ -177,3 +315,6 @@ solutiontournee = Dict("bayg29" => 1610,
 #test_prim_all("mth6412b-starter-code/instances/stsp", prim_acc!)
 #
 #test_rsl_all("mth6412b-starter-code/instances/stsp", solutiontournee)
+
+gtest = createGraph("gtest", raw"instances/stsp/gr17.tsp")
+hk!(gtest, nodes(gtest)[2])

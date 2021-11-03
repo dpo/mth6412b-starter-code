@@ -16,7 +16,7 @@ function createGraph(graphname::String, filename::String)
 	node_list = read_nodes(dict, filename)
 	edge_weight_format = dict["EDGE_WEIGHT_FORMAT"]
 		
-	G = Graph(graphname, Node{Vector{Float64}}[], Edge{Vector{Float64}, Int64}[])
+	G = Graph(graphname, Node{Vector{Float64}}[], Edge{Vector{Float64}, Float64}[])
 
 	if length(node_list) == 0
 		dim = parse(Int, dict["DIMENSION"])

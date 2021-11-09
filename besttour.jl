@@ -27,10 +27,10 @@ include("mainphase4.jl")
 
 #dantzig42 : 699
 graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp")
-W1, status1, tour1 = hk!(graph, nodes(graph)[1], algorithm=:prim, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
+sol1 = hk!(graph, nodes(graph)[1], algorithm=:prim, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
 graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp")
-W2, status2, tour2 = hk!(graph, nodes(graph)[1], algorithm=:kruskal, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
-plot_graph2(nodes(graph), tour1)
+sol2 = hk!(graph, nodes(graph)[1], algorithm=:kruskal, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
+#plot_graph2(nodes(graph), arbre(sol2))
 
 #fri26 : 937
 #graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/fri26.tsp")

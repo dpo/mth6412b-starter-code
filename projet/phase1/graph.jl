@@ -85,23 +85,3 @@ function sommeweights(graph::Graph{T, I}) where {T, I}
     end
     somme
 end
-
-"""Affiche un graphe étant données un ensemble de noeuds et d'arêtes."""
-function plot_graph2(nodes, edges)
-  fig = plot(legend=false)
-
-  # edge positions
-  for edge in edges
-    plot!([coordinates(data(edge)[1])[1], coordinates(data(edge)[2])[1]],
-          [coordinates(data(edge)[1])[2], coordinates(data(edge)[2])[2]],
-          linewidth=1.5, alpha=0.75, color=:lightgray)
-  end
-
-  # node positions
-  xys = [coordinates(node) for node in nodes]
-  x = [xy[1] for xy in xys]
-  y = [xy[2] for xy in xys]
-  scatter!(x, y)
-
-  fig
-end

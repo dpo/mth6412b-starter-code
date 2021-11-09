@@ -1,4 +1,5 @@
 include("mainphase3.jl")
+include("projet/phase4/solutionstats.jl")
 using Printf
 using Base.Sort
 using Statistics
@@ -84,12 +85,51 @@ end
 Effectue l'algorithme de RSL en réordonnant les nodes d'un graph dans l'ordre de la tournée.
 """
 function rsl!(graph::Graph{T, I}, r::Node{T}) where {T, I}
+    starttime = time()
     prim_acc!(graph, r)
     set_enfants!(graph)
 
     orderednodes = Node{T}[]
     parcours_preordre!(r, orderednodes)
     graph.nodes = orderednodes
+
+    endtime = time()
+    cout = weighttournee(graph)
+    endtime_cout = time()
+
+    return RSLsolution(cout, endtime - starttime , endtime_cout - starttime, graph)
+end
+
+"""
+Renvoie la somme des couts d'une tournée par l'ordre des nodes d'un graph.
+Fonction très lourde, elle ne sert qu'à tester l'implémentation, elle n'en fait pas partie.
+"""
+function weighttournee(graph::Graph{T, I}) where {T, I}
+    somme = 0.
+    #pour chaque sommet et le prochaine dans nodes(graph), trouve l'edge qui les relient
+    for i in 1:nb_nodes(graph)-1
+        node1 = nodes(graph)[i]
+        node2 = nodes(graph)[i+1]
+        for edge in edges(graph)
+            if (data(edge)[1] == node1 && data(edge)[2] == node2) ||
+               (data(edge)[2] == node1 && data(edge)[1] == node2)
+               somme += weight(edge)
+               break
+            end
+        end
+    end
+
+    #trouve l'edge qui ferme le cycle entre le premier et le dernier sommet
+    node1 = nodes(graph)[end]
+    node2 = nodes(graph)[1]
+    for edge in edges(graph)
+        if (data(edge)[1] == node1 && data(edge)[2] == node2) ||
+           (data(edge)[2] == node1 && data(edge)[1] == node2)
+           somme += weight(edge)
+           break
+        end
+    end
+    return somme
 end
 
 """
@@ -245,12 +285,16 @@ function hk!(graph::Graph{T, I},
              maxiter::Int=nb_nodes(graph),
              wmemorysize::Int=5,
              σw::Float64=1.0e-2) where {T, I}
+    starttime = time()
+
     if nb_nodes(graph) <= 1
-        return  nodes(graph)
+        endtime = time()
+        return  Hksolution(0, "optimal", Edges{T, I}[], 0, 0, endtime - starttime, wmemorysize, graph)
     elseif nb_nodes == 2
         nodes(graph)[1].parent = nodes(graph)[2]
         nodes(graph)[2].parent = nodes(graph)[1]
-        return nodes(graph)
+        endtime = time()
+        return Hksolution(0, "optimal", edges(graph), 0, 0, endtime - starttime, wmemorysize, graph)
     end
 
     k = 1
@@ -259,6 +303,7 @@ function hk!(graph::Graph{T, I},
     Δπ = zeros(Float64, nb_nodes(graph))
     v = ones(Int, nb_nodes(graph))
     wmemory = zeros(wmemorysize)
+    σmemory = 0.0
 
     stopcriterion = (all(v .== 0))
 
@@ -315,7 +360,7 @@ function hk!(graph::Graph{T, I},
 
         #affichage
         display && @printf("%8.1i    %8.4e    %8.4e    %8.2e\n", k-1, W, w, σmemory)
-        stopcriterion && @printf("%8.1i    %8.4e    %8.4e    %8.2e\n", k-1, W, w, σmemory)
+        #stopcriterion && @printf("%8.1i    %8.4e    %8.4e    %8.2e\n", k-1, W, w, σmemory)
     end
 
     algorithm == :prim && (arbremin = prim_to_tree(graph))
@@ -326,47 +371,16 @@ function hk!(graph::Graph{T, I},
     else
         status = "non increasing values in last iterations"
     end
-    return W, status, arbremin
-end
-
-"""
-Renvoie la somme des couts d'une tournée par l'ordre des nodes d'un graph.
-Fonction très lourde, elle ne sert qu'a tester l'implémentation, elle n'en fait pas partie.
-"""
-function weighttournee(graph::Graph{T, I}) where {T, I}
-    somme = 0.
-    #pour chaque sommet et le prochaine dans nodes(graph), trouve l'edge qui les relient
-    for i in 1:nb_nodes(graph)-1
-        node1 = nodes(graph)[i]
-        node2 = nodes(graph)[i+1]
-        for edge in edges(graph)
-            if (data(edge)[1] == node1 && data(edge)[2] == node2) ||
-               (data(edge)[2] == node1 && data(edge)[1] == node2)
-               somme += weight(edge)
-               break
-            end
-        end
-    end
-
-    #trouve l'edge qui ferme le cycle entre le premier et le dernier sommet
-    node1 = nodes(graph)[end]
-    node2 = nodes(graph)[1]
-    for edge in edges(graph)
-        if (data(edge)[1] == node1 && data(edge)[2] == node2) ||
-           (data(edge)[2] == node1 && data(edge)[1] == node2)
-           somme += weight(edge)
-           break
-        end
-    end
-    return somme
+    endtime = time()
+    return Hksolution(W, status, arbremin, σmemory, k-1, endtime - starttime, wmemorysize, graph)
 end
 
 """
 Teste le cout minimal de la tournée trouvée par rsl!() sur le graphe en exemple du cours.
 """
 function test_rsl(graph::Graph{T, I}, s::Node{T}) where{T, I}
-    rsl!(graph, s)
-    @test weighttournee(graph) == 48
+    solution = rsl!(graph, s)
+    @test cout(solution) == 48
     println("G exemple du cours ✓")
 end
 
@@ -398,7 +412,7 @@ end
 Test la fonction rsl! sur un certaine instance avec une racine donnée.
 """
 function test_rsl_1racine(graph::Graph{T, I}, racine::Node{T}, racinetype::String, file_name::String, solutions::Dict) where {T, I}
-    rsl!(graph, racine)
+    solution = rsl!(graph, racine)
     for node in nodes(graph)
         if name(node) == name(racine)
             @test parent(node) === nothing
@@ -406,7 +420,7 @@ function test_rsl_1racine(graph::Graph{T, I}, racine::Node{T}, racinetype::Strin
             @test parent(node) !== nothing
         end
     end
-    weightheuristique = weighttournee(graph)
+    weightheuristique = cout(solution)
 
     if file_name != "brg180.tsp"
         @test weightheuristique <= solutions[file_name[1:end-4]]*2
@@ -416,6 +430,85 @@ function test_rsl_1racine(graph::Graph{T, I}, racine::Node{T}, racinetype::Strin
         @printf("\tX\tcout minimal: %.2e, %.0f",weightheuristique, weightheuristique/solutions[file_name[1:end-4]]*100)
         println("% avec $racinetype")
     end
+end
+
+"""
+Teste la fonction hk! sur tous les fichiers .tsp. avec les même paramètres pas nécéssairement optimaux
+"""
+function test_hk_all(path, solutions)
+    for file_name in readdir(path)
+		if file_name[end-3:end] == ".tsp" && file_name != "pa561.tsp"
+            
+            println(file_name)
+            graph = createGraph(string(file_name), string(path, "/", file_name))
+            sol_kruskal = hk!(graph,
+                       nodes(graph)[1],
+                       algorithm=:kruskal,
+                       display=false,
+                       t0=30.0,
+                       maxiter=300,
+                       wmemorysize=5,
+                       σw=1.0e-3)
+            @test W(sol_kruskal) <= solutions[file_name[1:end-4]]
+            @test nothing ∉ arbre(sol_kruskal)
+            println("\t✓ avec Kruskal")
+
+            graph = createGraph(string(file_name), string(path, "/", file_name))
+            sol_prim = hk!(graph,
+                       nodes(graph)[1],
+                       algorithm=:prim,
+                       display=false,
+                       t0=30.0,
+                       maxiter=300,
+                       wmemorysize=5,
+                       σw=1.0e-3)
+            @test W(sol_prim) <= solutions[file_name[1:end-4]]
+            @test nothing ∉ arbre(sol_prim)
+            println("\t✓ avec Prim")
+        end
+    end
+end
+
+"""
+Nouvelle méthode de hk!() prenant en argument un chemin.
+"""
+function hk(graphname::String, path::String; racine::Symbol=:premier, kwargs...)
+    graph = createGraph(graphname, path)
+    return hk!(graph,  root(racine, graph); kwargs...)
+end
+
+"""
+Nouvelle méthode de rsl!() prenant en argument un chemin.
+"""
+function rsl(graphname::String, path::String; racine::Symbol=:premier)
+    graph = createGraph(graphname, path)
+    return rsl!(graph, root(racine, graph))
+end
+
+"""
+Renvoie une racine parmis trois options de type `Symbol`: `:premier`, `:dernier` et `:poidsmin`.
+"""
+function root(racine::Symbol, graph::Graph{T, I}) where{T, I}
+    if racine == :premier
+        return nodes(graph)[1]
+    elseif racine == :dernier
+        return nodes(graph)[end]
+    elseif racine == :poidsmin
+        return data(minimum(edges(graph)))[1]
+    else
+        error("unknown keyword")
+    end
+end
+
+"""
+Plot une solution par hk ou rsl avec l'erreur relative entre le cout de la solution et le cout optimal.
+"""
+function plot_tour_gap(solution::AbstractSolution, valeurs_optimales)
+    fig = plot_tour(solution)
+    valeur_optimale = valeurs_optimales[name(graph(solution))]
+    gap = abs(valeur_optimale - cout(solution))/valeur_optimale*100
+    annotate!(1700, 2200, text(string("Δ relatif = ", round(gap, digits=2), "%"), :black, :right, 10))
+    fig
 end
 
 solutiontournee = Dict("bayg29" => 1610,
@@ -439,3 +532,12 @@ solutiontournee = Dict("bayg29" => 1610,
 #test_prim_all("mth6412b-starter-code/instances/stsp", prim_acc!)
 
 #test_rsl_all("mth6412b-starter-code/instances/stsp", solutiontournee)
+
+#test_hk_all("mth6412b-starter-code/instances/stsp", solutiontournee)
+
+#hk("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp", racine=:premier, algorithm=:prim, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
+solution = hk("bays29", raw"mth6412b-starter-code/instances/stsp/bays29.tsp")
+plot_tour_gap(solution, solutiontournee)
+
+#solution = rsl("bayg29", raw"mth6412b-starter-code/instances/stsp/bayg29.tsp")
+#plot_tour(solution)

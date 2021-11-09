@@ -1,6 +1,7 @@
 include("mainphase3.jl")
 using Printf
 using Base.Sort
+using Statistics
 
 """
 Ne trie que les n plus petits éléments de a
@@ -25,7 +26,10 @@ function reset_family!(graph::Graph{T, I}) where{T, I}
     for node in nodes(graph)
         node.parent = nothing
         node.min_weight = Inf
+        node.rank = 0
         resize!(node.enfants, 0)
+        resize!(node.voisins, 0)
+        resize!(node.voisinweights, 0)
     end
 end
 
@@ -41,9 +45,9 @@ end
 """
 Applique l'algorithme de Prim accéléré sur un graphe. Ne renvoie rien.
 """
-function prim_acc!(graph::Graph{T, I}, s::Node{T}; initialisedvoisins::Bool=false) where{T, I}
+function prim_acc!(graph::Graph{T, I}, s::Node{T}) where{T, I}
     s.min_weight = 0
-    (initialisedvoisins) || (initvoisins!(graph))
+    initvoisins!(graph)
 
     #Initialisation d'une file de sommets de priorité
     file = NodeQueue([node for node in nodes(graph)])
@@ -51,7 +55,9 @@ function prim_acc!(graph::Graph{T, I}, s::Node{T}; initialisedvoisins::Bool=fals
 
         #t est le sommet de plus haute priorité, i.e. dont le champ min_weight est le plus bas
         t = popfirst!(file)
-        for (u,weightu) in voisins(t)
+        for i in 1:nb_voisins(t)
+            u = voisins(t)[i]
+            weightu = voisinweights(t)[i]
 
             #Si l'arête entre t et u à un cout plus petit que u, mise à jour du cout et du parent
             if isinfile(file, u) && weightu <= min_weight(u)
@@ -119,30 +125,41 @@ end
 """
 Construit un one-tree par les attributs enfants des sommets du graphe.
 """
-function onetree!(graph::Graph{T, I}, removedEdges::Vector{Edge{T, I}}, removedNode::Node{T}) where {T, I}
+function onetree_prim!(graph::Graph{T, I}, removedEdges::Vector{Edge{T, I}}, oneNode::Node{T}) where {T, I}
     for edge in removedEdges
         add_edge!(graph, edge)
     end
     #ajouter le sommet 1 du 1-tree dans les enfants des deux arêtes de plus petit cout
     minEdge = smallestn!(removedEdges, 2)
-    if data(minEdge[1])[1] == removedNode
-        push!(enfants(data(minEdge[1])[2]), removedNode)
-    elseif data(minEdge[1])[2] == removedNode
-        push!(enfants(data(minEdge[1])[1]), removedNode) 
+    if data(minEdge[1])[1] == oneNode
+        push!(enfants(data(minEdge[1])[2]), oneNode)
+    elseif data(minEdge[1])[2] == oneNode
+        push!(enfants(data(minEdge[1])[1]), oneNode) 
     end
-    if data(minEdge[2])[1] == removedNode
-        push!(enfants(data(minEdge[2])[2]), removedNode)
-    elseif data(minEdge[2])[2] == removedNode
-        push!(enfants(data(minEdge[2])[1]), removedNode) 
+    if data(minEdge[2])[1] == oneNode
+        push!(enfants(data(minEdge[2])[2]), oneNode)
+    elseif data(minEdge[2])[2] == oneNode
+        push!(enfants(data(minEdge[2])[1]), oneNode) 
     end
+end
 
-    println(weight(minEdge[1]), " ", weight(minEdge[2]))
+"""
+Construit un one-tree par la liste de edges "arbremin".
+"""
+function onetree_kruskal!(arbremin::Vector{Union{Nothing, Edge{T, I}}}, graph::Graph{T, I}, removedEdges::Vector{Edge{T, I}}, oneNode::Node{T}) where {T, I}
+    for edge in removedEdges
+        add_edge!(graph, edge)
+    end
+    #ajouter les deux arêtes de plus petit cout dont une extrémité est le sommet 1 à l'arbre
+    minEdge = smallestn!(removedEdges, 2)
+    (data(minEdge[1])[1] == oneNode || data(minEdge[1])[2] == oneNode) && (push!(arbremin, minEdge[1]))
+    (data(minEdge[2])[1] == oneNode || data(minEdge[2])[2] == oneNode) && (push!(arbremin, minEdge[2]))
 end
 
 """
 Calcule la somme des poids sur les arêtes d'un onetree.
 """
-function LTπ(graph::Graph{T, I}) where {T, I}
+function LTπ_prim(graph::Graph{T, I}) where {T, I}
     LT = zero(I)
     for edge in edges(graph)
         if data(edge)[1] ∈ enfants(data(edge)[2]) || data(edge)[2] ∈ enfants(data(edge)[1])
@@ -153,12 +170,23 @@ function LTπ(graph::Graph{T, I}) where {T, I}
 end
 
 """
+Calcule la somme des poids sur les arêtes d'un onetree.
+"""
+function LTπ_kruskal(arbremin::Vector{Union{Nothing, Edge{T, I}}}) where {T, I}
+    LT = zero(I)
+    for edge in arbremin
+        LT += weight(edge)
+    end
+    return LT
+end
+
+"""
 Écrit dans le vecteur d les degrés des sommets d'un 1-tree.
 """
-function degrees!(d::Vector{Int}, graph::Graph{T, I}, onenode::Node{T}) where {T, I}
+function degrees_prim!(d::Vector{Int}, graph::Graph{T, I}, oneNode::Node{T}) where {T, I}
     for i in 1:nb_nodes(graph)
         node = nodes(graph)[i]
-        if node == onenode
+        if node == oneNode
             d[i] = 2
         else
             d[i] = length(enfants(node))
@@ -170,9 +198,53 @@ function degrees!(d::Vector{Int}, graph::Graph{T, I}, onenode::Node{T}) where {T
 end
 
 """
+Écrit dans le vecteur d les degrés des sommets d'un 1-tree.
+"""
+function degrees_kruskal!(d::Vector{Int}, graph::Graph{T, I}, arbremin::Vector{Union{Nothing, Edge{T, I}}}) where {T, I}
+    for edge in arbremin
+        push!(voisins(data(edge)[1]), data(edge)[2])
+        push!(voisins(data(edge)[2]), data(edge)[1])
+    end
+    for i in 1:nb_nodes(graph)
+        node = nodes(graph)[i]
+        d[i] = nb_voisins(node)
+    end
+end
+
+"""
+Fonction décroissante de t par périodes.
+"""
+function t1(k, n, t0)
+    periode = Int(ceil(n/2))
+    return t0/2^(Int(ceil(k/periode))-1)
+end
+
+"""
+Renvoie la liste de edges de la tournée trouvée par held et karp avec l'algorithme de prim.
+"""
+function prim_to_tree(graph::Graph{T, I}) where {T, I}
+    arbre = Vector{Union{Nothing, Edge{T, I}}}(nothing, nb_nodes(graph))
+    i = 0
+    for edge in edges(graph)
+        if data(edge)[1] ∈ enfants(data(edge)[2]) || data(edge)[2] ∈ enfants(data(edge)[1])
+            i += 1
+            arbre[i] = edge
+        end
+    end
+    arbre
+end
+
+"""
 Trouve une tournée de cout minimale par l'heuristique de Held et Karp.
 """
-function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb_nodes(graph)) where {T, I}
+function hk!(graph::Graph{T, I},
+             r::Node{T};
+             algorithm::Symbol=:prim,
+             display::Bool=true,
+             t0::Float64=50.0,
+             maxiter::Int=nb_nodes(graph),
+             wmemorysize::Int=5,
+             σw::Float64=1.0e-2) where {T, I}
     if nb_nodes(graph) <= 1
         return  nodes(graph)
     elseif nb_nodes == 2
@@ -186,44 +258,75 @@ function hk!(graph::Graph{T, I}, r::Node{T}; t::Function=k->1/k, maxiter::Int=nb
     vecteurπ = zeros(Float64, nb_nodes(graph))
     Δπ = zeros(Float64, nb_nodes(graph))
     v = ones(Int, nb_nodes(graph))
-    stopcriterion = false
+    wmemory = zeros(wmemorysize)
 
-    while !(all(v .== 0) || stopcriterion)
+    stopcriterion = (all(v .== 0))
+
+    display && @printf("%6s      %5s          %4s         %4s\n    ----------------------------------------------\n", "k", "W", "w", "σ")
+    while !(stopcriterion)
+        #reset de tous les attributs des sommets pour la prochaine itération
+        k == 0 || (reset_family!(graph))
+
         #trouver arboresence minimale avec un node retiré
-        πtransfo!(gtest, Δπ)
+        πtransfo!(graph, Δπ)
         removedNode = nodes(graph)[end]
         removedNode.parent = nothing
         removedEdges = removeNodeGraph!(graph, removedNode)
-        prim_acc!(graph, r, initialisedvoisins = (k != 1))
 
-        #println([(parent !== nothing) ? (name(parent(node))) : (nothing) for node in nodes(graph)])
-        #println([name(node) for node in nodes(graph)])
+        if algorithm == :prim
+            prim_acc!(graph, r)
+            set_enfants!(graph)
+            #graph contient arboresence minimale (par les enfants ou les parents) avec un node retiré
 
+            #construire le 1-tree à partir de l'arboresence
+            add_node!(graph, removedNode)
+            onetree_prim!(graph, removedEdges, removedNode)
+            #graph contient un 1-tree minimal par les enfants
 
-        set_enfants!(graph)
-        #graph contient arboresence minimale (par les enfants ou les parents) avec un node retiré
+            #calculer w, W, d, v
+            w = LTπ_prim(graph) - 2*sum(vecteurπ)
+            W = max(W, w)
+            degrees_prim!(v, graph, removedNode)
+        elseif algorithm == :kruskal
+            arbremin = kruskal(graph)
 
-        #construire le 1-tree à partir de l'arboresence
-        add_node!(graph, removedNode)
-        onetree!(graph, removedEdges, removedNode)
-        #graph contient un 1-tree minimal par les enfants
+            #construire le 1-tree à partir du vecteur arbremin
+            add_node!(graph, removedNode)
+            onetree_kruskal!(arbremin, graph, removedEdges, removedNode)
 
-        #calculer w, W, d, v
-        w = LTπ(graph) - 2*sum(vecteurπ)
-        W = max(W, w)
-        degrees!(v, graph, removedNode)
-        v .-= 2
+            #calculer w, W, d, v
+            w = LTπ_kruskal(arbremin) - 2*sum(vecteurπ)
+            W = max(W, w)
+            degrees_kruskal!(v, graph, arbremin)
+        else
+            error("algorithme inconnu")
+        end
 
         #modification des π dans le sens du gradient
-        Δπ .= v .* t(k)
+        v .-= 2
+        Δπ .= v .* t1(k, nb_nodes(graph), t0)
         vecteurπ .+= Δπ
-        k += 1
-        stopcriterion = k > maxiter
 
-        #reset des min_weight, des enfants, et des parents pour la prochaine itération
-        reset_family!(graph)
-        println("itération ", k-1 , " cout = ", w)
+        #mise à jour des critères d'arrêt
+        wmemory[(k % wmemorysize)+1] = w
+        k += 1
+        σmemory = std(wmemory)
+        stopcriterion = (k > maxiter || all(v .== 0) || (σmemory < σw) && k > wmemorysize)
+
+        #affichage
+        display && @printf("%8.1i    %8.4e    %8.4e    %8.2e\n", k-1, W, w, σmemory)
+        stopcriterion && @printf("%8.1i    %8.4e    %8.4e    %8.2e\n", k-1, W, w, σmemory)
     end
+
+    algorithm == :prim && (arbremin = prim_to_tree(graph))
+    if all(v .== 0)
+        status = "optimal"
+    elseif k > maxiter
+        status = "max iteration"
+    else
+        status = "non increasing values in last iterations"
+    end
+    return W, status, arbremin
 end
 
 """
@@ -334,13 +437,5 @@ solutiontournee = Dict("bayg29" => 1610,
 
 #test_prim(Gexcours, a, prim_acc!)
 #test_prim_all("mth6412b-starter-code/instances/stsp", prim_acc!)
-#
+
 #test_rsl_all("mth6412b-starter-code/instances/stsp", solutiontournee)
-
-function t1(k, n)
-    periode = Int(ceil(n/2))
-    return 1/2^(Int(ceil(k/periode))-1)
-end
-
-gtest = createGraph("gtest", raw"mth6412b-starter-code/instances/stsp/gr17.tsp")
-hk!(gtest, nodes(gtest)[17], t=k->t1(k,17), maxiter=200)

@@ -325,10 +325,11 @@ end
 
 #test_compression(compEx4, solution_parents_compEx4, n6)
 
-#arbrecoutmin = kruskal(Gexcours)
+#arbrecoutmin = kruskal_acc(Gexcours)
 #for e in arbrecoutmin
 #    show(e)
 #end
+#show(Gexcours)
 #@test nothing ∉ arbrecoutmin
 #@test sommeweights(arbrecoutmin) == 37
 #println("G exemple du cours ✓")

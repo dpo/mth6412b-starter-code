@@ -208,7 +208,7 @@ function read_stsp(filename::String)
   return graph_nodes, graph_edges
 end
 
-"""Affiche un graphe étant données un ensemble de noeuds et d'arêtes.
+"""Affiche un graphe étant données un ensemble de noeuds et d'arêtes formatés par read_stsp.
 
 Exemple :
 

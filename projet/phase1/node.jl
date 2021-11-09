@@ -19,20 +19,22 @@ mutable struct Node{T} <: AbstractNode{T}
   rank::Int
   min_weight::Float64
   parent::Union{Node{T}, Nothing}
-  voisins::Vector{Tuple{Node{T}, Float64}}
+  voisins::Vector{Node{T}}
+  voisinweights::Vector{Float64}
   enfants::Vector{Node{T}}
   πcost::Float64
 end
 Node(
   name::String,
   coordinates::T,
-  rank::Int=0,
-  min_weight::Float64=Inf,
-  parent::Union{Node{T}, Nothing}=nothing,
-  voisins=Tuple{Node{T}, Float64}[],
+  rank::Int = 0,
+  min_weight::Float64 = Inf,
+  parent::Union{Node{T}, Nothing} = nothing,
+  voisins = Node{T}[],
+  voisinweights = Float64[],
   enfants = Node{T}[],
   πcost = 0.,
-  ) where T = Node(name, coordinates, rank, min_weight, parent, voisins, enfants, πcost)
+  ) where T = Node(name, coordinates, rank, min_weight, parent, voisins, voisinweights, enfants, πcost)
 
 """
 Ajoute le node1 aux enfants de node2.
@@ -60,8 +62,14 @@ parent(node::AbstractNode) = node.parent
 """Renvoie les voisins du noeud."""
 voisins(node::AbstractNode) = node.voisins
 
+"""Renvoie les poids des voisins du noeud."""
+voisinweights(node::AbstractNode) = node.voisinweights
+
 """Renvoie les enfants du noeud."""
 enfants(node::AbstractNode) = node.enfants
+
+"""Renvoie le nombre de voisins d'un sommet."""
+nb_voisins(node::AbstractNode) = length(node.voisins)
 
 """Affiche un noeud."""
 function show(node::Node)

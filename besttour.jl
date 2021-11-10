@@ -26,11 +26,11 @@ include("mainphase4.jl")
 #hk!(graph, nodes(graph)[1], algorithm=:kruskal, display=false, t0=1.0, maxiter=300, wmemorysize=5, σw=1.0)
 
 #dantzig42 : 699
-graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp")
-sol1 = hk!(graph, nodes(graph)[1], algorithm=:prim, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
-graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp")
-sol2 = hk!(graph, nodes(graph)[1], algorithm=:kruskal, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
-#plot_graph2(nodes(graph), arbre(sol2))
+#graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp")
+#sol1 = hk!(graph, nodes(graph)[1], algorithm=:prim, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
+#graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp")
+#sol2 = hk!(graph, nodes(graph)[1], algorithm=:kruskal, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
+#plot_tour(sol1)
 
 #fri26 : 937
 #graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/fri26.tsp")
@@ -75,10 +75,13 @@ sol2 = hk!(graph, nodes(graph)[1], algorithm=:kruskal, display=false, t0=30.0, m
 #hk!(graph, nodes(graph)[10], algorithm=:kruskal, display=false, t0=20.0, maxiter=300, wmemorysize=5, σw=1.0e-2)
 
 #pa561 : 2763
-#graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/pa561.tsp")
-#hk!(graph, nodes(graph)[10], algorithm=:prim, display=false, t0=20.0, maxiter=100, wmemorysize=5, σw=1.0e-2)
-#graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/pa561.tsp")
-#hk!(graph, nodes(graph)[10], algorithm=:kruskal, display=false, t0=20.0, maxiter=100, wmemorysize=5, σw=1.0e-2)
+graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/pa561.tsp")
+sol1 = hk!(graph, nodes(graph)[10], algorithm=:prim, display=false, t0=20.0, maxiter=2, wmemorysize=5, σw=1.0e-2)
+graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/pa561.tsp")
+sol2 = hk!(graph, nodes(graph)[10], algorithm=:kruskal, display=false, t0=20.0, maxiter=2, wmemorysize=5, σw=1.0e-2)
+println(sol1)
+println(sol2)
+#plot_tour(sol2)
 
 #swiss42 : 1273
 #graph = createGraph("graph", raw"mth6412b-starter-code/instances/stsp/swiss42.tsp")

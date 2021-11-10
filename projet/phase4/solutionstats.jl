@@ -9,7 +9,7 @@ mutable struct RSLsolution{T, I} <: AbstractSolution{T, I}
     cout::Float64
     elapsed_time::Float64
     elapsed_time_cost::Float64
-    graph::Graph{T, I}
+    graphe::Graph{T, I}
 end
 
 """
@@ -23,12 +23,12 @@ mutable struct Hksolution{T, I} <: AbstractSolution{T, I}
     nbiter::Int
     elapsed_time::Float64
     wmemorysize::Int
-    graph::Graph{T, I}
+    graphe::Graph{T, I}
 end
 
 cout(solution::AbstractSolution) = solution.cout
 elapsed_time(solution::AbstractSolution) = solution.elapsed_time
-graph(solution::AbstractSolution) = solution.graph
+graphe(solution::AbstractSolution) = solution.graphe
 
 elapsed_time_cost(solution::RSLsolution) = solution.elapsed_time_cost
 
@@ -66,7 +66,7 @@ println(solution::AbstractSolution) = print(Base.stdout, solution)
 
 """Affiche une tournée étant donné un objet de type `AbstractSolution`."""
 function plot_tour(solution::Hksolution)
-  sommets = nodes(graph(solution))
+  sommets = nodes(graphe(solution))
   edges = arbre(solution)
   fig = plot(legend=false)
 
@@ -83,12 +83,12 @@ function plot_tour(solution::Hksolution)
   y = [xy[2] for xy in xys]
   scatter!(x, y)
 
-  title!(string("1-arbre dans ", name(graph(solution))))
+  title!(string("1-arbre dans ", name(graphe(solution))))
   fig
 end
 
 function plot_tour(solution::RSLsolution)
-  sommets = nodes(graph(solution))
+  sommets = nodes(graphe(solution))
   fig = plot(legend=false)
 
   # edge positions
@@ -107,6 +107,6 @@ function plot_tour(solution::RSLsolution)
   y = [xy[2] for xy in xys]
   scatter!(x, y)
 
-  title!(string("tournée dans ", name(graph(solution))))
+  title!(string("tournée dans ", name(graphe(solution))))
   fig
 end

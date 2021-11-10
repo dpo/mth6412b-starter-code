@@ -536,8 +536,8 @@ solutiontournee = Dict("bayg29" => 1610,
 #test_hk_all("mth6412b-starter-code/instances/stsp", solutiontournee)
 
 #hk("graph", raw"mth6412b-starter-code/instances/stsp/dantzig42.tsp", racine=:premier, algorithm=:prim, display=false, t0=30.0, maxiter=300, wmemorysize=5, σw=1.0e-3)
-solution = hk("bays29", raw"mth6412b-starter-code/instances/stsp/bays29.tsp")
-plot_tour_gap(solution, solutiontournee)
+#solution = hk("bays29", raw"mth6412b-starter-code/instances/stsp/bays29.tsp")
+#plot_tour_gap(solution, solutiontournee)
 
 #solution = rsl("bayg29", raw"mth6412b-starter-code/instances/stsp/bayg29.tsp")
 #plot_tour(solution)

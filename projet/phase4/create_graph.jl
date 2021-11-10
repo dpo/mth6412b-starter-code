@@ -82,7 +82,7 @@ function create_graph(filename::String)
     lis_edges = Edge{T}[]
 
     for triplet in triplets_edges
-        push!(lis_edges, Edge(triplet[1], triplet[2], triplet[3]))
+        push!(lis_edges, Edge(triplet[1], triplet[2], Float64(triplet[3])))
     end
 
     @test length(lis_edges) <= length(lis_nodes) * (length(lis_nodes) -1 ) //2 #nombre max d'arêtes (atteint si aucune n'est de poids nul)

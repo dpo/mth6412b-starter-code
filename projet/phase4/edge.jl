@@ -13,7 +13,7 @@ Exemple:
 mutable struct Edge{T} <: AbstractEdge{T}
   sommet1::Node{T}
   sommet2::Node{T}
-  poids::Int
+  poids::Float64
 end
 
 

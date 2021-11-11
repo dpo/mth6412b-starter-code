@@ -1,9 +1,15 @@
-import Base.show, Base.println
+import Base.show, Base.println, Base.print
 
 abstract type AbstractSolution{T, I} end
 
 """
-Type contenant les informations d'une solution trouvée par l'algortihme de RSL.
+Type contenant les informations d'une solution trouvée par l'algortihme RSL.
+Contient les attributs:
+
+- `cout::Float64`: coût minimal trouvé par l'algorithme,
+- `elapsed_time::Float64`: temps de résolution,
+- `elapsed_time_cost::Float64`: temps de résolution incluant le calcul du coût en plus de la tournée,
+- `graphe::Graph{T, I}`: graphe en sorte d'algorithme,
 """
 mutable struct RSLsolution{T, I} <: AbstractSolution{T, I}
     cout::Float64
@@ -14,6 +20,16 @@ end
 
 """
 Type contenant les informations d'une solution trouvée par l'algortihme de Held et Karp.
+Contient les attributs:
+
+- `cout::Float64`: coût minimal trouvé par l'algorithme,
+- `status::String`: status à la fin de l'algorithme,
+- `arbre::Vector{Union{Nothing, Edge{T, I}}}`: 1-arbre en sorte d'algorithme (tour si status optimal),
+- `σw::Float64`: écart-type`de `w` pour les `wmemorysize` dernière itérations,
+- `nbiter::Int`: nombre d'itérations,
+- `elapsed_time::Float64`: temps de résolution,
+- `wmemorysize::Int`: paramètre pour la taille du vecteur d'écart-types des dernières itérations de la fonction,
+- `graphe::Graph{T, I}`: graphe en sorte d'algorithme,
 """
 mutable struct Hksolution{T, I} <: AbstractSolution{T, I}
     cout::Float64

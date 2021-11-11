@@ -82,7 +82,10 @@ function parcours_preordre!(node::Node{T}, orderednodes::Vector{Node{T}}) where 
 end
 
 """
-Effectue l'algorithme de RSL en réordonnant les nodes d'un graph dans l'ordre de la tournée.
+    rsl!(graph::Graph{T, I}, r::Node{T}) where {T, I}
+
+Effectue l'algorithme de RSL en réordonnant les noeuds d'un graphe dans l'ordre de la tournée.
+Renvoie une solution de type `RSLsolution{T, I} <: AbstractSolution{T, I}`.
 """
 function rsl!(graph::Graph{T, I}, r::Node{T}) where {T, I}
     starttime = time()
@@ -275,7 +278,24 @@ function prim_to_tree(graph::Graph{T, I}) where {T, I}
 end
 
 """
+    hk!(graph::Graph{T, I}, r::Node{T};
+         algorithm::Symbol=:prim, display::Bool=true,
+         t0::Float64=50.0, maxiter::Int=nb_nodes(graph),
+         wmemorysize::Int=5, σw::Float64=1.0e-2) where {T, I}
+
 Trouve une tournée de cout minimale par l'heuristique de Held et Karp.
+L'algorithme s'arrête lorsqu'une tournée maximale est trouvée, ou lorsque le nombre maximal d'itérations et atteint,
+ou lorsque l'écart-type des `wmemorysize` dernières valeurs de `w` est plus faible que `σw`.
+L'algorithme renvoie la solution sous forme de `Hksolution{T, S} <: AbstractSolution{T, I}`.
+
+- `graph::Graph{T, I}`: Graph complet dont on veut calculer la tournée minimale,
+- `r::Node{T}`: noeud racine pour l'algorithme de Prim (ne doit pas être le dernier noeud), ignorer pour Kruskal,
+- `algorithm::Symbol`: algorithme à utiliser pour le calcul de l'arbre de recouvrement minimal, choisir entre `:prim` (défaut) et `:kruskal`,
+- `display::Bool`: active/désactive l'affichage (défaut `:true`),
+- `t0::Float64`: valeur constante par laquelle la fonction décroissante `t1` est multipliée pour les mises à jour de π,
+- `maxiter::Int`: nombre maximal d'itérations,
+- `wmemorysize::Int`: paramètre pour la taille du vecteur d'écart-types des dernières itérations de la fonction,
+- `σw::Float64`: tolérance pour l'écart-type des `wmemorysize` dernières valeurs de `w`.
 """
 function hk!(graph::Graph{T, I},
              r::Node{T};
@@ -449,7 +469,7 @@ function test_hk_all(path, solutions)
                        maxiter=300,
                        wmemorysize=5,
                        σw=1.0e-3)
-            @test W(sol_kruskal) <= solutions[file_name[1:end-4]]
+            @test cout(sol_kruskal) <= solutions[file_name[1:end-4]]
             @test nothing ∉ arbre(sol_kruskal)
             println("\t✓ avec Kruskal")
 
@@ -462,7 +482,7 @@ function test_hk_all(path, solutions)
                        maxiter=300,
                        wmemorysize=5,
                        σw=1.0e-3)
-            @test W(sol_prim) <= solutions[file_name[1:end-4]]
+            @test cout(sol_prim) <= solutions[file_name[1:end-4]]
             @test nothing ∉ arbre(sol_prim)
             println("\t✓ avec Prim")
         end
@@ -470,7 +490,13 @@ function test_hk_all(path, solutions)
 end
 
 """
-Nouvelle méthode de hk!() prenant en argument un chemin.
+    hk(graphname::String, path::String; racine::Symbol=:premier, kwargs...)
+
+Fonction faisant appel à `hk!` en prenant en argument un chemin `path` vers le fichier TSP à résoudre,
+et un nom de graphe `graphname`.
+L'argument `racine::Symbol` doit être `:premier`, `:dernier` (fonctionne seulement pour Kruskal),
+ou `:poidsmin` (noeud choisi sur l'arête de coût minimal).
+`kwargs...` permet de spécifier les arguments optionels de `hk!` comme `t0`, etc ...
 """
 function hk(graphname::String, path::String; racine::Symbol=:premier, kwargs...)
     graph = createGraph(graphname, path)
@@ -478,7 +504,11 @@ function hk(graphname::String, path::String; racine::Symbol=:premier, kwargs...)
 end
 
 """
-Nouvelle méthode de rsl!() prenant en argument un chemin.
+    rsl(graphname::String, path::String; racine::Symbol=:premier)
+
+Fonction faisant appel à `rsl!` en prenant en argument un chemin `path` vers le fichier TSP à résoudre,
+et un nom de graphe `graphname`.
+L'argument `racine::Symbol` doit être `:premier` ou `:poidsmin` (noeud choisi sur l'arête de coût minimal).
 """
 function rsl(graphname::String, path::String; racine::Symbol=:premier)
     graph = createGraph(graphname, path)
@@ -501,7 +531,7 @@ function root(racine::Symbol, graph::Graph{T, I}) where{T, I}
 end
 
 """
-Plot une solution par hk ou rsl avec l'erreur relative entre le cout de la solution et le cout optimal.
+Affiche une solution par hk ou rsl avec l'erreur relative entre le cout de la solution et le cout optimal.
 """
 function plot_tour_gap(solution::AbstractSolution, valeurs_optimales)
     fig = plot_tour(solution)

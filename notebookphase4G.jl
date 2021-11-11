@@ -115,10 +115,39 @@ end
 # ╔═╡ 2e96c8b2-a158-4589-b3da-dc75e637f4dc
 md"""
 # 6. Illustration graphique
+
+1-arbres trouvés avec l'algorithme de Held et Karp. 
+Le Δ relatif est l'écart relatif par rapport au coût optimal.
 """
 
 # ╔═╡ 35d0cc90-6b0c-44d6-81b5-a095d872ae16
+begin
+	solution = hk("bays29", raw"instances/stsp/bays29.tsp")
+	plot_tour_gap(solution, solutiontournee)
+end
 
+# ╔═╡ e359ad3b-7641-4215-85a8-00d14c0be4cf
+begin
+	solution2 = hk("bayg29", raw"instances/stsp/bayg29.tsp")
+	plot_tour_gap(solution2, solutiontournee)
+end
+
+# ╔═╡ 65fc90f0-9ed9-4331-87bb-fc73b92b9a3d
+md"""
+Tournées trouvées avec l'algorithme RSL:
+"""
+
+# ╔═╡ 82a215ee-7c09-4409-8fb5-fba1ad76ea07
+begin
+	solution3 = rsl("bayg29", raw"instances/stsp/bayg29.tsp")
+	plot_tour_gap(solution3, solutiontournee)
+end
+
+# ╔═╡ 9b036551-4e7b-4489-89ce-fd1c2bf06de7
+begin
+	solution4 = rsl("bays29", raw"instances/stsp/bays29.tsp")
+	plot_tour_gap(solution4, solutiontournee)
+end
 
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
 md"""
@@ -1028,6 +1057,10 @@ version = "0.9.1+5"
 # ╠═f362f225-fd8b-48dc-be8f-4923d61356bb
 # ╠═2e96c8b2-a158-4589-b3da-dc75e637f4dc
 # ╠═35d0cc90-6b0c-44d6-81b5-a095d872ae16
+# ╠═e359ad3b-7641-4215-85a8-00d14c0be4cf
+# ╠═65fc90f0-9ed9-4331-87bb-fc73b92b9a3d
+# ╠═82a215ee-7c09-4409-8fb5-fba1ad76ea07
+# ╠═9b036551-4e7b-4489-89ce-fd1c2bf06de7
 # ╟─c3a6e502-f708-488f-b789-46076c5b122f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

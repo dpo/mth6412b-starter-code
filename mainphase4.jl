@@ -535,7 +535,7 @@ Affiche une solution par hk ou rsl avec l'erreur relative entre le cout de la so
 """
 function plot_tour_gap(solution::AbstractSolution, valeurs_optimales)
     fig = plot_tour(solution)
-    valeur_optimale = valeurs_optimales[name(graph(solution))]
+    valeur_optimale = valeurs_optimales[name(graphe(solution))]
     gap = abs(valeur_optimale - cout(solution))/valeur_optimale*100
     annotate!(1700, 2200, text(string("Δ relatif = ", round(gap, digits=2), "%"), :black, :right, 10))
     fig

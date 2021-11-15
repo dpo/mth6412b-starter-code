@@ -284,7 +284,7 @@ end
          wmemorysize::Int=5, σw::Float64=1.0e-2) where {T, I}
 
 Trouve une tournée de cout minimale par l'heuristique de Held et Karp.
-L'algorithme s'arrête lorsqu'une tournée maximale est trouvée, ou lorsque le nombre maximal d'itérations et atteint,
+L'algorithme s'arrête lorsqu'une tournée maximale est trouvée, ou lorsque le nombre maximal d'itérations est atteint,
 ou lorsque l'écart-type des `wmemorysize` dernières valeurs de `w` est plus faible que `σw`.
 L'algorithme renvoie la solution sous forme de `Hksolution{T, S} <: AbstractSolution{T, I}`.
 
@@ -508,7 +508,7 @@ end
 
 Fonction faisant appel à `rsl!` en prenant en argument un chemin `path` vers le fichier TSP à résoudre,
 et un nom de graphe `graphname`.
-L'argument `racine` doit être un `Int`, :premier`, `:dernier`
+L'argument `racine` doit être un `Int`, `:premier`, `:dernier`
 ou `:poidsmin` (noeud choisi sur l'arête de coût minimal).
 """
 function rsl(graphname::String, path::String; racine::Union{Symbol, Int}=:premier)

@@ -39,7 +39,7 @@ md"""
 md"""
 # 1. Structure AbstractSolution
 
-Durant cette quatrième phase, lorsqu'un algorithme porduit une solution, celle-ci peut souvent contenir beaucoup d'information. Nous avons donc choisis d'implémenter un nouveau type `AbstractSolution`. Ce surtype contient les deux types suivants.
+Durant cette quatrième phase, lorsqu'un algorithme produit une solution, celle-ci peut souvent contenir beaucoup d'information. Nous avons donc choisis d'implémenter un nouveau type `AbstractSolution`. Ce surtype contient les deux types suivants.
 """
 #hidden line
 
@@ -92,9 +92,9 @@ end
 
 # ╔═╡ b0f83a42-9909-41d8-9b96-ff48939565ed
 md"""
-Nous avons ensuite initialisé les enfants de chaque noeud grace aux parents de chaque noeud trouvés par l'algorithme de Prim, puis nous avons créé une fonction $parcours\_preordre!$ qui parcours le graphe en pré-ordre de façon récursive. 
+Nous avons ensuite initialisé les enfants de chaque noeud grace aux parents de chaque noeud trouvés par l'algorithme de Prim, puis nous avons créé une fonction $parcours\_preordre!$ qui parcourt le graphe en pré-ordre de façon récursive. 
 Elle ordonne les noeuds du graphe de manière à définir la tournée trouvée (l'ordre des noeuds donne l'ordre du parcours).
-Voici les résultats sur les problèmes de tsp symétriques. Pour chaque instance, l'algorithme est lancé sur le premier sommet du graphe ainsi que sur chaque sommet de l'arête de cout minimal. Pour chaque lancement, les tests unitaires sont vérifiés, le cout de la tournée minimale trouvée est affiché et le ratio avec la solution optimale est affiché.
+Voici les résultats sur les problèmes de tsp symétriques. Pour chaque instance, l'algorithme est lancé sur le premier sommet du graphe ainsi que sur chaque sommet de l'arête de coût minimal. Pour chaque lancement, les tests unitaires sont vérifiés, le coût de la tournée minimale trouvée est affiché et le ratio avec la solution optimale est affiché.
 """
 #hidden line
 
@@ -108,7 +108,7 @@ end
 
 # ╔═╡ e64165cd-1e5c-49e0-b233-c3de3defae38
 md"""
-Il est à noter que l'instance `brg180.tsp` a échoué les tests unitaires. Les ratios avec la solution optimales sont en effet bien supérieurs à 200%. Cela est une conséquence des couts des arêtes qui ne respectent pas l'égalité triangulaire dans le graphe de cette instance. Observons ces trois sommets:
+Il est à noter que l'instance `brg180.tsp` a échoué les tests unitaires. Les ratios avec la solution optimale sont en effet bien supérieurs à 200%. Cela est une conséquence des coûts des arêtes qui ne respectent pas l'égalité triangulaire dans le graphe de cette instance. Observons ces trois sommets:
 
 u = sommet 2, v = sommet 3, w = sommet 1
 
@@ -122,13 +122,13 @@ $c(v,w)>c(v,u)+c(u,w)$
 md"""
 # 3. Algorithme de Held et Karp (HK)
 
-Pour implémenter cet algorithme, nous avons modifié notre type nodes pour ajouter les poids π associés à chaque noeud, et le poids des voisins de chaque noeud.
+Pour implémenter cet algorithme, nous avons modifié notre type `Node` pour ajouter les poids π associés à chaque noeud, et le poids des voisins de chaque noeud.
 
 A chaque itération l'algorithme transforme les noeuds du graphe pour ajouter les πᵢ actuels aux noeuds du graphe.
-Ensuite nous enlevons un noeud et ses arêtes associées au graphe pour préparer la formation du 1-arbre.
+Ensuite, nous enlevons un noeud et ses arêtes associées au graphe pour préparer la formation du 1-arbre.
 Ensuite, le code est séparé suivant l'utilisation de Prim ou de Kruskal.
 Dans les deux cas, nous construisons un arbre de coût minimal sur le graphe privé du noeud que nous avons enlevé plus haut, puis nous ajoutons ce noeud à l'arbre trouvé avec les 2 plus petites arêtes enlevées.
-Ensuite nous calculons le coût de l'arbre et le coût π pour obtenir W, puis nous mettons à jour les degrés de chaque noeud et le vecteur π.
+Ensuite, nous calculons le coût de l'arbre et le coût π pour obtenir W, puis nous mettons à jour les degrés de chaque noeud et le vecteur π.
 
 Les 3 critères d'arrêts choisis sont les suivants:
 - Un certain nombre d'itération est atteint
@@ -143,7 +143,6 @@ md"""
 """
 
 # ╔═╡ 8119ce88-0fd3-41c0-ab53-1803b1faa2eb
-# test rsl!
 begin
 	with_terminal() do
 		@doc hk!
@@ -153,7 +152,7 @@ end
 
 # ╔═╡ f441a115-1549-4120-b092-c085b047fca8
 md"""
-Voici la vérification des tests unitaires sur chaque instance tsp symétrique On n'affichage pas le cout du 1-arbre trouvé ici car ce cout varie beaucoup avec les paramètres donnés. Les couts avec des bons paramètres sont montrés dans une section ultérieure.
+Voici la vérification des tests unitaires sur chaque instance tsp symétrique. On n'affiche pas le coût du 1-arbre trouvé ici car ce coût varie beaucoup avec les paramètres donnés. Les coûts avec des bons paramètres sont montrés dans une section ultérieure.
 """
 
 # ╔═╡ f362f225-fd8b-48dc-be8f-4923d61356bb
@@ -169,7 +168,7 @@ md"""
 # 6. Meilleurs paramètres et illustrations graphiques
 Voici maintenant les meilleurs paramètres pour chaque algorithme sur chaque instance avec une représentation graphique si des coordonées sont données pour les sommets. Le Δ relatif représente l'erreur relative par rapport à une tounnée optimale. Ces solutions optimales sont tirées du fichier `solutions_stsp.txt`.
 
-L'algorithme de RSL ne calcule pas le cout de la tournée trouvée, et les temps de ce calcul est en $O(|A||S|)$. En affichant une solution trouvée par l'algorithme, nous montrons donc le "Temps sans cout" qui est le temps pris par l'algorithme seulement, et le "Temps total" qui inclut le calcul du cout total.
+L'algorithme de RSL ne calcule pas le coût de la tournée trouvée, et le temps de ce calcul est en $O(|A||S|)$. En affichant une solution trouvée par l'algorithme, nous montrons donc le "Temps sans cout" qui est le temps pris par l'algorithme seulement, et le "Temps total" qui inclut le calcul du coût total.
 """
 
 # ╔═╡ 3af625c3-332f-4854-a5b5-e575ca3ac228
@@ -1679,9 +1678,9 @@ version = "0.9.1+5"
 # ╠═8cbd2063-8ac3-4ac7-b3bc-3f88102dd20d
 # ╠═79badeee-847d-4015-8ec3-c641cc76f59e
 # ╟─ccb5f56a-1891-4c7c-a228-b998113188ec
-# ╠═be2857d3-1911-436a-8ac2-1b797a1fe521
+# ╟─be2857d3-1911-436a-8ac2-1b797a1fe521
 # ╠═6a531068-e71d-49de-8086-6205d5bce72a
-# ╠═59f24def-b51a-422c-8d8f-72e412bcc613
+# ╟─59f24def-b51a-422c-8d8f-72e412bcc613
 # ╠═6e200bb4-8917-4c39-a339-9e9371dbb482
 # ╟─63d28d36-b294-42d6-b3bd-9b81443abc77
 # ╠═46b19bc5-ba2f-4649-9eaa-14d0194b51fe

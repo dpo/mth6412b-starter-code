@@ -9,7 +9,7 @@ Contient les attributs:
 - `cout::Float64`: coût minimal trouvé par l'algorithme,
 - `elapsed_time::Float64`: temps de résolution,
 - `elapsed_time_cost::Float64`: temps de résolution incluant le calcul du coût en plus de la tournée,
-- `graphe::Graph{T, I}`: graphe en sorte d'algorithme,
+- `graphe::Graph{T, I}`: graphe en sortie d'algorithme,
 """
 mutable struct RSLsolution{T, I} <: AbstractSolution{T, I}
     cout::Float64

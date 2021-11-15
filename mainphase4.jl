@@ -560,6 +560,32 @@ function Δcout(solution::AbstractSolution, valeurs_optimales)
     println("Δrelatif = ", abs(valeur_optimale - cout(solution))/valeur_optimale*100)
 end
 
+function benchmark_table_KruskalPrim_hk(path)
+    data = zeros(length(readdir(path)), 4)
+    row_names = []
+    i = 1
+    for file_name in readdir(path)
+		if file_name[end-3:end] == ".tsp"  #&& file_name != "pa561.tsp"
+            graph1 = createGraph(string(file_name), string(path, "/", file_name))
+            graph2 = deepcopy(graph1)
+            stats1 = hk!(graph1, nodes(graph1)[1], algorithm=:prim, display=false)
+            stats2 = hk!(graph2, nodes(graph2)[1], algorithm=:kruskal, display=false)
+            data[i, 1] = elapsed_time(stats1)
+            data[i, 2] = cout(stats1)
+            data[i, 3] = elapsed_time(stats2)
+            data[i, 4] = cout(stats2)
+            i += 1
+            push!(row_names, file_name[1:end-4])
+        end
+    end
+    header = ["temps prim", "coût prim", "temps kruskal", "coût kruskal"]
+    pretty_table(data; 
+                 header = header,
+                 row_names= row_names,
+                 title = "Comparaison des performances entre les algorithmes implémentés",
+                 formatters = ft_printf("%5.2e"))
+end
+
 solutiontournee = Dict("bayg29" => 1610,
 "bays29" => 2020,
 "brazil58" => 25395,
@@ -590,3 +616,5 @@ solutiontournee = Dict("bayg29" => 1610,
 
 #solution = rsl("bayg29", raw"mth6412b-starter-code/instances/stsp/bayg29.tsp")
 #plot_tour(solution)
+
+# benchmark_table_KruskalPrim_hk("mth6412b-starter-code/instances/stsp")

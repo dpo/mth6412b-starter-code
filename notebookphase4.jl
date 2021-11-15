@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.3
+# v0.17.1
 
 using Markdown
 using InteractiveUtils
@@ -162,6 +162,24 @@ begin
 	end
 end
 #hidden line
+
+# ╔═╡ 5138cb75-03c7-4ac6-85c1-f197ecdb4e35
+md"""
+### Comparaisons entre Kruskal et Prim pour HK
+"""
+
+# ╔═╡ 5765b64f-b2e1-498e-b17a-4a97d00ddf1d
+begin
+	with_terminal() do
+		benchmark_table_KruskalPrim_hk(raw"./instances/stsp")
+	end
+end
+#hidden line
+
+# ╔═╡ 69cc01fb-07fa-4ff8-a192-be4a812bc55c
+md"""
+On constate que `hk` est plus rapide avec notre implémentation de Kruskal sur la plupart des problèmes TSP.
+"""
 
 # ╔═╡ 2e96c8b2-a158-4589-b3da-dc75e637f4dc
 md"""
@@ -1651,6 +1669,9 @@ version = "0.9.1+5"
 # ╠═8119ce88-0fd3-41c0-ab53-1803b1faa2eb
 # ╟─f441a115-1549-4120-b092-c085b047fca8
 # ╠═f362f225-fd8b-48dc-be8f-4923d61356bb
+# ╟─5138cb75-03c7-4ac6-85c1-f197ecdb4e35
+# ╠═5765b64f-b2e1-498e-b17a-4a97d00ddf1d
+# ╟─69cc01fb-07fa-4ff8-a192-be4a812bc55c
 # ╟─2e96c8b2-a158-4589-b3da-dc75e637f4dc
 # ╟─3af625c3-332f-4854-a5b5-e575ca3ac228
 # ╠═35d0cc90-6b0c-44d6-81b5-a095d872ae16

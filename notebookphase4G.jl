@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.1
+# v0.16.3
 
 using Markdown
 using InteractiveUtils
@@ -12,7 +12,7 @@ begin
 	using PrettyTables
 	
 	include("mainphase4.jl")
-end
+end;
 #hidden line
 
 # ╔═╡ 489635f8-4065-45e1-bb76-5b60aba7ee70
@@ -25,14 +25,38 @@ MTH6412B
 
 Xavier Lebeuf et Geoffroy Leconte
 
-Octobre 2021
+Novembre 2021
 """
 #hidden line
 
 # ╔═╡ 85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 md"""
-# 1. Importation des fichiers
+# Importation des fichiers
 """
+#hidden line
+
+# ╔═╡ afe047fd-38af-4445-9554-96014bb4ec4c
+md"""
+# 1. Structure AbstractSolution
+
+Durant cette quatrième phase, lorsqu'un algorithme porduit une solution, celle-ci peut souvent contenir beaucoup d'information. Nous avons donc choisis d'implémenter un nouveau type `AbstractSolution`. Ce surtype contient les deux types suivants.
+"""
+#hidden line
+
+# ╔═╡ f56fd17d-d718-4c27-aa5e-99a02d212a74
+begin
+	with_terminal() do
+		@doc RSLsolution
+	end
+end
+#hidden line
+
+# ╔═╡ 13dd9c46-40c6-4ed8-a56e-3f8e4cb8ef77
+begin
+	with_terminal() do
+		@doc Hksolution
+	end
+end
 #hidden line
 
 # ╔═╡ 77f09359-1bab-4c38-a03e-b84e043fc59f
@@ -51,6 +75,12 @@ begin
 end
 #hidden line
 
+# ╔═╡ 1d73f413-fb40-4d72-bb2c-a6c917beacff
+md"""
+Voici les résultats des tests unitaires avec la fonction `prim_acc!` (prim amélioré) sur l'exemple du laboratoire 3 ainsi que sur toutes les instances tsp symétriques. De plus, nous affichons le cout de l'arbre de cout minimal trouvé pour les instances tsp symétriques.
+"""
+#hidden line
+
 # ╔═╡ b93111c9-cfc1-4ac3-a1d5-73a2b0434b5c
 begin
 	with_terminal() do
@@ -64,7 +94,7 @@ end
 md"""
 Nous avons ensuite initialisé les enfants de chaque noeud grace aux parents de chaque noeud trouvés par l'algorithme de Prim, puis nous avons créé une fonction $parcours\_preordre!$ qui parcours le graphe en pré-ordre de façon récursive. 
 Elle ordonne les noeuds du graphe de manière à définir la tournée trouvée (l'ordre des noeuds donne l'ordre du parcours).
-Voici les résultats sur les problèmes de tsp symétriques:
+Voici les résultats sur les problèmes de tsp symétriques. Pour chaque instance, l'algorithme est lancé sur le premier sommet du graphe ainsi que sur chaque sommet de l'arête de cout minimal. Pour chaque lancement, les tests unitaires sont vérifiés, le cout de la tournée minimale trouvée est affiché et le ratio avec la solution optimale est affiché.
 """
 #hidden line
 
@@ -75,6 +105,18 @@ begin
 		test_rsl_all("instances/stsp", solutiontournee)
 	end
 end
+
+# ╔═╡ e64165cd-1e5c-49e0-b233-c3de3defae38
+md"""
+Il est à noter que l'instance `brg180.tsp` a échoué les tests unitaires. Les ratios avec la solution optimales sont en effet bien supérieurs à 200%. Cela est une conséquence des couts des arêtes qui ne respectent pas l'égalité triangulaire dans le graphe de cette instance. Observons ces trois sommets:
+
+u = sommet 2, v = sommet 3, w = sommet 1
+
+$c(v,w) = 10^4, c(u,w) = 20, c(v,u) = 0$
+$c(v,w)>c(v,u)+c(u,w)$
+
+"""
+#hidden line
 
 # ╔═╡ b1eba945-45c7-4fdc-87f4-e0f3a9e1b57b
 md"""
@@ -87,6 +129,11 @@ Ensuite nous enlevons un noeud et ses arêtes associées au graphe pour prépare
 Ensuite, le code est séparé suivant l'utilisation de Prim ou de Kruskal.
 Dans les deux cas, nous construisons un arbre de coût minimal sur le graphe privé du noeud que nous avons enlevé plus haut, puis nous ajoutons ce noeud à l'arbre trouvé avec les 2 plus petites arêtes enlevées.
 Ensuite nous calculons le coût de l'arbre et le coût π pour obtenir W, puis nous mettons à jour les degrés de chaque noeud et le vecteur π.
+
+Les 3 critères d'arrêts choisis sont les suivants:
+- Un certain nombre d'itération est atteint
+- Tous les degrés des sommets du 1-arbre actuel sont de 2 (une tournée est trouvée)
+- Les `w` des dernières itérations ne varient plus significativement. Ce dernier critère est vérifié par les paramètres `wmemorysize` et `σw`.
 """
 #hidden line
 
@@ -104,6 +151,11 @@ begin
 end
 #hidden line
 
+# ╔═╡ f441a115-1549-4120-b092-c085b047fca8
+md"""
+Voici la vérification des tests unitaires sur chaque instance tsp symétrique On n'affichage pas le cout du 1-arbre trouvé ici car ce cout varie beaucoup avec les paramètres donnés. Les couts avec des bons paramètres sont montrés dans une section ultérieure.
+"""
+
 # ╔═╡ f362f225-fd8b-48dc-be8f-4923d61356bb
 begin
 	with_terminal() do
@@ -114,46 +166,585 @@ end
 
 # ╔═╡ 2e96c8b2-a158-4589-b3da-dc75e637f4dc
 md"""
-# 6. Illustration graphique
+# 6. Meilleurs paramètres et illustrations graphiques
+Voici maintenant les meilleurs paramètres pour chaque algorithme sur chaque instance avec une représentation graphique si des coordonées sont données pour les sommets. Le Δ relatif représente l'erreur relative par rapport à une tounnée optimale. Ces solutions optimales sont tirées du fichier `solutions_stsp.txt`.
 
-1-arbres trouvés avec l'algorithme de Held et Karp. 
-Le Δ relatif est l'écart relatif par rapport au coût optimal.
+L'algorithme de RSL ne calcule pas le cout de la tournée trouvée, et les temps de ce calcul est en $O(|A||S|)$. En affichant une solution trouvée par l'algorithme, nous montrons donc le "Temps sans cout" qui est le temps pris par l'algorithme seulement, et le "Temps total" qui inclut le calcul du cout total.
+"""
+
+# ╔═╡ 3af625c3-332f-4854-a5b5-e575ca3ac228
+md"""
+## bayg29
+##### Held et Karp
 """
 
 # ╔═╡ 35d0cc90-6b0c-44d6-81b5-a095d872ae16
 begin
-	solution = hk("bays29", raw"instances/stsp/bays29.tsp")
-	plot_tour_gap(solution, solutiontournee)
+	solution1 = hk("bayg29", raw"instances/stsp/bayg29.tsp",
+           			  racine=:premier,
+					  algorithm=:kruskal,
+					  display=false,
+				      t0=50.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+ 	plot_tour_gap(solution1, solutiontournee)
 end
 
-# ╔═╡ e359ad3b-7641-4215-85a8-00d14c0be4cf
+# ╔═╡ 415344f3-6e6f-42fa-b3f9-eded3e491f1a
 begin
-	solution2 = hk("bayg29", raw"instances/stsp/bayg29.tsp")
+	with_terminal() do
+		println(solution1)
+	end
+end
+
+# ╔═╡ 0ba34536-b40c-4f42-9a9e-b6c0e3349868
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ a6e9b196-0c8b-4e7f-9afc-4ee1559761bb
+begin
+	solution2 = rsl("bayg29", raw"instances/stsp/bayg29.tsp", racine=:premier)
 	plot_tour_gap(solution2, solutiontournee)
 end
 
-# ╔═╡ 65fc90f0-9ed9-4331-87bb-fc73b92b9a3d
-md"""
-Tournées trouvées avec l'algorithme RSL:
-"""
-
-# ╔═╡ 82a215ee-7c09-4409-8fb5-fba1ad76ea07
+# ╔═╡ f8f08a82-4d88-49e6-b0ec-267d106a6542
 begin
-	solution3 = rsl("bayg29", raw"instances/stsp/bayg29.tsp")
-	plot_tour_gap(solution3, solutiontournee)
+	with_terminal() do
+		println(solution2)
+	end
 end
 
-# ╔═╡ 9b036551-4e7b-4489-89ce-fd1c2bf06de7
+# ╔═╡ 0a403342-ddde-47bf-a300-30d6bd0efaf3
+md"""
+## bays29
+##### Held et Karp
+"""
+
+# ╔═╡ 483224bd-afcb-4dcb-b38c-9a717ae9e8ed
 begin
-	solution4 = rsl("bays29", raw"instances/stsp/bays29.tsp")
+	solution3 = hk("bays29", raw"instances/stsp/bays29.tsp",
+           			  racine=:premier,
+					  algorithm=:prim,
+					  display=false,
+					  t0=75.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-4)
+ 	plot_tour_gap(solution3, solutiontournee)
+end
+
+# ╔═╡ 542dbe29-1cf0-4578-9b28-694706111051
+begin
+	with_terminal() do
+		println(solution3)
+	end
+end
+
+# ╔═╡ 65b06938-b552-4dc6-ae22-72b9388d9952
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 855d795c-0fde-4559-ba49-5f3ba7279d4b
+begin
+	solution4 = rsl("bays29", raw"instances/stsp/bays29.tsp", racine=:premier)
 	plot_tour_gap(solution4, solutiontournee)
 end
 
+# ╔═╡ aebbfefe-628a-49c3-a9e6-5dd29b808d68
+begin
+	with_terminal() do
+		println(solution4)
+	end
+end
+
+# ╔═╡ 96c245db-1142-440d-b23a-8e021caaa555
+md"""
+## brazil58
+##### Held et Karp
+"""
+
+# ╔═╡ bc5033ff-3836-4a65-9748-e43c6a7108cc
+begin
+	solution5 = hk("brazil58", raw"instances/stsp/brazil58.tsp",
+           			  racine=:premier,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=500.0,
+					  maxiter=500,
+					  wmemorysize=5,
+					  σw=1.0e-2)
+	with_terminal() do
+		println(solution5)
+		Δcout(solution5, solutiontournee)
+	end
+end
+
+# ╔═╡ 56edaf25-0643-49b6-8e18-e799b4834dee
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ ab665c3e-d3eb-4dd7-9f76-038ec8e225a2
+begin
+	solution6 = rsl("brazil58", raw"instances/stsp/brazil58.tsp", racine=:premier)
+	with_terminal() do
+		println(solution6)
+		Δcout(solution6, solutiontournee)
+	end
+end
+
+# ╔═╡ 81ded0ce-92b4-47df-8a3f-77eb19c0f091
+md"""
+## brg180
+##### Held et Karp
+"""
+
+# ╔═╡ 8203e9cb-aaa8-4ab5-ac9c-123176ee683a
+begin
+	solution7 = hk("brg180", raw"instances/stsp/brg180.tsp",
+           			  racine=:premier,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=1.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0)
+	with_terminal() do
+		println(solution7)
+		Δcout(solution7, solutiontournee)
+	end
+end
+
+# ╔═╡ 6cbf7e4d-0f43-49fd-88ab-37f7829b709e
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 5ec12a6d-a9a3-4b2b-ac5a-b373c8bfe0c6
+begin
+	solution8 = rsl("brg180", raw"instances/stsp/brg180.tsp", racine=:premier)
+	with_terminal() do
+		println(solution8)
+		Δcout(solution8, solutiontournee)
+	end
+end
+
+# ╔═╡ 73903740-62c4-4586-9074-9193f7612304
+md"""
+## dantzig42
+##### Held et Karp
+"""
+
+# ╔═╡ d44e9a7e-6d27-4015-bde1-958206b9488c
+begin
+	solution9 = hk("dantzig42", raw"instances/stsp/dantzig42.tsp",
+           			  racine=:premier,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=30.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+	plot_tour_gap(solution9, solutiontournee)
+end
+
+# ╔═╡ 0c90cbc7-8479-4783-9fcb-641658b43723
+begin
+	with_terminal() do
+		println(solution9)
+	end
+end
+
+# ╔═╡ 8cbd2063-8ac3-4ac7-b3bc-3f88102dd20d
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 79badeee-847d-4015-8ec3-c641cc76f59e
+begin
+	solution10 = rsl("dantzig42", raw"instances/stsp/dantzig42.tsp", racine=:premier)
+	plot_tour_gap(solution10, solutiontournee)
+end
+
+# ╔═╡ ccb5f56a-1891-4c7c-a228-b998113188ec
+begin
+	with_terminal() do
+		println(solution10)
+	end
+end
+
+# ╔═╡ be2857d3-1911-436a-8ac2-1b797a1fe521
+md"""
+## fri26
+##### Held et Karp
+"""
+
+# ╔═╡ 6a531068-e71d-49de-8086-6205d5bce72a
+begin
+	solution11 = hk("fri26", raw"instances/stsp/fri26.tsp",
+           			  racine=5,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=200.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-5)
+	with_terminal() do
+		println(solution11)
+		Δcout(solution11, solutiontournee)
+	end
+end
+
+# ╔═╡ 59f24def-b51a-422c-8d8f-72e412bcc613
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 6e200bb4-8917-4c39-a339-9e9371dbb482
+begin
+	solution12 = rsl("fri26", raw"instances/stsp/fri26.tsp", racine=:premier)
+	with_terminal() do
+		println(solution12)
+		Δcout(solution12, solutiontournee)
+	end
+end
+
+# ╔═╡ 63d28d36-b294-42d6-b3bd-9b81443abc77
+md"""
+## gr17
+##### Held et Karp
+"""
+
+# ╔═╡ 46b19bc5-ba2f-4649-9eaa-14d0194b51fe
+begin
+	solution13 = hk("gr17", raw"instances/stsp/gr17.tsp",
+           			  racine=5,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=30.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+	with_terminal() do
+		println(solution13)
+		Δcout(solution13, solutiontournee)
+	end
+end
+
+# ╔═╡ 0fa660f6-d4d4-4e20-9755-3a6201d5a21e
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 45777406-d929-46d5-9775-01cabb214fb1
+begin
+	solution14 = rsl("gr17", raw"instances/stsp/gr17.tsp", racine=:premier)
+	with_terminal() do
+		println(solution14)
+		Δcout(solution14, solutiontournee)
+	end
+end
+
+# ╔═╡ d51f942e-9152-4802-abaa-cc450008ddd1
+md"""
+## gr21
+##### Held et Karp
+"""
+
+# ╔═╡ fa2ad663-9302-41d7-8b44-4dde997f6207
+begin
+	solution15 = hk("gr21", raw"instances/stsp/gr21.tsp",
+           			  racine=5,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=30.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+	with_terminal() do
+		println(solution15)
+		Δcout(solution15, solutiontournee)
+	end
+end
+
+# ╔═╡ c3b18906-99e8-494d-b895-254fd6e9545e
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 28de85fb-54e4-4b14-9f8a-b7123595dfa9
+begin
+	solution16 = rsl("gr21", raw"instances/stsp/gr21.tsp", racine=:premier)
+	with_terminal() do
+		println(solution16)
+		Δcout(solution16, solutiontournee)
+	end
+end
+
+# ╔═╡ ac552768-597e-422f-b86b-ce26e537053e
+md"""
+## gr24
+##### Held et Karp
+"""
+
+# ╔═╡ 97351afb-cecd-4080-b323-bda1e1958bb8
+begin
+	solution17 = hk("gr24", raw"instances/stsp/gr24.tsp",
+           			  racine=5,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=30.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+	with_terminal() do
+		println(solution17)
+		Δcout(solution17, solutiontournee)
+	end
+end
+
+# ╔═╡ a1e790e9-3828-49de-9578-ff040f44c609
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ e4a603a0-063e-4d34-81dd-a08fe75fa567
+begin
+	solution18 = rsl("gr24", raw"instances/stsp/gr24.tsp", racine=:premier)
+	with_terminal() do
+		println(solution18)
+		Δcout(solution18, solutiontournee)
+	end
+end
+
+# ╔═╡ 252faa9a-4971-4669-890a-66d2a1d3a422
+md"""
+## gr48
+##### Held et Karp
+"""
+
+# ╔═╡ 8b0790b9-61e2-4fda-a525-c8a961964279
+begin
+	solution19 = hk("gr48", raw"instances/stsp/gr48.tsp",
+           			  racine=:premier,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=20.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+	with_terminal() do
+		println(solution19)
+		Δcout(solution19, solutiontournee)
+	end
+end
+
+# ╔═╡ 6de72430-d218-4b0b-93ef-da74e6c148e3
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 08d7d319-0f54-4d9e-a3cb-106236b07aa9
+begin
+	solution20 = rsl("gr48", raw"instances/stsp/gr48.tsp", racine=:premier)
+	with_terminal() do
+		println(solution20)
+		Δcout(solution20, solutiontournee)
+	end
+end
+
+# ╔═╡ 50ab34e7-1635-4836-ab72-354a6ce2ac66
+md"""
+## gr120
+##### Held et Karp
+"""
+
+# ╔═╡ 901801c2-1f81-4351-9a34-6e90d38a42e4
+begin
+	solution21 = hk("gr120", raw"instances/stsp/gr120.tsp",
+           			  racine=10,
+					  algorithm=:prim,
+					  display=false,
+					  t0=5.0,
+					  maxiter=500,
+					  wmemorysize=5,
+					  σw=1.0e-2)
+ 	plot_tour_gap(solution21, solutiontournee)
+end
+
+# ╔═╡ 48304c86-b748-4ccb-b857-92f7c12afe60
+begin
+	with_terminal() do
+		println(solution21)
+	end
+end
+
+# ╔═╡ 47586150-6667-42e2-992b-a4470ac2b540
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 2e6c5a18-a976-44f0-9d84-de9557111a8b
+begin
+	solution22 = rsl("gr120", raw"instances/stsp/gr120.tsp", racine=:premier)
+	plot_tour_gap(solution22, solutiontournee)
+end
+
+# ╔═╡ fa640591-35a9-4b07-b12a-58ea14d801a5
+begin
+	with_terminal() do
+		println(solution22)
+	end
+end
+
+# ╔═╡ 71b0162d-3062-4b9b-badd-404b5ca83d13
+md"""
+## hk48
+##### Held et Karp
+"""
+
+# ╔═╡ 24d8da0f-3663-474d-a3b7-493f2d0f8f90
+begin
+	solution23 = hk("hk48", raw"instances/stsp/hk48.tsp",
+           			  racine=10,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=20.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-2)
+	with_terminal() do
+		println(solution23)
+		Δcout(solution23, solutiontournee)
+	end
+end
+
+# ╔═╡ d9ff5587-b102-43f4-9f48-e1728a254942
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 8e750001-132f-4301-bf67-9224a186a6b2
+begin
+	solution24 = rsl("hk48", raw"instances/stsp/hk48.tsp", racine=:premier)
+	with_terminal() do
+		println(solution24)
+		Δcout(solution24, solutiontournee)
+	end
+end
+
+# ╔═╡ 8ead5dfe-5b8f-4102-ab85-69c0e2abbf35
+md"""
+## pa561
+##### Held et Karp
+"""
+
+# ╔═╡ 9a0ee4bc-0120-4025-a8c4-f42869aeccd9
+begin
+	solution25 = hk("pa561", raw"instances/stsp/pa561.tsp",
+           			  racine=200,
+					  algorithm=:prim,
+					  display=false,
+					  t0=1.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-2)
+ 	plot_tour_gap(solution25, solutiontournee)
+end
+
+# ╔═╡ 56b47405-28d3-4102-b8cd-01cec2004a45
+begin
+	with_terminal() do
+		println(solution25)
+	end
+end
+
+# ╔═╡ fe11710a-b380-42b4-be5b-cd08c99aa982
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 57b53ae0-eb07-4e43-8456-f02cb14f08bb
+begin
+	solution26 = rsl("pa561", raw"instances/stsp/pa561.tsp", racine=:premier)
+	plot_tour_gap(solution26, solutiontournee)
+end
+
+# ╔═╡ 2b1f555f-b2db-42ec-8bba-f7bc86508240
+begin
+	with_terminal() do
+		println(solution26)
+	end
+end
+
+# ╔═╡ 8cd19a51-20b1-454d-b440-ec70c9ca7563
+md"""
+## swiss42
+##### Held et Karp
+"""
+
+# ╔═╡ 07521f82-0ec0-45a0-a82c-4fac66a7ec2f
+begin
+	solution27 = hk("swiss42", raw"instances/stsp/swiss42.tsp",
+           			  racine=:premier,
+					  algorithm=:kruskal,
+					  display=false,
+					  t0=5.0,
+					  maxiter=300,
+					  wmemorysize=5,
+					  σw=1.0e-3)
+	with_terminal() do
+		println(solution27)
+		Δcout(solution27, solutiontournee)
+	end
+end
+
+# ╔═╡ 24774bbf-ea84-49c2-aae9-efbbb76cec76
+md"""
+##### Rosenkrantz, Stearns et Lewis
+"""
+
+# ╔═╡ 41a4dee3-a485-4d63-bcb6-8e40313f6c04
+begin
+	solution28 = rsl("swiss42", raw"instances/stsp/swiss42.tsp", racine=:premier)
+	with_terminal() do
+		println(solution28)
+		Δcout(solution28, solutiontournee)
+	end
+end
+
+# ╔═╡ bb60a990-b850-4202-9a2e-964b20468d8b
+md"""
+# 7. Reproduction des résultats
+Tel que démontré dans la section précédente, il suffit d'appeler `rsl()` ou `hk()` avec le nom que l'on désire donner au graphe, le chemin vers l'instance que l'on veut tester, puis les paramètres voulus pour obtenir une solution. Il est possible de n'entrer aucun paramètre pour laisser ceux par défaut.
+
+L'appel de la fonction `plot_tour_gap` illustre cette solution graphiquement.
+"""
+
+# ╔═╡ 064b2a8f-acae-4419-adc8-a7126bef7871
+begin
+	with_terminal() do
+		@doc hk
+	end
+end
+#hidden line
+
+# ╔═╡ 42c3fa01-2106-48d5-989c-8f99a85c7205
+begin
+	with_terminal() do
+		@doc rsl
+	end
+end
+#hidden line
+
 # ╔═╡ c3a6e502-f708-488f-b789-46076c5b122f
 md"""
-# 10. Branche phase3 sur GitHub
+# 8. Branche phase4 sur GitHub
 
-Lien: https://github.com/XavierLebeuf/mth6412b-starter-code/tree/phase3
+Lien: https://github.com/XavierLebeuf/mth6412b-starter-code/tree/phase4
 """
 #hidden line
 
@@ -1043,24 +1634,94 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╠═489635f8-4065-45e1-bb76-5b60aba7ee70
+# ╟─489635f8-4065-45e1-bb76-5b60aba7ee70
 # ╟─85511c2e-fe21-4ce5-8cc2-dca2a72f9c71
 # ╠═5db9df1d-66b0-4717-9c94-9b19ce8b10d8
-# ╠═77f09359-1bab-4c38-a03e-b84e043fc59f
+# ╟─afe047fd-38af-4445-9554-96014bb4ec4c
+# ╠═f56fd17d-d718-4c27-aa5e-99a02d212a74
+# ╠═13dd9c46-40c6-4ed8-a56e-3f8e4cb8ef77
+# ╟─77f09359-1bab-4c38-a03e-b84e043fc59f
 # ╠═c3ad811c-4a70-4ef8-aec8-c760c62b4332
+# ╟─1d73f413-fb40-4d72-bb2c-a6c917beacff
 # ╠═b93111c9-cfc1-4ac3-a1d5-73a2b0434b5c
-# ╠═b0f83a42-9909-41d8-9b96-ff48939565ed
+# ╟─b0f83a42-9909-41d8-9b96-ff48939565ed
 # ╠═b87572d3-56b9-4557-8732-3ddd7cda36a5
-# ╠═b1eba945-45c7-4fdc-87f4-e0f3a9e1b57b
-# ╠═0da165bb-c025-4883-add4-47f62ce3dbb1
+# ╟─e64165cd-1e5c-49e0-b233-c3de3defae38
+# ╟─b1eba945-45c7-4fdc-87f4-e0f3a9e1b57b
+# ╟─0da165bb-c025-4883-add4-47f62ce3dbb1
 # ╠═8119ce88-0fd3-41c0-ab53-1803b1faa2eb
+# ╟─f441a115-1549-4120-b092-c085b047fca8
 # ╠═f362f225-fd8b-48dc-be8f-4923d61356bb
-# ╠═2e96c8b2-a158-4589-b3da-dc75e637f4dc
+# ╟─2e96c8b2-a158-4589-b3da-dc75e637f4dc
+# ╟─3af625c3-332f-4854-a5b5-e575ca3ac228
 # ╠═35d0cc90-6b0c-44d6-81b5-a095d872ae16
-# ╠═e359ad3b-7641-4215-85a8-00d14c0be4cf
-# ╠═65fc90f0-9ed9-4331-87bb-fc73b92b9a3d
-# ╠═82a215ee-7c09-4409-8fb5-fba1ad76ea07
-# ╠═9b036551-4e7b-4489-89ce-fd1c2bf06de7
+# ╠═415344f3-6e6f-42fa-b3f9-eded3e491f1a
+# ╟─0ba34536-b40c-4f42-9a9e-b6c0e3349868
+# ╠═a6e9b196-0c8b-4e7f-9afc-4ee1559761bb
+# ╠═f8f08a82-4d88-49e6-b0ec-267d106a6542
+# ╟─0a403342-ddde-47bf-a300-30d6bd0efaf3
+# ╠═483224bd-afcb-4dcb-b38c-9a717ae9e8ed
+# ╠═542dbe29-1cf0-4578-9b28-694706111051
+# ╟─65b06938-b552-4dc6-ae22-72b9388d9952
+# ╠═855d795c-0fde-4559-ba49-5f3ba7279d4b
+# ╠═aebbfefe-628a-49c3-a9e6-5dd29b808d68
+# ╟─96c245db-1142-440d-b23a-8e021caaa555
+# ╠═bc5033ff-3836-4a65-9748-e43c6a7108cc
+# ╟─56edaf25-0643-49b6-8e18-e799b4834dee
+# ╠═ab665c3e-d3eb-4dd7-9f76-038ec8e225a2
+# ╟─81ded0ce-92b4-47df-8a3f-77eb19c0f091
+# ╠═8203e9cb-aaa8-4ab5-ac9c-123176ee683a
+# ╟─6cbf7e4d-0f43-49fd-88ab-37f7829b709e
+# ╠═5ec12a6d-a9a3-4b2b-ac5a-b373c8bfe0c6
+# ╟─73903740-62c4-4586-9074-9193f7612304
+# ╠═d44e9a7e-6d27-4015-bde1-958206b9488c
+# ╠═0c90cbc7-8479-4783-9fcb-641658b43723
+# ╠═8cbd2063-8ac3-4ac7-b3bc-3f88102dd20d
+# ╠═79badeee-847d-4015-8ec3-c641cc76f59e
+# ╟─ccb5f56a-1891-4c7c-a228-b998113188ec
+# ╠═be2857d3-1911-436a-8ac2-1b797a1fe521
+# ╠═6a531068-e71d-49de-8086-6205d5bce72a
+# ╠═59f24def-b51a-422c-8d8f-72e412bcc613
+# ╠═6e200bb4-8917-4c39-a339-9e9371dbb482
+# ╟─63d28d36-b294-42d6-b3bd-9b81443abc77
+# ╠═46b19bc5-ba2f-4649-9eaa-14d0194b51fe
+# ╟─0fa660f6-d4d4-4e20-9755-3a6201d5a21e
+# ╠═45777406-d929-46d5-9775-01cabb214fb1
+# ╟─d51f942e-9152-4802-abaa-cc450008ddd1
+# ╠═fa2ad663-9302-41d7-8b44-4dde997f6207
+# ╟─c3b18906-99e8-494d-b895-254fd6e9545e
+# ╠═28de85fb-54e4-4b14-9f8a-b7123595dfa9
+# ╟─ac552768-597e-422f-b86b-ce26e537053e
+# ╠═97351afb-cecd-4080-b323-bda1e1958bb8
+# ╟─a1e790e9-3828-49de-9578-ff040f44c609
+# ╠═e4a603a0-063e-4d34-81dd-a08fe75fa567
+# ╟─252faa9a-4971-4669-890a-66d2a1d3a422
+# ╠═8b0790b9-61e2-4fda-a525-c8a961964279
+# ╟─6de72430-d218-4b0b-93ef-da74e6c148e3
+# ╠═08d7d319-0f54-4d9e-a3cb-106236b07aa9
+# ╟─50ab34e7-1635-4836-ab72-354a6ce2ac66
+# ╠═901801c2-1f81-4351-9a34-6e90d38a42e4
+# ╠═48304c86-b748-4ccb-b857-92f7c12afe60
+# ╟─47586150-6667-42e2-992b-a4470ac2b540
+# ╠═2e6c5a18-a976-44f0-9d84-de9557111a8b
+# ╠═fa640591-35a9-4b07-b12a-58ea14d801a5
+# ╟─71b0162d-3062-4b9b-badd-404b5ca83d13
+# ╠═24d8da0f-3663-474d-a3b7-493f2d0f8f90
+# ╟─d9ff5587-b102-43f4-9f48-e1728a254942
+# ╠═8e750001-132f-4301-bf67-9224a186a6b2
+# ╟─8ead5dfe-5b8f-4102-ab85-69c0e2abbf35
+# ╠═9a0ee4bc-0120-4025-a8c4-f42869aeccd9
+# ╠═56b47405-28d3-4102-b8cd-01cec2004a45
+# ╟─fe11710a-b380-42b4-be5b-cd08c99aa982
+# ╠═57b53ae0-eb07-4e43-8456-f02cb14f08bb
+# ╠═2b1f555f-b2db-42ec-8bba-f7bc86508240
+# ╟─8cd19a51-20b1-454d-b440-ec70c9ca7563
+# ╠═07521f82-0ec0-45a0-a82c-4fac66a7ec2f
+# ╟─24774bbf-ea84-49c2-aae9-efbbb76cec76
+# ╠═41a4dee3-a485-4d63-bcb6-8e40313f6c04
+# ╟─bb60a990-b850-4202-9a2e-964b20468d8b
+# ╠═064b2a8f-acae-4419-adc8-a7126bef7871
+# ╠═42c3fa01-2106-48d5-989c-8f99a85c7205
 # ╟─c3a6e502-f708-488f-b789-46076c5b122f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

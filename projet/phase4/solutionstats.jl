@@ -24,12 +24,12 @@ Contient les attributs:
 
 - `cout::Float64`: coût minimal trouvé par l'algorithme,
 - `status::String`: status à la fin de l'algorithme,
-- `arbre::Vector{Union{Nothing, Edge{T, I}}}`: 1-arbre en sorte d'algorithme (tour si status optimal),
+- `arbre::Vector{Union{Nothing, Edge{T, I}}}`: 1-arbre en sortie d'algorithme (tour si status optimal),
 - `σw::Float64`: écart-type`de `w` pour les `wmemorysize` dernière itérations,
 - `nbiter::Int`: nombre d'itérations,
 - `elapsed_time::Float64`: temps de résolution,
 - `wmemorysize::Int`: paramètre pour la taille du vecteur d'écart-types des dernières itérations de la fonction,
-- `graphe::Graph{T, I}`: graphe en sorte d'algorithme,
+- `graphe::Graph{T, I}`: graphe en sortie d'algorithme,
 """
 mutable struct Hksolution{T, I} <: AbstractSolution{T, I}
     cout::Float64

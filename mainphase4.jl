@@ -409,7 +409,7 @@ Teste la fonction rsl! sur tous les fichiers .tsp.
 """
 function test_rsl_all(path, solutions)
     for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp"  && file_name != "pa561.tsp"
+		if file_name[end-3:end] == ".tsp" # && file_name != "pa561.tsp"
             
             println(file_name)
             graph = createGraph(string(file_name), string(path, "/", file_name))
@@ -457,7 +457,7 @@ Teste la fonction hk! sur tous les fichiers .tsp. avec les même paramètres pas
 """
 function test_hk_all(path, solutions)
     for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp" && file_name != "pa561.tsp"
+		if file_name[end-3:end] == ".tsp" # && file_name != "pa561.tsp"
             
             println(file_name)
             graph = createGraph(string(file_name), string(path, "/", file_name))
@@ -494,11 +494,11 @@ end
 
 Fonction faisant appel à `hk!` en prenant en argument un chemin `path` vers le fichier TSP à résoudre,
 et un nom de graphe `graphname`.
-L'argument `racine::Symbol` doit être `:premier`, `:dernier` (fonctionne seulement pour Kruskal),
+L'argument `racine::Symbol` doit être un `Int`, `:premier`, `:dernier` (fonctionne seulement pour Kruskal),
 ou `:poidsmin` (noeud choisi sur l'arête de coût minimal).
 `kwargs...` permet de spécifier les arguments optionels de `hk!` comme `t0`, etc ...
 """
-function hk(graphname::String, path::String; racine::Symbol=:premier, kwargs...)
+function hk(graphname::String, path::String; racine::Union{Symbol, Int}=:premier, kwargs...)
     graph = createGraph(graphname, path)
     return hk!(graph,  root(racine, graph); kwargs...)
 end
@@ -508,18 +508,22 @@ end
 
 Fonction faisant appel à `rsl!` en prenant en argument un chemin `path` vers le fichier TSP à résoudre,
 et un nom de graphe `graphname`.
-L'argument `racine::Symbol` doit être `:premier` ou `:poidsmin` (noeud choisi sur l'arête de coût minimal).
+L'argument `racine` doit être un `Int`, :premier`, `:dernier`
+ou `:poidsmin` (noeud choisi sur l'arête de coût minimal).
 """
-function rsl(graphname::String, path::String; racine::Symbol=:premier)
+function rsl(graphname::String, path::String; racine::Union{Symbol, Int}=:premier)
     graph = createGraph(graphname, path)
     return rsl!(graph, root(racine, graph))
 end
 
 """
-Renvoie une racine parmis trois options de type `Symbol`: `:premier`, `:dernier` et `:poidsmin`.
+Renvoie une racine parmis trois options de type `Symbol`: `:premier`, `:dernier` et `:poidsmin`
+ou le sommet à l'indice donné si racine est un entier.
 """
-function root(racine::Symbol, graph::Graph{T, I}) where{T, I}
-    if racine == :premier
+function root(racine::Union{Symbol, Int}, graph::Graph{T, I}) where{T, I}
+    if typeof(racine) == Int && racine <= nb_nodes(graph)
+        return nodes(graph)[racine]
+    elseif racine == :premier
         return nodes(graph)[1]
     elseif racine == :dernier
         return nodes(graph)[end]
@@ -531,14 +535,29 @@ function root(racine::Symbol, graph::Graph{T, I}) where{T, I}
 end
 
 """
-Affiche une solution par hk ou rsl avec l'erreur relative entre le cout de la solution et le cout optimal.
+Affiche graphiquement une solution avec l'erreur relative entre le cout de la solution et le cout optimal.
 """
 function plot_tour_gap(solution::AbstractSolution, valeurs_optimales)
     fig = plot_tour(solution)
     valeur_optimale = valeurs_optimales[name(graphe(solution))]
     gap = abs(valeur_optimale - cout(solution))/valeur_optimale*100
-    annotate!(1700, 2200, text(string("Δ relatif = ", round(gap, digits=2), "%"), :black, :right, 10))
+
+    xmax = -Inf
+    ymax = -Inf
+    for node in nodes(graphe(solution))
+        node.coordinates[1] > xmax && (xmax = node.coordinates[1])
+        node.coordinates[2] > ymax && (ymax = node.coordinates[2])
+    end
+    annotate!(xmax, ymax, text(string("Δ relatif = ", round(gap, digits=2), "%"), :black, :right, 10))
     fig
+end
+
+"""
+Affiche l'erreur relative entre le cout de la solution et le cout optimal.
+"""
+function Δcout(solution::AbstractSolution, valeurs_optimales)
+    valeur_optimale = valeurs_optimales[name(graphe(solution))]
+    println("Δrelatif = ", abs(valeur_optimale - cout(solution))/valeur_optimale*100)
 end
 
 solutiontournee = Dict("bayg29" => 1610,

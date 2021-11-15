@@ -246,7 +246,7 @@ Teste la fonction prim! sur tous les fichiers .tsp.
 """
 function test_prim_all(path, prim_func)
     for file_name in readdir(path)
-		if file_name[end-3:end] == ".tsp"  && file_name != "pa561.tsp"
+		if file_name[end-3:end] == ".tsp" # && file_name != "pa561.tsp"
 
             graph = createGraph(string(file_name), string(path, "/", file_name))
             prim_func(graph, nodes(graph)[1])

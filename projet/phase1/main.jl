@@ -3,7 +3,7 @@ include("graph.jl")
 include("read_stsp.jl")
 
 
-
+## BOnjour 
 function build_graph(filename::String)
     graph_nodes, graph_edges, edges_brut = read_stsp(filename)
     @show graph_nodes

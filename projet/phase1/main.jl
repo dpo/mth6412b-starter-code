@@ -1,40 +1,46 @@
 
-include("graph.jl")
-include("read_stsp.jl")
+"""" Lis le fichier tsp et en extrait les données
 
+    - Construit les objets noeuds (explicites ou implicites)
+    - Construit les objets edges
+    - Construit l'objet graph 
 
-## BOnjour 
+    retourne le graph du fichier donné en argument
+"""
 function build_graph(filename::String)
-    graph_nodes, graph_edges, edges_brut = read_stsp(filename)
-    @show graph_nodes
+    graph_nodes, graph_edges, edges_brut, weights = read_stsp(filename)
     header = read_header(filename)
-    T = NaN
-    if header["DISPLAY_DATA_TYPE"] == "TWOD_DISPLAY" || header["DISPLAY_DATA_TYPE"] == "COORD_DISPLAY"
-        T = Vector{Float16}
-    end
-    @show T
-    g = Graph{T}("Mon graphe", Vector{Node}(), Vector{Edge}())
 
+    ### Construire les nodes
     if header["DISPLAY_DATA_TYPE"] == "TWOD_DISPLAY" || header["DISPLAY_DATA_TYPE"] == "COORD_DISPLAY"
-        @show "Here"
+        g = Graph{Vector{Float64}}("Mon graphe", Vector{Node}(), Vector{Edge}())
         plot_graph(graph_nodes, graph_edges)
-
-        for n in 1:length(graph_nodes)
-            @show n, graph_nodes[n]
-            node = Node("$(n)", graph_nodes[n])
-            add_node!(g, node)
+        for n in keys(graph_nodes)
+            add_node!(g, Node("$(n)", graph_nodes[n]))
         end
-end
-    show(g)
-    edges = []
-    for e in edges_brut
-        #push!(edges, Edge(e[1], e[2]))
+    else
+        g = Graph{Nothing}("Mon graphe", Vector{Node}(), Vector{Edge}())
+        for i in 1:parse(Int, header["DIMENSION"])
+            add_node!(g, Node("$(i)", nothing))
+        end
     end
-        return g
+
+
+    ### Construire les edges 
+    g_nodes = nodes(g)
+    for i in eachindex(edges_brut)
+        u = get_node(g, "$(edges_brut[i][1])")
+        v = get_node(g, "$(edges_brut[i][2])")
+        edge = Edge{typeof(data(u))}((u,v),weights[i])
+        add_edge!(g, edge)
+    end
+    show(g)
+    return g
 end
 
 
-filename = "./instances/stsp/brg180.tsp"##ARGS[1]
 
 
+
+filename = "./instances/stsp/gr17.tsp"
 g = build_graph(filename)

@@ -1,5 +1,6 @@
 import Base.show
-include("edge.jl")
+
+
 """Type abstrait dont d'autres types de graphes dériveront."""
 abstract type AbstractGraph{T} end
 
@@ -20,6 +21,7 @@ mutable struct Graph{T} <: AbstractGraph{T}
   edges::Vector{Edge{T}}
 end
 
+
 """Ajoute un noeud au graphe."""
 function add_node!(graph::Graph{T}, node::Node{T}) where T
   push!(graph.nodes, node)
@@ -38,6 +40,7 @@ name(graph::AbstractGraph) = graph.name
 """Renvoie la liste des noeuds du graphe."""
 nodes(graph::AbstractGraph) = graph.nodes
 
+
 """Renvoie le nombre de noeuds du graphe."""
 nb_nodes(graph::AbstractGraph) = length(graph.nodes)
 
@@ -47,9 +50,15 @@ edges(graph::AbstractGraph) = graph.edges
 """Renvoie le nombre des edges du graphe."""
 nb_edges(graph::AbstractGraph) = length(graph.edges)
 
+"""Retourn l'indice dans le vecteur des noeuds du noeud name"""
+function get_node(graph::Graph, s::String) 
+  i = findfirst(x -> ( name(x) == s), nodes(graph))  
+  return nodes(graph)[i]
+end
+
 """Affiche un graphe"""
 function show(graph::Graph)
-  println("Graph ", name(graph), " has ", nb_nodes(graph), " nodes and $(nb_edges(graph)).")
+  println("Graph ", name(graph), " has ", nb_nodes(graph), " nodes and $(nb_edges(graph)) edges.")
   for node in nodes(graph)
     show(node)
   end

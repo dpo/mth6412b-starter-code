@@ -4,8 +4,8 @@ abstract type AbstractEdge{T} end
 """Type représentant les arêtes d'un graphe."""
 
 mutable struct Edge{T} <: AbstractEdge{T}
-  nodes::tuple(Node,Node)
-  weight::float
+  nodes::Tuple{Node{T}, Node{T}}
+  weight::Float64
 end
 
 """Renvoie les extrémités d'une arête."""

@@ -1,6 +1,7 @@
 # Abdou Main
 
 include("edge.jl")
+
 using .edge
 include("graph.jl")
 using .graph

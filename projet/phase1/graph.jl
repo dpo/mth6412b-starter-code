@@ -58,3 +58,8 @@ function show_edges(graph::Graph)
     show(edge)
   end
 end
+
+function show(graph::Graph)
+  show_nodes(graph)
+  show_edges(graph)
+end

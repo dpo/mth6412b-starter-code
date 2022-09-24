@@ -4,7 +4,7 @@ abstract type AbstractEdge{T} end
 """Type représentant les arêtes d'un graphe."""
 
 mutable struct Edge{T} <: AbstractEdge{T}
-  nodes::(Node,Node)
+  nodes::tuple(Node,Node)
   weight::float
 end
 

@@ -13,6 +13,6 @@ using .read_stsp
 n1=Node("Quebec",418)
 n2=Node("Montreal",515)
 
-v= Edge(n1,n2,949)
+v= Edge((n1,n2),949.2)
 
 println("il y a quoi")

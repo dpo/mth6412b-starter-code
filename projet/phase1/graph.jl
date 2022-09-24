@@ -10,7 +10,7 @@ Attention, tous les noeuds doivent avoir des données de même type.
 mutable struct Graph{T} <: AbstractGraph{T}
   name::String
   nodes::Vector{Node{T}}
-  edges::vector{Edge{T}}
+  edges::Vector{Edge{T}}
 end
 
 """Ajoute un noeud au graphe."""
@@ -38,7 +38,7 @@ nodes(graph::AbstractGraph) = graph.nodes
 nb_nodes(graph::AbstractGraph) = length(graph.nodes)
 
 """Renvoie la liste des arêtes du graphe."""
-nodes(graph::AbstractGraph) = graph.edges
+edges(graph::AbstractGraph) = graph.edges
 
 """Renvoie le nombre d'arêtes du graphe."""
 nb_edges(graph::AbstractGraph) = length(graph.edges)

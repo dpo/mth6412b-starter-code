@@ -43,13 +43,23 @@ nodes(graph::AbstractGraph) = graph.edges
 """Renvoie le nombre d'arêtes du graphe."""
 nb_edges(graph::AbstractGraph) = length(graph.edges)
 
-"""Affiche un graphe"""
-function show(graph::Graph)
-  println("Graph ", name(graph), " has ", nb_nodes(graph), " nodes", " and ", nb_edges(graph), " edges.",)
+"""Affiche les noeuds d'un graphe"""
+function show_nodes(graph::Graph)
+  println("Graph ", name(graph), " has ", nb_nodes(graph), " nodes.")
   for node in nodes(graph)
     show(node)
   end
+end
+
+"""Affiche les arêtes d'un graphe"""
+function show_edges(graph::Graph)
+  println("Graph ", name(graph), " has ", nb_edges(graph), " edges.")
   for edge in edges(graph)
     show(edge)
   end
+end
+
+function show(graph::Graph)
+  show_nodes(graph)
+  show_edges(graph)
 end

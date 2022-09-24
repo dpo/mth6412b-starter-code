@@ -5,7 +5,7 @@ abstract type AbstractEdge{T} end
 
 mutable struct Edge{T} <: AbstractEdge{T}
   nodes::Tuple{Node{T}, Node{T}}
-  weight::T
+  weight::Number
 end
 
 """Renvoie les extrémités d'une arête."""

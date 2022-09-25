@@ -187,7 +187,7 @@ function read_stsp(filename::String)
   println("✓")
 
   Base.print("Reading of edges : ")
-  edges_brut = read_edges(header, filename)
+  edges_brut = read_edges(header, filename)[1]
   graph_edges = []
   for k = 1 : dim
     edge_list = Int[]

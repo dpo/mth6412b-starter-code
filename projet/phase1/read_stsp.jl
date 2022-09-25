@@ -1,3 +1,5 @@
+import Pkg
+Pkg.add("Plots")
 using Plots
 
 """Analyse un fichier .tsp et renvoie un dictionnaire avec les données de l'entête."""
@@ -94,6 +96,7 @@ end
 function read_edges(header::Dict{String}{String}, filename::String)
 
   edges = []
+  edges_weight = []
   edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
   known_edge_weight_formats = ["FULL_MATRIX", "UPPER_ROW", "LOWER_ROW",
   "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
@@ -130,6 +133,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
 
           for j = start : start + n_on_this_line - 1
             n_edges = n_edges + 1
+            weight = data[j+1]
             if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
               edge = (k+1, i+k+2)
             elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
@@ -144,6 +148,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
               warn("Unknown format - function read_edges")
             end
             push!(edges, edge)
+            push!(edges_weight, weight)
             i += 1
           end
 
@@ -166,7 +171,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
     end
   end
   close(file)
-  return edges
+  return edges, edges_weight
 end
 
 """Renvoie les noeuds et les arêtes du graphe."""

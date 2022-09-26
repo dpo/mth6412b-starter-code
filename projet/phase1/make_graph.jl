@@ -3,8 +3,9 @@ function make_graph(filename::String)
     nodes_brut = read_nodes(header, filename)
     edges_brut = read_edges(header, filename)[1]
     weights = read_edges(header, filename)[2]
-    nodes=Vector{Node}(undef, length(nodes_brut))
-    edges=Vector{Edge}(undef, length(edges_brut))
+    T = typeof(nodes_brut[1])
+    nodes=Vector{Node{T}}(undef, length(nodes_brut))
+    edges=Vector{Edge{T}}(undef, length(edges_brut))
     j = 1
     for k in keys(nodes_brut)
         node = Node(string(k), nodes_brut[k])

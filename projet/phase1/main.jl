@@ -41,6 +41,6 @@ function build_graph(filename::String)
     return g
 end
 
-
-filename = "./instances/stsp/dantzig42.tsp"
-build_graph(filename)
+filename = ARGS[1]
+#filename = "./instances/stsp/dantzig42.tsp"
+build_graph("../../instances/stsp/$(filename)")

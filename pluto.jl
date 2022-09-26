@@ -146,7 +146,47 @@ return edges, edges_weight
 md"""### Création de la fonction *make_graph()*"""
 
 # ╔═╡ bc2380ce-df43-46b1-84c7-f636f117d9e9
-
+md"""
+La fonction *make_graph* prend en argument un fichier .tsp et renvoie l'objet de type *Graph* correspondant. 
+On récupère d'abors les nœuds, les arêtes et les poids à l'aide de *read_nodes* et *read_edges* : 
+```julia
+function make_graph(filename::String)
+    header = read_header(filename)
+    nodes_brut = read_nodes(header, filename)
+    edges_brut = read_edges(header, filename)[1]
+    weights = read_edges(header, filename)[2]
+```
+On crée les vecteur qui contiendront les nœuds et les arêtes de notre graphe après avoir identifié le type des données des nœuds : 
+```julia
+    T = typeof(nodes_brut[1]) 
+    nodes=Vector{Node{T}}(undef, length(nodes_brut))
+    edges=Vector{Edge{T}}(undef, length(edges_brut))
+```
+On remplit le vecteur des nœuds en faisant attention que *nodes_brut* est un dictionnaire : 
+```julia
+    j = 1
+    for k in keys(nodes_brut)
+        node = Node(string(k), nodes_brut[k])
+        nodes[j] = node
+        j = j + 1
+    end
+```
+On remplit de même le vecteur des arêtes :
+```julia
+    for i = 1 : length(edges_brut)
+        n1 = Node(string(edges_brut[i][1]), nodes_brut[edges_brut[i][1]])
+        n2 = Node(string(edges_brut[i][2]), nodes_brut[edges_brut[i][2]])
+        edge = Edge((n1, n2), weights[i])
+        edges[i] = edge
+    end
+```
+On crée le graphe et on le renvoie :
+```julia
+    graph = Graph(filename, nodes, edges)
+    return graph
+end
+```
+"""
 
 # ╔═╡ 6898e60f-87ff-43cf-bc75-f6b7e2a26141
 md"""### Programme principal"""

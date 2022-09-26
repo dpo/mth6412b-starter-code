@@ -35,7 +35,8 @@ Afficher une arête :
 function show(edge::AbstractEdge)
   println("Edge ", nodes(edge), ", weight: ", weight(edge))
 end
-``` """
+``` 
+"""
 
 # ╔═╡ 23ea2ccb-059b-4d33-b2bc-cc25827a5141
 md"""### Extension du type *Graph*"""

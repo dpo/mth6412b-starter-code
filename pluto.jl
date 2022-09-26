@@ -124,8 +124,89 @@ end
 # ╔═╡ 690bc9ef-640c-4f96-944f-7684b8311c6f
 md"""### Extension de la fonction *read_edges()*"""
 
+# ╔═╡ c2037e71-9fe1-4b70-a57d-c144fbcd6d61
+md""" Pour permettre à la fonction read-edges de retourner la valeur des poids de chaque arête, il nous fallait tout d'abord trouver une façon de récolter les données de la matrice, ce qu'on fait avec la deuxième ligne de la boucle for
+
+      weight = parse(Int,data[j+1])
+
+Cette ligne permet de récupéré le poids à associer à une arête. Et à l'avant-dernière ligne, on utilise la fonction push! pour intégrer le nouveau poids dans le vecteur edges-weight
+
+      push!(edges-weight, weight)
+
+À l'aide de la boucle, ces opérations sont répétées pour tous les éléments de la ligne de la matrice.
+
+"""
+
+# ╔═╡ b4f53759-98fc-45f9-87e3-2ce4bd5ea0ae
+md"""
+
+```julia
+for j = start : start + n_on_this_line - 1
+            n_edges = n_edges + 1
+            weight = parse(Int,data[j+1]) # Représente le poids d'une arête qui est recupéré et transformé en int
+            if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
+              edge = (k+1, i+k+2)
+            elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
+              edge = (k+1, i+k+1)
+            elseif edge_weight_format in ["UPPER_COL", "LOWER_ROW"]
+              edge = (i+k+2, k+1)
+            elseif edge_weight_format in ["UPPER_DIAG_COL", "LOWER_DIAG_ROW"]
+              edge = (i+1, k+1)
+            elseif edge_weight_format == "FULL_MATRIX"
+              edge = (k+1, i+1)
+            else
+              warn("Unknown format - function read_edges")
+            end
+            push!(edges, edge)
+            push!(edges_weight, weight) # On insère le poids d'une des arêtes dans un vecteur qui contient toutes les arêtes
+            i += 1
+          end 
+```
+"""
+
 # ╔═╡ 6229c1f9-99bd-4723-a338-8b6e46eb2ef8
 md"""### Création de la fonction *make_graph()*"""
+
+# ╔═╡ 4e00ad12-0daa-483a-875d-f2fb424cda28
+md"""
+La fonction make-graph() prend comme argument le chemin du fichier tsp que nous désirons étudier. À partir de ce fichier nous allons extraire les noeuds, les arêtes et les poids en utilisant les fonctions read-nodes et read-edges.Les valeurs retournés par ces fonctions sont ensuite insérés dans des vecteurs. Ces vecteurs serviront en tant qu'argument pour faire appèle à la fonction graph.
+"""
+
+# ╔═╡ 949fc647-a478-47db-a8db-3e35f92cf29e
+md"""
+
+```julia
+###Crée un objet Graph à partir d'un fichier .tsp
+function make_graph(filename::String)
+    header = read_header(filename)
+    nodes_brut = read_nodes(header, filename)
+    edges_brut = read_edges(header, filename)[1]
+    weights = read_edges(header, filename)[2]
+    T = typeof(nodes_brut[1]) #Récupère le type T des nodes et des edges pour la bonne déclaration des vecteurs nodes et edges
+    nodes=Vector{Node{T}}(undef, length(nodes_brut))
+    edges=Vector{Edge{T}}(undef, length(edges_brut))
+    j = 1
+    #Lit les nodes dans le dictionnaire et les stocke dans la liste nodes
+    for k in keys(nodes_brut)
+        node = Node(string(k), nodes_brut[k])
+        nodes[j] = node
+        j = j + 1
+    end
+
+    #Lit les edges et les stocke dans la liste edges
+    for i = 1 : length(edges_brut)
+        n1 = Node(string(edges_brut[i][1]), nodes_brut[edges_brut[i][1]])
+        n2 = Node(string(edges_brut[i][2]), nodes_brut[edges_brut[i][2]])
+        edge = Edge((n1, n2), weights[i])
+        edges[i] = edge
+    end
+
+    #Crée le graphe à partir de ces deux listes
+    graph = Graph(filename, nodes, edges)
+    return graph
+end
+```
+"""
 
 # ╔═╡ 6898e60f-87ff-43cf-bc75-f6b7e2a26141
 md"""### Programme principal"""
@@ -1091,9 +1172,13 @@ version = "1.4.1+0"
 # ╟─23ea2ccb-059b-4d33-b2bc-cc25827a5141
 # ╟─0837bde7-60c1-4243-af2f-b48f3267e9d5
 # ╟─de1a416c-38dd-4008-abb6-5fcc2318a703
-# ╟─053ff6bd-47ce-42d3-86df-ba6822a33aaa
+# ╠═053ff6bd-47ce-42d3-86df-ba6822a33aaa
 # ╟─690bc9ef-640c-4f96-944f-7684b8311c6f
+# ╠═c2037e71-9fe1-4b70-a57d-c144fbcd6d61
+# ╠═b4f53759-98fc-45f9-87e3-2ce4bd5ea0ae
 # ╟─6229c1f9-99bd-4723-a338-8b6e46eb2ef8
+# ╠═4e00ad12-0daa-483a-875d-f2fb424cda28
+# ╠═949fc647-a478-47db-a8db-3e35f92cf29e
 # ╟─6898e60f-87ff-43cf-bc75-f6b7e2a26141
 # ╠═8a7da04e-273f-41c7-af9b-8e61eef931a7
 # ╟─6d55b966-5f10-4c02-b52d-225376a1aaa3

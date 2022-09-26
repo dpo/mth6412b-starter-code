@@ -41,6 +41,13 @@ function build_graph(filename::String)
     return g
 end
 
+
+""" Pour lancer le programme:
+    Se placer dans le dossier projet/phase1
+    lancer julia main.jl "Nom de l'instance".tsp 
+    exemple:
+        julia main.jl gr17.tsp
+        """
 filename = ARGS[1]
 #filename = "./instances/stsp/dantzig42.tsp"
 build_graph("../../instances/stsp/$(filename)")

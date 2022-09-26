@@ -1,5 +1,6 @@
 
 include("./read_stsp.jl")
+
 """" Lis le fichier tsp et en extrait les données
     - Construit l'objet Graph 
     - Construit les objets Nodes (explicites ou implicites)
@@ -30,7 +31,11 @@ function build_graph(filename::String)
     ### Construire les edges 
     g_nodes = nodes(g)
     for i in eachindex(edges_brut)
-        if weights[i] != 0
+        #Si le format des donnees est tel que les aretes i-i sont explicitées (edge_weight_format) et le poid d'une telle arete est nul, et c'est bien une arete i-i, alors on ne cré pas l'arete. 
+        #Autrement elle est créée et ajoutée au graphe.
+        if header["EDGE_WEIGHT_FORMAT"] in ["FULL_MATRIX", "UPPER_DIAG_ROW", "LOWER_DIAG_ROW"] && weights[i]==0 && edges_brut[i][1] == edges_brut[i][2] 
+        else
+            # Fonction get_node renvoie l'objet Node dans g en fonction de son nom
             u = get_node(g, "$(edges_brut[i][1])")
             v = get_node(g, "$(edges_brut[i][2])")
             edge = Edge{typeof(data(u))}((u,v),weights[i])
@@ -42,12 +47,12 @@ function build_graph(filename::String)
 end
 
 
-""" Pour lancer le programme:
+""" 
+Pour lancer le programme:
     Se placer dans le dossier projet/phase1
     lancer julia main.jl "Nom de l'instance".tsp 
     exemple:
         julia main.jl gr17.tsp
-        """
+"""
 filename = ARGS[1]
-#filename = "./instances/stsp/dantzig42.tsp"
 build_graph("../../instances/stsp/$(filename)")

@@ -1,5 +1,9 @@
 
-"""Crée un objet Graph à partir d'un fichier .tsp"""
+"""Crée un objet Graph à partir d'un fichier .tsp
+    Exemple:
+        Graph1= make_graph("chemin/du/fichier/tsp")
+        
+"""
 function make_graph(filename::String)
     header = read_header(filename)
     nodes_brut = read_nodes(header, filename)

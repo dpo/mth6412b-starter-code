@@ -27,6 +27,8 @@ name(node::AbstractNode) = node.name
 data(node::AbstractNode) = node.data
 
 """Affiche un noeud."""
+
+""" Ajout d'un operateur ternaire dans le cas ou le type de données soit Nothing"""
 function show(node::AbstractNode)
-  println("Node ", name(node), ", data: ", data(node))
+  println("Node ", name(node), isnothing(data(node)) ? " " : " data: $(data(node))")
 end

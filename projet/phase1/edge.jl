@@ -21,5 +21,5 @@ weight(edge::AbstractEdge) = edge.weight
 
 
 function show(edge::AbstractEdge)
-  println( "Edge:  ($(name(ends(edge)[1])),$(name(ends(edge)[1])))   weight: $(weight(edge))" )
+  println( "Edge:  ($(name(ends(edge)[1])),$(name(ends(edge)[2])))   weight: $(weight(edge))" )
 end

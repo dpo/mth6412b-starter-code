@@ -50,10 +50,16 @@ edges(graph::AbstractGraph) = graph.edges
 """Renvoie le nombre des edges du graphe."""
 nb_edges(graph::AbstractGraph) = length(graph.edges)
 
-"""Retourn l'indice dans le vecteur des noeuds du noeud name"""
+"""Retourn l'indice dans le vecteur des noeuds du graphe graph du noeud s. NaN si le noeud ne fait pas parti du graphe"""
 function get_node(graph::Graph, s::String) 
   i = findfirst(x -> ( name(x) == s), nodes(graph))  
-  return nodes(graph)[i]
+  if i>0 
+    return nodes(graph)[i] 
+  else
+    @warn("Graph $(name(graph)) has no node $s")
+    return NaN
+  end
+  
 end
 
 """Affiche un graphe"""

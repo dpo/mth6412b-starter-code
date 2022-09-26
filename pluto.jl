@@ -41,7 +41,7 @@ end
 md"""### Extension du type *Graph*"""
 
 # ╔═╡ 0837bde7-60c1-4243-af2f-b48f3267e9d5
-md"""Ajout des arêtes au type *Graph*.
+md"""Ajout des arêtes au type *Graph* :
 ```julia
 abstract type AbstractGraph{T} end
 
@@ -131,11 +131,11 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╟─775f23b8-3da3-11ed-1dab-2b8e6238fd87
 # ╟─042d77b3-a2cd-4c34-9386-c3bf50c01314
 # ╟─5cb5ba5e-c685-43f6-9cf5-fafcbaa501c2
-# ╠═599b356c-bbf6-429e-ac27-0518a86c36a9
+# ╟─599b356c-bbf6-429e-ac27-0518a86c36a9
 # ╟─23ea2ccb-059b-4d33-b2bc-cc25827a5141
-# ╠═0837bde7-60c1-4243-af2f-b48f3267e9d5
+# ╟─0837bde7-60c1-4243-af2f-b48f3267e9d5
 # ╟─de1a416c-38dd-4008-abb6-5fcc2318a703
-# ╠═053ff6bd-47ce-42d3-86df-ba6822a33aaa
+# ╟─053ff6bd-47ce-42d3-86df-ba6822a33aaa
 # ╟─690bc9ef-640c-4f96-944f-7684b8311c6f
 # ╟─6229c1f9-99bd-4723-a338-8b6e46eb2ef8
 # ╟─00000000-0000-0000-0000-000000000001

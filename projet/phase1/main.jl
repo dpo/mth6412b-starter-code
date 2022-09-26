@@ -6,6 +6,7 @@ include("./read_stsp.jl")
     - Construit les objets Edges
     
     Retourne le graph associé au fichier donné en argument.
+    Si le graphe décrit est representable (ie. les noeuds ont une donnée coordonnées spécifiée), l'image est sauvegardée
 """
 
 function build_graph(filename::String)

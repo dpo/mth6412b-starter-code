@@ -42,8 +42,5 @@ function build_graph(filename::String)
 end
 
 
-
-
-
 filename = "./instances/stsp/dantzig42.tsp"
 build_graph(filename)

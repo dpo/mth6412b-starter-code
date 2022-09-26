@@ -187,6 +187,7 @@ function read_stsp(filename::String)
   println("✓")
 
   Base.print("Reading of edges : ")
+  ## Recupére les poids et la liste des edges
   edges_brut, weights = read_edges(header, filename)
   
   graph_edges = []
@@ -208,6 +209,7 @@ function read_stsp(filename::String)
     graph_edges[k] = sort(graph_edges[k])
   end
   println("✓")
+  ## Retourne la liste des noeuds, les listes d'adjacence, la liste des aretes et leurs poids
   return graph_nodes, graph_edges, edges_brut, weights
 end
 

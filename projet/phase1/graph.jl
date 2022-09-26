@@ -59,6 +59,7 @@ function show_edges(graph::Graph)
   end
 end
 
+"""Affiche un graphe"""
 function show(graph::Graph)
   show_nodes(graph)
   show_edges(graph)

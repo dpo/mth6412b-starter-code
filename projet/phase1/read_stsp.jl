@@ -96,7 +96,7 @@ end
 function read_edges(header::Dict{String}{String}, filename::String)
 
   edges = []
-  edges_weight = [] # Vecteur qui stock la valeur des poids de chaque arêtes
+  edges_weight = [] # Vecteur qui stock la valeur des poids de chaque arête
   edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
   known_edge_weight_formats = ["FULL_MATRIX", "UPPER_ROW", "LOWER_ROW",
   "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
@@ -133,7 +133,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
 
           for j = start : start + n_on_this_line - 1
             n_edges = n_edges + 1
-            weight = parse(Int,data[j+1]) # Represente le poids d'une arête qui est recupéré et transformer en int
+            weight = parse(Int,data[j+1]) # Représente le poids d'une arête qui est recupéré et transformé en int
             if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
               edge = (k+1, i+k+2)
             elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
@@ -148,7 +148,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
               warn("Unknown format - function read_edges")
             end
             push!(edges, edge)
-            push!(edges_weight, weight) # On insère le poid d'une des arêtes dans un vecteur qui contient tous les arêtes
+            push!(edges_weight, weight) # On insère le poids d'une des arêtes dans un vecteur qui contient toutes les arêtes
             i += 1
           end
 

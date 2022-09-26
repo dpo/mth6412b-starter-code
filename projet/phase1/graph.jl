@@ -1,6 +1,6 @@
 import Base.show
 
-
+include("./edge.jl")
 """Type abstrait dont d'autres types de graphes dériveront."""
 abstract type AbstractGraph{T} end
 

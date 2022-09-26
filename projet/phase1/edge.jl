@@ -1,5 +1,5 @@
 import Base.show
-
+include("./node.jl")
 
 """Type abstrait dont d'autres types d'aretes dériveront."""
 abstract type AbstractEdge{T} end
@@ -21,5 +21,5 @@ weight(edge::AbstractEdge) = edge.weight
 
 
 function show(edge::AbstractEdge)
-  println( "Edge  $(ends(edge))  weight: $(weight(edge))" )
+  println( "Edge:  ($(name(ends(edge)[1])),$(name(ends(edge)[1])))   weight: $(weight(edge))" )
 end

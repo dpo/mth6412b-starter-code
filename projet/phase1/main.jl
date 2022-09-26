@@ -7,6 +7,8 @@
 
     retourne le graph du fichier donné en argument
 """
+
+include("./read_stsp.jl")
 function build_graph(filename::String)
     graph_nodes, graph_edges, edges_brut, weights = read_stsp(filename)
     header = read_header(filename)
@@ -43,4 +45,4 @@ end
 
 
 filename = "./instances/stsp/gr17.tsp"
-g = build_graph(filename)
+build_graph(filename)

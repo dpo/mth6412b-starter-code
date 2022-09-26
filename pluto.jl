@@ -131,11 +131,20 @@ md"""### Programme principal"""
 
 # ╔═╡ 8a7da04e-273f-41c7-af9b-8e61eef931a7
 function main(filename::String)
-    graph = make_graph("instances/stsp/bayg29.tsp")
+    graph = make_graph(filename)
 end
+
+# ╔═╡ 6d55b966-5f10-4c02-b52d-225376a1aaa3
+md""" Test du programme principal sur plusieurs instances :"""
 
 # ╔═╡ 376c3bd3-1fbc-4f64-bb45-b02ef233dc35
 main("instances/stsp/bayg29.tsp")
+
+# ╔═╡ f237e5f8-70bb-4f6d-8661-07295b7dfa20
+main("instances/stsp/dantzig42.tsp")
+
+# ╔═╡ 093c6595-10ce-4619-9baa-d99657d017db
+main("instances/stsp/gr120.tsp")
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1086,6 +1095,9 @@ version = "1.4.1+0"
 # ╟─6229c1f9-99bd-4723-a338-8b6e46eb2ef8
 # ╟─6898e60f-87ff-43cf-bc75-f6b7e2a26141
 # ╠═8a7da04e-273f-41c7-af9b-8e61eef931a7
+# ╟─6d55b966-5f10-4c02-b52d-225376a1aaa3
 # ╠═376c3bd3-1fbc-4f64-bb45-b02ef233dc35
+# ╠═f237e5f8-70bb-4f6d-8661-07295b7dfa20
+# ╠═093c6595-10ce-4619-9baa-d99657d017db
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

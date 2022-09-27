@@ -5,19 +5,14 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ 1bf9094d-82f5-40ae-ac55-a16e6bc5754f
-include("projet/phase1/node.jl")
-
-# ╔═╡ bf88932f-a201-4e03-b6db-95d7be790ef4
-include("projet/phase1/edge.jl")
-
-# ╔═╡ a583132b-2ec1-4cb9-9c7a-fe5e2788a333
-include("projet/phase1/read_stsp.jl")
-
-# ╔═╡ 00407590-f3e0-4078-b229-b2203ed61583
-include("projet/phase1/make_graph.jl")
-
-# ╔═╡ 76e663f2-9b13-4ee8-92ec-15a9ac430a59
-include("projet/phase1/graph.jl")
+let 
+  include("projet/phase1/node.jl")
+  include("projet/phase1/edge.jl")
+  include("projet/phase1/read_stsp.jl")
+  include("projet/phase1/make_graph.jl")
+  include("projet/phase1/graph.jl")
+  println(0)
+end
 
 # ╔═╡ 775f23b8-3da3-11ed-1dab-2b8e6238fd87
 md"""## Projet du voyageur de commerce : Phase 1"""
@@ -50,7 +45,8 @@ Afficher une arête :
 function show(edge::AbstractEdge)
   println("Edge ", nodes(edge), ", weight: ", weight(edge))
 end
-``` """
+``` 
+"""
 
 # ╔═╡ 23ea2ccb-059b-4d33-b2bc-cc25827a5141
 md"""### Extension du type *Graph*"""
@@ -146,10 +142,54 @@ return edges, edges_weight
 md"""### Création de la fonction *make_graph()*"""
 
 # ╔═╡ bc2380ce-df43-46b1-84c7-f636f117d9e9
-
+md"""
+La fonction *make_graph* prend en argument un fichier .tsp et renvoie l'objet de type *Graph* correspondant. 
+On récupère d'abord les nœuds, les arêtes et les poids à l'aide de *read_nodes* et *read_edges* : 
+```julia
+function make_graph(filename::String)
+    header = read_header(filename)
+    nodes_brut = read_nodes(header, filename)
+    edges_brut = read_edges(header, filename)[1]
+    weights = read_edges(header, filename)[2]
+```
+On crée les vecteurs qui contiendront les nœuds et les arêtes de notre graphe après avoir identifié le type des données des nœuds : 
+```julia
+    T = typeof(nodes_brut[1]) 
+    nodes=Vector{Node{T}}(undef, length(nodes_brut))
+    edges=Vector{Edge{T}}(undef, length(edges_brut))
+```
+On remplit le vecteur des nœuds en faisant attention que *nodes_brut* est un dictionnaire : 
+```julia
+    j = 1
+    for k in keys(nodes_brut)
+        node = Node(string(k), nodes_brut[k])
+        nodes[j] = node
+        j = j + 1
+    end
+```
+On remplit de même le vecteur des arêtes :
+```julia
+    for i = 1 : length(edges_brut)
+        n1 = Node(string(edges_brut[i][1]), nodes_brut[edges_brut[i][1]])
+        n2 = Node(string(edges_brut[i][2]), nodes_brut[edges_brut[i][2]])
+        edge = Edge((n1, n2), weights[i])
+        edges[i] = edge
+    end
+```
+On crée le graphe et on le renvoie :
+```julia
+    graph = Graph(filename, nodes, edges)
+    return graph
+end
+```
+"""
 
 # ╔═╡ 6898e60f-87ff-43cf-bc75-f6b7e2a26141
 md"""### Programme principal"""
+
+# ╔═╡ 22a11e30-65c1-40b3-ba81-17b8a20e1f87
+md""" Pour l'instant la fonction *main* correspond à la fonction *make_graph* mais elle sera amenée à être complétée : 
+"""
 
 # ╔═╡ 8a7da04e-273f-41c7-af9b-8e61eef931a7
 function main(filename::String)
@@ -157,7 +197,7 @@ function main(filename::String)
 end
 
 # ╔═╡ 6d55b966-5f10-4c02-b52d-225376a1aaa3
-md""" Test du programme principal sur plusieurs instances :"""
+md"""On teste le programme principal sur plusieurs fichiers .tsp :"""
 
 # ╔═╡ 376c3bd3-1fbc-4f64-bb45-b02ef233dc35
 main("instances/stsp/bayg29.tsp")
@@ -172,10 +212,6 @@ main("instances/stsp/gr120.tsp")
 # ╟─775f23b8-3da3-11ed-1dab-2b8e6238fd87
 # ╟─042d77b3-a2cd-4c34-9386-c3bf50c01314
 # ╠═1bf9094d-82f5-40ae-ac55-a16e6bc5754f
-# ╠═bf88932f-a201-4e03-b6db-95d7be790ef4
-# ╠═a583132b-2ec1-4cb9-9c7a-fe5e2788a333
-# ╠═00407590-f3e0-4078-b229-b2203ed61583
-# ╠═76e663f2-9b13-4ee8-92ec-15a9ac430a59
 # ╟─5cb5ba5e-c685-43f6-9cf5-fafcbaa501c2
 # ╟─599b356c-bbf6-429e-ac27-0518a86c36a9
 # ╟─23ea2ccb-059b-4d33-b2bc-cc25827a5141
@@ -185,8 +221,9 @@ main("instances/stsp/gr120.tsp")
 # ╟─690bc9ef-640c-4f96-944f-7684b8311c6f
 # ╟─094538a6-c9c9-4932-bc31-32a3b4697f2f
 # ╟─6229c1f9-99bd-4723-a338-8b6e46eb2ef8
-# ╠═bc2380ce-df43-46b1-84c7-f636f117d9e9
+# ╟─bc2380ce-df43-46b1-84c7-f636f117d9e9
 # ╟─6898e60f-87ff-43cf-bc75-f6b7e2a26141
+# ╟─22a11e30-65c1-40b3-ba81-17b8a20e1f87
 # ╠═8a7da04e-273f-41c7-af9b-8e61eef931a7
 # ╟─6d55b966-5f10-4c02-b52d-225376a1aaa3
 # ╠═376c3bd3-1fbc-4f64-bb45-b02ef233dc35

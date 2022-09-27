@@ -6,8 +6,6 @@ abstract type AbstractEdge{T} end
 
 """Type représentant les aretes d'un graphe.
 """
-
-
 mutable struct Edge{T} <: AbstractEdge{T}
   ends::Tuple{Node{T}, Node{T}}
   weight::Int

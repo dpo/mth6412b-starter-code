@@ -6,5 +6,5 @@ include("graph.jl")
 
 
 function main(filename::String)
-    graph = make_graph("instances/stsp/bayg29.tsp")
+    graph = make_graph(filename)
 end

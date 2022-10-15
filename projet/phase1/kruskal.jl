@@ -1,3 +1,5 @@
+include("comp.jl")
+
 function kruskal(graph::Graph{T}) where T
     A = sort(edges(graph), by = x -> weight(x))
     tree = []

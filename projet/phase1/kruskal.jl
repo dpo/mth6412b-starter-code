@@ -19,7 +19,7 @@ function kruskal(graph::Graph{T}) where T
 
     @test length(liste_comp) == number_of_nodes #Vérifie qu'il y a bien initialement autant de composantes connexes que de noeuds
 
-    for i = 1 : length(A)
+    for i = 1 : number_of_edges
 
         @test i == length(A) || weight(A[i]) <= weight(A[i+1]) #Vérifie que le poids de l'élément i de A est bien inférieur à celui du suivant si ce n'est pas le dernier
         n1, n2 = nodes(A[i])

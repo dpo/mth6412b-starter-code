@@ -32,7 +32,6 @@ function merge!(comp1::Comp{T}, comp2::Comp{T}) where T
         r = comp2.children[i]
         if r[1] != r2 #on ajoute tous les noeuds de comp2 à comp1 à l'exception de (r2, r2) car r1 sera la racine
             push!(comp1.children, r)
-    
         end
     end
     push!(comp1.children, (r2, r1))

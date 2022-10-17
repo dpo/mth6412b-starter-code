@@ -139,10 +139,8 @@ end
 
 # ╔═╡ 8e19ba46-a371-4af9-ac28-bb9c74c5c9b7
 md"""### Programme principal
-"""
 
-# ╔═╡ 853bf2e1-61ac-4fed-9f08-31d2cb849b80
-md"""Le fichier *main_phase2.jl* implémente les fonctions *test_cours* et *main_2*. 
+Le fichier *main_phase2.jl* implémente les fonctions *test_cours* et *main_2*.
 """
 
 # ╔═╡ 028d80fd-8425-4a32-b30d-7f12faa48188
@@ -174,7 +172,6 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╟─96a61622-9d2e-4065-964a-251e342ce7ec
 # ╟─77ddf67c-0c4a-49a0-8ec8-d428ebaef315
 # ╟─8e19ba46-a371-4af9-ac28-bb9c74c5c9b7
-# ╟─853bf2e1-61ac-4fed-9f08-31d2cb849b80
 # ╠═7a4250c3-946d-4fdd-b762-e03aaee36a6d
 # ╟─028d80fd-8425-4a32-b30d-7f12faa48188
 # ╠═33c466ae-1824-43e1-811f-cf3f2655c72b

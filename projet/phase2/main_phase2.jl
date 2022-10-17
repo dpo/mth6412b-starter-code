@@ -1,16 +1,24 @@
 #main
+include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/node.jl")
+include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/edge.jl")
+include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/graph.jl")
+include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/read_stsp.jl")
+include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/make_graph.jl")
+include("kruskal.jl")
+
+
 # Test sur l'exemple des notes de cours
 # Création des noeuds et arêtes
 
-n_a = node("a",1)
-n_b = node("b",1)
-n_c = node("c",1)
-n_d = node("d",1)
-n_e = node("e",1)
-n_f = node("f",1)
-n_g = node("g",1)
-n_h = node("h",1)
-n_i = node("i",1)
+n_a = Node("a",1)
+n_b = Node("b",1)
+n_c = Node("c",1)
+n_d = Node("d",1)
+n_e = Node("e",1)
+n_f = Node("f",1)
+n_g = Node("g",1)
+n_h = Node("h",1)
+n_i = Node("i",1)
 N_exemple= [n_a,n_b, n_c,n_d,n_e,n_f,n_g,n_h,n_i]
 # Création des arêtes 
 e_1= Edge((n_a,n_b),4)
@@ -29,7 +37,7 @@ e_13= Edge((n_h,n_i),7)
 E_exemple=[e_1,e_2,e_3,e_4,e_5,e_6,e_7,e_8,e_9,e_10,e_11,e_12,e_13]
 
 # Creation du graph
-Gr_exemple= graph("Exemple",N_exemple,E_exemple)
+Gr_exemple= Graph("Exemple",N_exemple,E_exemple)
 # Test de l algortihme de kruskal
 K_exemple= kruskal(Gr_exemple)
 

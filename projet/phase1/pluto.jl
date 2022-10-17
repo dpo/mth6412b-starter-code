@@ -6,11 +6,11 @@ using InteractiveUtils
 
 # ╔═╡ 1bf9094d-82f5-40ae-ac55-a16e6bc5754f
 let 
-  include("projet/phase1/node.jl")
-  include("projet/phase1/edge.jl")
-  include("projet/phase1/read_stsp.jl")
-  include("projet/phase1/make_graph.jl")
-  include("projet/phase1/graph.jl")
+  include("node.jl")
+  include("edge.jl")
+  include("read_stsp.jl")
+  include("make_graph.jl")
+  include("graph.jl")
   println(0)
 end
 

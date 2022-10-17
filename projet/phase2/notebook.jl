@@ -68,7 +68,64 @@ end
 
 # ╔═╡ 77ddf67c-0c4a-49a0-8ec8-d428ebaef315
 md"""### Implémentation de l'algorithme de Kruskal
+On commence par récupérer les nœuds et les arêtes du graphe puis on trie la liste des arêtes par ordre croissant des poids : 
 
+```julia
+function kruskal(graph::Graph{T}) where T
+
+    number_of_edges = length(edges(graph))
+    number_of_nodes = length(nodes(graph))
+    @test number_of_nodes > 0 #Vérifie que le graphe n'est pas vide
+
+    A = sort(edges(graph), by = x -> weight(x))
+    @test length(A) == number_of_edges #Vérifie que A contient le bon nombre d'arrêtes
+```
+
+On crée ensuite deux listes vides : *tree* qui contiendra les arêtes de l'arbre de recouvrement minimal et *liste_comp* qui contiendra les composantes connexes du graphe. On initie *liste_comp* avec tous les nœuds qui forment chacun une composante connexe : 
+
+```julia
+	tree = [] 
+    liste_comp = [] 
+
+    for i = 1 : number_of_nodes
+        n = nodes(graph)[i]
+        push!(liste_comp, Comp(n, [(n, n)]))
+    end
+
+    @test length(liste_comp) == number_of_nodes #Vérifie qu'il y a bien initialement autant de composantes connexes que de noeuds
+```
+
+On entre ensuite dans la boucle principale de l'algorithme : on parcourt la liste des arêtes triées et à chaque élément, les les deux nœuds de l'arête sont dans deux composantes connexes différentes, on ajoute l'arrête à *tree* et on fusionne les composantes connexes des deux nœuds ; sinon, on ne fait rien. 
+
+```julia
+	for i = 1 : number_of_edges
+
+        @test i == length(A) || weight(A[i]) <= weight(A[i+1]) #Vérifie que le poids de l'élément i de A est bien inférieur à celui du suivant si ce n'est pas le dernier
+        n1, n2 = nodes(A[i])
+        k1 = findfirst(x -> in_comp(x, n1), liste_comp) 
+        k2 = findfirst(x -> in_comp(x, n2), liste_comp) 
+        if k1 != k2
+            push!(tree, A[i])
+            c1 = liste_comp[k1]
+            c2 = liste_comp[k2]
+            liste_comp[k1] = merge!(c1, c2)
+            nouv_comp = liste_comp[k1] #Stocke la valeur de list_comp[k1] pour les tests unitaires car la ligne d'après peut décaler les indices
+            deleteat!(liste_comp, k2)
+            @test in_comp(nouv_comp,n1)
+            @test in_comp(nouv_comp,n2) #Ces deux tests vérifient que n1 et n2 font bien parties de cette nouvelle composante connexe
+        end
+        @test sum(x -> length(x.children),liste_comp) == number_of_nodes #Vérifie que la liste de composantes connexes est bien une partition des noeuds du graphe
+    end
+```
+
+Enfin, après deux autres tests unitaires, la fonction renvoie *tree* et le poids de l'arbre de recouvrement minimal : 
+
+```julia
+	@test length(liste_comp) == 1 #Vérifie qu'on a une seule composante connexe à la fin
+    @test length(tree) == number_of_nodes - 1 #Condition nécessaire pour qu'il s'agisse d'un arbre de recouvrement
+    return tree, sum(x -> weight(x), tree)
+end
+```
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001

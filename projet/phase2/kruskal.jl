@@ -6,7 +6,7 @@ function kruskal(graph::Graph{T}) where T
 
     number_of_edges = length(edges(graph))
     number_of_nodes = length(nodes(graph))
-    @test number_of_nodes>0 #Vérifie que le graphe n'est pas vide
+    @test number_of_nodes > 0 #Vérifie que le graphe n'est pas vide
 
     A = sort(edges(graph), by = x -> weight(x)) #liste des arêtes triées par poids
     @test length(A) == number_of_edges #Vérifie que A contient le bon nombre d'arrêtes
@@ -33,14 +33,18 @@ function kruskal(graph::Graph{T}) where T
             c1 = liste_comp[k1]
             c2 = liste_comp[k2]
             liste_comp[k1] = merge!(c1, c2)
-            nouv_comp = liste_comp[k1]
+            nouv_comp = liste_comp[k1] #Stocke la valeur de list_comp[k1] pour les tests unitaires car la ligne d'après peut décaler les indices
             deleteat!(liste_comp, k2)
             @test in_comp(nouv_comp,n1)
             @test in_comp(nouv_comp,n2) #Ces deux tests vérifient que n1 et n2 font bien parties de cette nouvelle composante connexe
         end
-        @test sum(x -> length(x.children),liste_comp)==number_of_nodes #Vérifie que la liste de composantes connexes est bien une partition des noeuds du graphe
+        @test sum(x -> length(x.children),liste_comp) == number_of_nodes #Vérifie que la liste de composantes connexes est bien une partition des noeuds du graphe
     end
     @test length(liste_comp) == 1 #Vérifie qu'on a une seule composante connexe à la fin
     @test length(tree) == number_of_nodes - 1 #Condition nécessaire pour qu'il s'agisse d'un arbre de recouvrement
+<<<<<<< HEAD
     return sum(x->weight(x), tree) , tree
+=======
+    return tree, sum(x -> weight(x), tree)
+>>>>>>> 7c0c4568a7fc76a78e6f501689350d2f3082d170
 end

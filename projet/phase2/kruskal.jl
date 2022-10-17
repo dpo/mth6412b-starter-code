@@ -42,9 +42,5 @@ function kruskal(graph::Graph{T}) where T
     end
     @test length(liste_comp) == 1 #Vérifie qu'on a une seule composante connexe à la fin
     @test length(tree) == number_of_nodes - 1 #Condition nécessaire pour qu'il s'agisse d'un arbre de recouvrement
-<<<<<<< HEAD
-    return sum(x->weight(x), tree) , tree
-=======
     return tree, sum(x -> weight(x), tree)
->>>>>>> 7c0c4568a7fc76a78e6f501689350d2f3082d170
 end

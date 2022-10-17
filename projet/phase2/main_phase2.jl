@@ -1,10 +1,4 @@
 #main
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/node.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/edge.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/graph.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/read_stsp.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/make_graph.jl")
-include("kruskal.jl")
 
 
 # Test sur l'exemple des notes de cours
@@ -19,7 +13,7 @@ n_f = Node("f",1)
 n_g = Node("g",1)
 n_h = Node("h",1)
 n_i = Node("i",1)
-N_exemple= [n_a,n_b, n_c,n_d,n_e,n_f,n_g,n_h,n_i]
+N_exemple= [n_a, n_b, n_c, n_d, n_e, n_f, n_g, n_h, n_i]
 # Création des arêtes 
 e_1= Edge((n_a,n_b),4)
 e_2= Edge((n_a,n_h),8)

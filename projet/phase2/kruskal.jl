@@ -1,6 +1,6 @@
 include("comp.jl")
 
-"""Fonction renvoyant un arbre de recouvrement minimal pour le graphe graph à laide de
+"""Fonction renvoyant un arbre de recouvrement minimal pour le graphe graph à l'aide de
 l'algortihme de Kruskal."""
 function kruskal(graph::Graph{T}) where T
 

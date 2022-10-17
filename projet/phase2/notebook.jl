@@ -5,7 +5,7 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ 7a4250c3-946d-4fdd-b762-e03aaee36a6d
-include("Test_phase2.jl")
+include("main_phase2.jl")
 
 # ╔═╡ 0adf514a-4e1a-11ed-3a00-856fd5050585
 md"""## Projet du voyageur de commerce : Phase 1"""
@@ -137,16 +137,20 @@ end
 ```
 """
 
+# ╔═╡ 8e19ba46-a371-4af9-ac28-bb9c74c5c9b7
+md"""### Programme principal
+"""
+
 # ╔═╡ 853bf2e1-61ac-4fed-9f08-31d2cb849b80
-md"""Le fichier *Test_phase2.jl* implémente la fonction *test_cours* qui permet de tester notre fonction *kruskal* sur l'exemple des notes de cours. L'arbre qu'on obtient est bien le même que dans les notes de cours et on peut voir que les arêtes ont été ajoutées dans le même ordre que lorsqu'on a fait l'algorithme à la main.
+md"""Le fichier *main_phase2.jl* implémente les fonctions *test_cours* et *main_2*. 
+"""
+
+# ╔═╡ 028d80fd-8425-4a32-b30d-7f12faa48188
+md"""La première permet de tester notre fonction *kruskal* sur l'exemple des notes de cours. L'arbre qu'on obtient est bien le même que dans les notes de cours et on peut voir que les arêtes ont été ajoutées dans le même ordre que lorsqu'on a fait l'algorithme à la main.
 """
 
 # ╔═╡ 33c466ae-1824-43e1-811f-cf3f2655c72b
 test_cours()
-
-# ╔═╡ 32685374-3d0a-470b-80a5-32355cb6819c
-md"""### Programme principal
-"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -169,9 +173,10 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╟─99956331-b417-48ae-833b-cb98784b4f27
 # ╟─96a61622-9d2e-4065-964a-251e342ce7ec
 # ╟─77ddf67c-0c4a-49a0-8ec8-d428ebaef315
+# ╟─8e19ba46-a371-4af9-ac28-bb9c74c5c9b7
 # ╟─853bf2e1-61ac-4fed-9f08-31d2cb849b80
 # ╠═7a4250c3-946d-4fdd-b762-e03aaee36a6d
+# ╟─028d80fd-8425-4a32-b30d-7f12faa48188
 # ╠═33c466ae-1824-43e1-811f-cf3f2655c72b
-# ╟─32685374-3d0a-470b-80a5-32355cb6819c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

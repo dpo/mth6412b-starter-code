@@ -167,7 +167,7 @@ main_2("../../instances/stsp/dantzig42.tsp")
 main_2("../../instances/stsp/gr120.tsp")
 
 # ╔═╡ e04d1394-7bd8-4a87-bd0e-14bd5b46d1de
-md"""Ces quatre instances passent bien tous les tests, notre implémentation de l'algorithme de Krustal semble donc fonctionner."""
+md"""Ces quatre instances passent bien tous les tests, notre implémentation de l'algorithme de Kruskal semble donc fonctionner."""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -199,6 +199,6 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╠═10e95760-387f-4231-b1ce-20304c6720cb
 # ╠═251c2c38-5e27-407e-8a4b-374460a8aa5c
 # ╠═df369b46-647f-402c-bd8d-e1e7201004d4
-# ╟─e04d1394-7bd8-4a87-bd0e-14bd5b46d1de
+# ╠═e04d1394-7bd8-4a87-bd0e-14bd5b46d1de
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

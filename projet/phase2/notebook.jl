@@ -4,6 +4,9 @@
 using Markdown
 using InteractiveUtils
 
+# ╔═╡ 7a4250c3-946d-4fdd-b762-e03aaee36a6d
+include("Test_phase2.jl")
+
 # ╔═╡ 0adf514a-4e1a-11ed-3a00-856fd5050585
 md"""## Projet du voyageur de commerce : Phase 1"""
 
@@ -128,6 +131,9 @@ end
 ```
 """
 
+# ╔═╡ 33c466ae-1824-43e1-811f-cf3f2655c72b
+test_cours()
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -147,7 +153,9 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╔═╡ Cell order:
 # ╟─0adf514a-4e1a-11ed-3a00-856fd5050585
 # ╟─99956331-b417-48ae-833b-cb98784b4f27
-# ╠═96a61622-9d2e-4065-964a-251e342ce7ec
-# ╠═77ddf67c-0c4a-49a0-8ec8-d428ebaef315
+# ╟─96a61622-9d2e-4065-964a-251e342ce7ec
+# ╟─77ddf67c-0c4a-49a0-8ec8-d428ebaef315
+# ╠═7a4250c3-946d-4fdd-b762-e03aaee36a6d
+# ╠═33c466ae-1824-43e1-811f-cf3f2655c72b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

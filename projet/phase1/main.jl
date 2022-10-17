@@ -3,7 +3,7 @@ include("edge.jl")
 include("read_stsp.jl")
 include("make_graph.jl")
 include("graph.jl")
-include("kruskal.jl")
+include("../phase2/kruskal.jl")
 
 
 function main(filename::String)

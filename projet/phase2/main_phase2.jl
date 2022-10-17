@@ -1,9 +1,9 @@
-#main
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/node.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/edge.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/graph.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/read_stsp.jl")
-include("C:/Users/adabd/Desktop/Poly/A2022/MTH6412B/Projet/Phase1/mth6412b-starter-code/projet/phase1/make_graph.jl")
+
+include("../phase1/node.jl")
+include("../phase1/edge.jl")
+include("../phase1/graph.jl")
+include("../phase1/read_stsp.jl")
+include("../phase1/make_graph.jl")
 include("kruskal.jl")
 
 

@@ -144,6 +144,10 @@ md"""Le fichier *Test_phase2.jl* implémente la fonction *test_cours* qui permet
 # ╔═╡ 33c466ae-1824-43e1-811f-cf3f2655c72b
 test_cours()
 
+# ╔═╡ 32685374-3d0a-470b-80a5-32355cb6819c
+md"""### Programme principal
+"""
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -168,5 +172,6 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╟─853bf2e1-61ac-4fed-9f08-31d2cb849b80
 # ╠═7a4250c3-946d-4fdd-b762-e03aaee36a6d
 # ╠═33c466ae-1824-43e1-811f-cf3f2655c72b
+# ╟─32685374-3d0a-470b-80a5-32355cb6819c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

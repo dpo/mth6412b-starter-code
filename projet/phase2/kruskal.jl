@@ -33,7 +33,7 @@ function kruskal(graph::Graph{T}) where T
             c1 = liste_comp[k1]
             c2 = liste_comp[k2]
             liste_comp[k1] = merge!(c1, c2)
-            nouv_comp = liste_comp[k1]
+            nouv_comp = liste_comp[k1] #Stocke la valeur de list_comp[k1] pour les tests unitaires car la ligne d'après peut décaler les indices
             deleteat!(liste_comp, k2)
             @test in_comp(nouv_comp,n1)
             @test in_comp(nouv_comp,n2) #Ces deux tests vérifient que n1 et n2 font bien parties de cette nouvelle composante connexe

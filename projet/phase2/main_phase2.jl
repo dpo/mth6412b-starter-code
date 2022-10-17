@@ -34,7 +34,8 @@ e_10=Edge((n_f,n_g),2)
 e_11= Edge((n_g,n_i),6)
 e_12= Edge((n_g,n_h),1)
 e_13= Edge((n_h,n_i),7)
-E_exemple=[e_1,e_2,e_3,e_4,e_5,e_6,e_7,e_8,e_9,e_10,e_11,e_12,e_13]
+e_14= Edge((n_c,n_f),4)
+E_exemple=[e_1,e_2,e_3,e_4,e_5,e_6,e_7,e_8,e_9,e_10,e_11,e_12,e_13,e_14]
 
 # Creation du graph
 Gr_exemple= Graph("Exemple",N_exemple,E_exemple)

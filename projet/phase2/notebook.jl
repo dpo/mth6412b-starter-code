@@ -18,7 +18,7 @@ md"""### Création de la strcture *Comp*
 
 Cette partie correspond au fichier *comp.jl*.
 
-La structure *Comp* permet de représenter les composantes connexes d'un graphe. Comme suggéré en lab, elle contient deux attributs : une racine de typer *Node* et une liste d'enfants sous forme de tuples de type (*Node*, *Node*) où le premier élément est un nœud de la composante connexe et le deuxième est son parent. La racine est dans cette liste et elle est son propre parent. Pour l'instant, on ne se sert pas de cette association parent-enfant dans nos fonctions mais elle permet par exemple de remonter jusqu'à la racine à partir de n'importe quel nœud enfant. 
+La structure *Comp* permet de représenter les composantes connexes d'un graphe. Elle contient deux attributs : une racine de type *Node* et une liste d'enfants sous forme de tuples de type (*Node*, *Node*) où le premier élément est un nœud de la composante connexe et le deuxième est son parent dans la composante connexe. La racine est dans cette liste et elle est son propre parent. Pour l'instant, on ne se sert pas de cette association parent-enfant dans nos fonctions mais elle permet par exemple de remonter jusqu'à la racine à partir de n'importe quel nœud enfant. 
 
 ```julia
 abstract type AbstractComp{T} end
@@ -77,7 +77,7 @@ md"""### Implémentation de l'algorithme de Kruskal
 
 Cette partie correspond au fichier *kruskal.jl*.
 
-On commence par récupérer les nœuds et les arêtes du graphe puis on trie la liste des arêtes par ordre croissant des poids : 
+On commence par récupérer le nombre de nœuds et d'arêtes du graphe puis on trie la liste des arêtes par ordre croissant des poids : 
 
 ```julia
 function kruskal(graph::Graph{T}) where T
@@ -104,7 +104,7 @@ On crée ensuite deux listes vides : *tree* qui contiendra les arêtes de l'arbr
     @test length(liste_comp) == number_of_nodes #Vérifie qu'il y a bien initialement autant de composantes connexes que de noeuds
 ```
 
-On entre ensuite dans la boucle principale de l'algorithme : on parcourt la liste des arêtes triées et à chaque élément, les les deux nœuds de l'arête sont dans deux composantes connexes différentes, on ajoute l'arrête à *tree* et on fusionne les composantes connexes des deux nœuds ; sinon, on ne fait rien. 
+On entre ensuite dans la boucle principale de l'algorithme : on parcourt la liste des arêtes triées et à chaque élément, si les deux nœuds de l'arête sont dans deux composantes connexes différentes, on ajoute l'arrête à *tree* et on fusionne les composantes connexes des deux nœuds ; sinon, on ne fait rien. 
 
 ```julia
 	for i = 1 : number_of_edges

@@ -15,7 +15,10 @@ md"""Abdou Samad Dicko(2037205), Clélia Merel(2163025), Myriam Lévy(2225114)""
 
 # ╔═╡ 96a61622-9d2e-4065-964a-251e342ce7ec
 md"""### Création de la strcture *Comp*
-Cette structure permet de représenter les composantes connexes d'un graphe. Comme suggéré en lab, elle contient deux attributs : une racine de typer *Node* et une liste d'enfants sous forme de tuples de type (*Node*, *Node*) où le premier élément est un nœud de la composante connexe et le deuxième est son parent. La racine est dans cette liste et elle est son propre parent. Pour l'instant, on ne se sert pas de cette association parent-enfant dans nos fonctions mais elle permet par exemple de remonter jusqu'à la racine à partir de n'importe quel nœud enfant. 
+
+Cette partie correspond au fichier *comp.jl*.
+
+La structure *Comp* permet de représenter les composantes connexes d'un graphe. Comme suggéré en lab, elle contient deux attributs : une racine de typer *Node* et une liste d'enfants sous forme de tuples de type (*Node*, *Node*) où le premier élément est un nœud de la composante connexe et le deuxième est son parent. La racine est dans cette liste et elle est son propre parent. Pour l'instant, on ne se sert pas de cette association parent-enfant dans nos fonctions mais elle permet par exemple de remonter jusqu'à la racine à partir de n'importe quel nœud enfant. 
 
 ```julia
 abstract type AbstractComp{T} end
@@ -71,6 +74,9 @@ end
 
 # ╔═╡ 77ddf67c-0c4a-49a0-8ec8-d428ebaef315
 md"""### Implémentation de l'algorithme de Kruskal
+
+Cette partie correspond au fichier *kruskal.jl*.
+
 On commence par récupérer les nœuds et les arêtes du graphe puis on trie la liste des arêtes par ordre croissant des poids : 
 
 ```julia
@@ -131,8 +137,16 @@ end
 ```
 """
 
+# ╔═╡ 853bf2e1-61ac-4fed-9f08-31d2cb849b80
+md"""Le fichier *Test_phase2.jl* implémente la fonction *test_cours* qui permet de tester notre fonction *kruskal* sur l'exemple des notes de cours. L'arbre qu'on obtient est bien le même que dans les notes de cours et on peut voir que les arêtes ont été ajoutées dans le même ordre que lorsqu'on a fait l'algorithme à la main.
+"""
+
 # ╔═╡ 33c466ae-1824-43e1-811f-cf3f2655c72b
 test_cours()
+
+# ╔═╡ 32685374-3d0a-470b-80a5-32355cb6819c
+md"""### Programme principal
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -155,7 +169,9 @@ project_hash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # ╟─99956331-b417-48ae-833b-cb98784b4f27
 # ╟─96a61622-9d2e-4065-964a-251e342ce7ec
 # ╟─77ddf67c-0c4a-49a0-8ec8-d428ebaef315
+# ╟─853bf2e1-61ac-4fed-9f08-31d2cb849b80
 # ╠═7a4250c3-946d-4fdd-b762-e03aaee36a6d
 # ╠═33c466ae-1824-43e1-811f-cf3f2655c72b
+# ╟─32685374-3d0a-470b-80a5-32355cb6819c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

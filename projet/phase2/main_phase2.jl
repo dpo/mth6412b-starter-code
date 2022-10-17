@@ -43,3 +43,9 @@ function test_cours()
     K_exemple= kruskal(Gr_exemple)
 end
 
+"""Crée un objet graph à partir d'un fichier tsp, puis lui applique l'algorithme de Kruskal"""
+function main_2(filename::String)
+    graph = make_graph(filename)
+    kruskal(graph)
+end
+

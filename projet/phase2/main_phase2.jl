@@ -40,7 +40,7 @@ function test_cours()
     # Creation du graph
     Gr_exemple= Graph("Exemple",N_exemple,E_exemple)
     # Test de l algortihme de kruskal
-    K_exemple= kruskal(Gr_exemple)
+    kruskal(Gr_exemple)
 end
 
 """Crée un objet graph à partir d'un fichier tsp, puis lui applique l'algorithme de Kruskal"""

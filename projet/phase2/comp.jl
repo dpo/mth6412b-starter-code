@@ -14,18 +14,18 @@ mutable struct Comp{T} <: AbstractComp{T}
 end
 
 """Renvoie la racine de la composante connexe"""
-root(comp::AbstractComp) = comp.root
+get_root(comp::AbstractComp) = comp.root
 
 """Renvoie les noeuds de la composante connexe"""
-children(comp::AbstractComp) = comp.children
+get_children(comp::AbstractComp) = comp.children
 
 """Fonction permettant de fusionner deux composantes connexes comp1 et comp2.
 
 Cette fonction modifie comp1 en lui ajoutant les noeuds de comp2.
 comp2 se place "sous" comp1 et la racine de comp1 devient la racine de la composante connexe finale."""
 function merge!(comp1::Comp{T}, comp2::Comp{T}) where T
-    r1 = root(comp1)
-    r2 = root(comp2)
+    r1 = get_root(comp1)
+    r2 = get_root(comp2)
     l1 = length(comp1.children)
     l2 = length(comp2.children)
     for i = 1 : length(comp2.children) 
@@ -35,7 +35,6 @@ function merge!(comp1::Comp{T}, comp2::Comp{T}) where T
         end
     end
     push!(comp1.children, (r2, r1))
-    @test length(comp1.children) == l1 + l2 #Vérifie que la fusion des deux composantes connexe contient bien le bon nombre de noeuds
     return comp1
 end
 
@@ -43,8 +42,8 @@ end
 
 La fonction parcourt la liste des enfants de comp."""
 function in_comp(comp::Comp{T}, node::Node{T}) where T
-    for i = 1 : length(children(comp))
-        if children(comp)[i][1] == node
+    for i = 1 : length(get_children(comp))
+        if get_children(comp)[i][1] == node
             return true
         end
     end

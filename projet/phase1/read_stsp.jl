@@ -10,7 +10,7 @@ function read_header(filename::String)
 
   # Initialize header
   for section in sections
-    header[section] = "None"
+    header[section] = "None" #garantit que chaque section de l'en-tête est représentée dans le dictionnaire, même si elle est absente du fichier
   end
 
   for line in eachline(file)
@@ -69,7 +69,7 @@ function read_nodes(header::Dict{String}{String}, filename::String)
     end
   end
   close(file)
-  return nodes
+  return 
 end
 
 """Fonction auxiliaire de read_edges, qui détermine le nombre de noeud à lire
@@ -96,8 +96,8 @@ function read_edges(header::Dict{String}{String}, filename::String)
   edges = []
   edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
   known_edge_weight_formats = ["FULL_MATRIX", "UPPER_ROW", "LOWER_ROW",
-  "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
-  "UPPER_DIAG_COL", "LOWER_DIAG_COL"]
+                               "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
+                               "UPPER_DIAG_COL", "LOWER_DIAG_COL"]
 
   if !(edge_weight_format in known_edge_weight_formats)
     @warn "unknown edge weight format" edge_weight_format
@@ -130,16 +130,17 @@ function read_edges(header::Dict{String}{String}, filename::String)
 
           for j = start : start + n_on_this_line - 1
             n_edges = n_edges + 1
+            weight = parse(Float64, data[j + 1])
             if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
-              edge = (k+1, i+k+2)
+              edge = (k+1, i+k+2, weight)
             elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-              edge = (k+1, i+k+1)
+              edge = (k+1, i+k+1, weight)
             elseif edge_weight_format in ["UPPER_COL", "LOWER_ROW"]
-              edge = (i+k+2, k+1)
+              edge = (i+k+2, k+1, weight)
             elseif edge_weight_format in ["UPPER_DIAG_COL", "LOWER_DIAG_ROW"]
-              edge = (i+1, k+1)
+              edge = (i+1, k+1, weight)
             elseif edge_weight_format == "FULL_MATRIX"
-              edge = (k+1, i+1)
+              edge = (k+1, i+1, weight)
             else
               warn("Unknown format - function read_edges")
             end
@@ -237,3 +238,9 @@ function plot_graph(filename::String)
   graph_nodes, graph_edges = read_stsp(filename)
   plot_graph(graph_nodes, graph_edges)
 end
+
+file = "/Users/jules/Desktop/MTH6412B/Git/mth6412b-starter-code/instances/stsp/bays29.tsp"
+#fig = plot_graph(file)
+#savefig(fig, "/Users/jules/Desktop/test/test.pdf")
+#graph_nodes, graph_edges = read_stsp(file);
+#graph_edges[1][4]

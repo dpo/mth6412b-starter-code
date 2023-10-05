@@ -7,15 +7,15 @@ abstract type AbstractEdge{T} end
 
 Exemple:
 
-        arête_1 = Edge(6, [Node("Kirk", 4),Node("Lars", 2)]
-        arête_2 = Edge(4, [Node("Pierre", 1),Node("Lars", 2)]
-        arête_3 = Edge(4, [Node("Kirk", 1),Node("Pierre", 2)]
+        arête_1 = Edge([Node("Kirk", 4),Node("Lars", 2)], 6)
+        arête_2 = Edge([Node("Pierre", 1),Node("Lars", 2)], 4)
+        arête_3 = Edge([Node("Kirk", 1),Node("Pierre", 2)], 4)
 
 """
 mutable struct Edge{T} <: AbstractEdge{T} 
-  weight::Int64
   node_1::Node{T}
   node_2::Node{T}
+  weight::Int64
 end
 
 # on présume que toutes les arêtes dérivant d'AbstractEdge

@@ -114,6 +114,15 @@ function read_edges(header::Dict{String}{String}, filename::String)
   n_to_read = n_nodes_to_read(edge_weight_format, k, dim)
   flag = false
 
+  for i = 1 : dim
+    weight_line = []
+    for j = 1 : dim
+      weight = Int[]
+      push!(weight_line, weight)
+    end
+    push!(weights, weight_line)
+  end
+
   for line in eachline(file)
     line = strip(line)
     if !flag
@@ -133,15 +142,20 @@ function read_edges(header::Dict{String}{String}, filename::String)
             n_edges = n_edges + 1
             weight = parse(Int64, data[j + 1])
             if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
-              edge = (k+1, i+k+2, weight)
+              edge = (k+1, i+k+2)
+              weights[k+1][i+k+2] = weight
             elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-              edge = (k+1, i+k+1, weight)
+              edge = (k+1, i+k+1)
+              weights[k+1][i+k+1] = weight
             elseif edge_weight_format in ["UPPER_COL", "LOWER_ROW"]
-              edge = (i+k+2, k+1, weight)
+              edge = (i+k+2, k+1)
+              weights[i+k+2][k+1] = weight
             elseif edge_weight_format in ["UPPER_DIAG_COL", "LOWER_DIAG_ROW"]
-              edge = (i+1, k+1, weight)
+              edge = (i+1, k+1)
+              weights[i+1][k+1] = weight
             elseif edge_weight_format == "FULL_MATRIX"
-              edge = (k+1, i+1, weight)
+              edge = (k+1, i+1)
+              weights[k+1][i+1] = weight
             else
               warn("Unknown format - function read_edges")
             end
@@ -168,7 +182,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
     end
   end
   close(file)
-  return edges
+  return edges, weights
 end
 
 """Renvoie les noeuds et les arêtes du graphe."""
@@ -184,7 +198,8 @@ function read_stsp(filename::String)
   println("✓")
 
   Base.print("Reading of edges : ")
-  edges_brut = read_edges(header, filename)
+  edges_brut = read_edges(header, filename)[1]
+  weights_brut = read_edges(header, filename)[2] #le poids de l'arête de départ i de destination j est weights_brut[i][j]
   graph_edges = []
   for k = 1 : dim
     edge_list = Int[]
@@ -193,8 +208,8 @@ function read_stsp(filename::String)
 
   for edge in edges_brut
     if edge_weight_format in ["UPPER_ROW", "LOWER_COL", "UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
-      push!(graph_edges[edge[1]], edge[2])   #graph_edges est un vecteur contenant dim vecteurs vide, le edge[1]ième vecteur vide contient la destination
-    else                                     #donc graphe_edges est un vecteur donc l'indice est le départ et la valeur est la destination
+      push!(graph_edges[edge[1]], edge[2])   # graph_edges est un vecteur contenant dim vecteurs vide, le edge[1]ième vecteur vide contient la destination
+    else                                     # donc graphe_edges est un vecteur donc l'indice est le départ et la valeur est la destination
       push!(graph_edges[edge[2]], edge[1])   # donc le i-eme vecteur (i-eme ligne) correspond au i-eme départ, et il contient toutes les destinations possibles depuis le i-eme départ
     end
   end
@@ -203,7 +218,7 @@ function read_stsp(filename::String)
     graph_edges[k] = sort(graph_edges[k])
   end
   println("✓")
-  return graph_nodes, graph_edges #vecteur_poids_a_rajouter
+  return graph_nodes, graph_edges, weights_brut
 end
 
 """Affiche un graphe étant données un ensemble de noeuds et d'arêtes.

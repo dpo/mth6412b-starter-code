@@ -255,6 +255,6 @@ function plot_graph(filename::String)
   plot_graph(graph_nodes, graph_edges)
 end
 
-file = "/Users/jules/Desktop/MTH6412B/Git/mth6412b-starter-code/instances/stsp/bayg29.tsp"
+file = "/Users/jules/Desktop/MTH6412B/Git/mth6412b-starter-code/instances/stsp/bays29.tsp"
 #fig = plot_graph1(file)
-#savefig(fig, "/Users/jules/Desktop/test/test.pdf")#
+#savefig(fig, "/Users/jules/Desktop/test/test_bays29.pdf")

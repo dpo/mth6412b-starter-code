@@ -94,7 +94,6 @@ end
 function read_edges(header::Dict{String}{String}, filename::String)
 
   edges = []
-  weights = []
   edge_weight_format = header["EDGE_WEIGHT_FORMAT"]
   known_edge_weight_formats = ["FULL_MATRIX", "UPPER_ROW", "LOWER_ROW",
   "UPPER_DIAG_ROW", "LOWER_DIAG_ROW", "UPPER_COL", "LOWER_COL",
@@ -113,7 +112,9 @@ function read_edges(header::Dict{String}{String}, filename::String)
   i = 0
   n_to_read = n_nodes_to_read(edge_weight_format, k, dim)
   flag = false
-
+  
+  # Création d'un vecteur weights de dimension dim:dim : weights[i][j] correspond au poids de l'arête reliant le noeud i et j
+  weights = []
   for i = 1 : dim
     weight_line = []
     for j = 1 : dim
@@ -143,7 +144,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
             weight = parse(Int64, data[j + 1])
             if edge_weight_format in ["UPPER_ROW", "LOWER_COL"]
               edge = (k+1, i+k+2)
-              weights[k+1][i+k+2] = weight
+              weights[k+1][i+k+2] = weight #remplissage du poids dans weight en fonction du format de la matrice
             elseif edge_weight_format in ["UPPER_DIAG_ROW", "LOWER_DIAG_COL"]
               edge = (k+1, i+k+1)
               weights[k+1][i+k+1] = weight
@@ -182,7 +183,7 @@ function read_edges(header::Dict{String}{String}, filename::String)
     end
   end
   close(file)
-  return edges, weights
+  return edges, weights # read_edges renvoit la liste des arêtes et la matrice des poids
 end
 
 """Renvoie les noeuds et les arêtes du graphe."""
@@ -255,6 +256,6 @@ function plot_graph(filename::String)
   plot_graph(graph_nodes, graph_edges)
 end
 
-file = "/Users/jules/Desktop/MTH6412B/Git/mth6412b-starter-code/instances/stsp/bays29.tsp"
+#file = "/Users/jules/Desktop/MTH6412B/Git/mth6412b-starter-code/instances/stsp/bays29.tsp"
 #fig = plot_graph1(file)
 #savefig(fig, "/Users/jules/Desktop/test/test_bays29.pdf")

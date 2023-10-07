@@ -7,10 +7,10 @@ filename = "/Users/jules/Desktop/MTH6412B/Git/mth6412b-starter-code/instances/st
 function build_graph(filename::String)
     graph_nodes, graph_edges = read_stsp(filename)
     
-    Graphe_test = Graph{Float64}("Test", Node[], Edge[])  
+    Graphe_test = Graph("Test", Node[], Edge[])  
     for i = 1:length(graph_nodes)
         noeud = Node(string(i), graph_nodes[i])  
-        Graphe_test.add_node!(noeud)
+        add_node!(Graphe_test,noeud)
     end
 
     for j = 1:length(graph_edges)
@@ -25,3 +25,4 @@ function build_graph(filename::String)
 
     return Graphe_test
 end
+
